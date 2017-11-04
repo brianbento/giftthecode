@@ -1,4 +1,5 @@
-﻿@model Indspire.Soaring.Engagement.Database.User
+﻿@using Indspire.Soaring.Engagement.Extensions
+@model Indspire.Soaring.Engagement.Database.User
 
 @{
     ViewData["Title"] = "Details";
@@ -9,6 +10,10 @@
 <div>
     <h4>User</h4>
     <hr />
+    @if (!string.IsNullOrEmpty(Model.UserNumber))
+    {
+        <img src="@Model.GetQRCodeAsBase64()" />
+    }
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.UserNumber)
