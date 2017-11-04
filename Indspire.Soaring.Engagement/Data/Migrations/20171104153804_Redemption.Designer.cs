@@ -11,9 +11,10 @@ using System;
 namespace Indspire.Soaring.Engagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171104153804_Redemption")]
+    partial class Redemption
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,26 +41,6 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.HasKey("RedemptionID");
 
                     b.ToTable("Redemption");
-                });
-
-            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.User", b =>
-                {
-                    b.Property<int>("UserID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<bool>("Deleted");
-
-                    b.Property<string>("ExternalID");
-
-                    b.Property<DateTime>("ModifiedDate");
-
-                    b.Property<string>("UserNumber");
-
-                    b.HasKey("UserID");
-
-                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Indspire.Soaring.Engagement.Models.ApplicationUser", b =>
