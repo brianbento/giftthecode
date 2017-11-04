@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Indspire.Soaring.Engagement.Data;
 using Indspire.Soaring.Engagement.Database;
+using Microsoft.AspNetCore.Authorization;
+using Indspire.Soaring.Engagement.Models;
 
 namespace Indspire.Soaring.Engagement.Controllers
 {
+    [Authorize(Roles = RoleNames.Administrator)]
     public class RedemptionController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -154,6 +157,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             return _context.Redemption.Any(e => e.RedemptionID == id);
         }
 
+        [AllowAnonymous]
         public IActionResult RedeemScan()
         {
             return View();
