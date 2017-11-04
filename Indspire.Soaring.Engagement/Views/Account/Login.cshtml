@@ -10,10 +10,9 @@
 }
 
 <div class="login-page">
-    <h2>@ViewData["Title"]</h2>
+    <h4 class="login-page__title">@ViewData["Title"]</h4>
     <section class="login-form">
         <form asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
-            <h4>Use a local account to log in.</h4>
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="input input__text">
                 <label asp-for="Email"></label>
@@ -31,11 +30,11 @@
                     @Html.DisplayNameFor(m => m.RememberMe)
                 </label>
             </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-default">Log in</button>
+            <div class="login-form__submit">
+                <button type="submit" class="blue-button">Log in</button>
             </div>
-            <div class="form-group">
-                <a asp-action="ForgotPassword">Forgot your password?</a>
+            <div class="login-form__forgot">
+                <a class="login-form__forgot-link" asp-action="ForgotPassword">Forgot your password?</a>
                 @*<p>
                         <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Register as a new user?</a>
                     </p>*@

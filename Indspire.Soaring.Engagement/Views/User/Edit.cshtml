@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h2>Edit</h2>
@@ -11,7 +12,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        @if(!string.IsNullOrEmpty(Model.UserNumber))
+        @if (!string.IsNullOrEmpty(Model.UserNumber))
         {
             <img src="@Model.GetQRCodeAsBase64()" />
         }

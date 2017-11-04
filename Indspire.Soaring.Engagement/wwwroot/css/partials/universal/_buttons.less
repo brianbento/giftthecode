@@ -36,8 +36,8 @@
     }
 
     &:hover, &--hover {
-        background: @raw;
-        color: @colour;
+        background: darken(@colour, 20%);
+        border-color: darken(@colour, 20%);
     }
 
     &:active, &--active {
@@ -65,11 +65,7 @@
     @hex: extract(@theme-color, @index);
 
     .@{color}-button {
-        display: inline-block;
-
-        a {
-            .btn-styles(@hex);
-        }
+        .btn-styles(@hex);
     }
 
     .generate-buttons(@button-color; @theme-color; (@index - 1));

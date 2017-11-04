@@ -9,14 +9,30 @@
     justify-content: center;
     flex-direction: column;
 }
+
+.login-page__title  {
+    text-transform: uppercase;
+}
+
 .login-form {
     width: 100%;
     max-width: 500px;
     padding: 1.5rem;
     border-radius: 5px;
     background: @raw;
+    .box-shadow-bottom;
 }
 
+.login-form__submit {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.login-form__forgot {
+    text-align: center;
+}
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  */
