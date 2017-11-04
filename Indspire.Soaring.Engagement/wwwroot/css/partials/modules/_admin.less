@@ -67,7 +67,8 @@
 
 .admin-backend__main {
     padding-left: @nav-base-width;
-    background: @raw;
+    background: @rare;
+    height: 100%;
 }
 
 // Header
@@ -97,6 +98,12 @@
     .font-bold;
 }
 
+.admin-backend__main-header-title-back  {
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: @theme-blue;
+}
+
 .admin-backend__main-header-actions {
     flex: 1 1 auto;
 }
@@ -113,6 +120,7 @@
 
     &:hover {
         background: @theme-blue;
+        color: @raw;
     }
 }
 
