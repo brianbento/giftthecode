@@ -1,6 +1,7 @@
 namespace Indspire.Soaring.Engagement.Database
 {
     using System;
+    using System.ComponentModel;
 
     public class Award
     {
@@ -8,6 +9,7 @@ namespace Indspire.Soaring.Engagement.Database
 
         public int VendorID { get; set; }
 
+        [DisplayName("Award Number")]
         public string EventNumber { get; set; }
 
         public int Points { get; set; }
