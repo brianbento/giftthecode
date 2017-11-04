@@ -16,7 +16,11 @@ namespace Indspire.Soaring.Engagement.Extensions
         {
             return new PagedList<TList>(list)
             {
-                TotalCount = totalCount
+                TotalCount = totalCount,
+
+                Page = page,
+
+                PageSize = pageSize                
             };
         }
     }

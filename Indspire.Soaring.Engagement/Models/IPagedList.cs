@@ -10,6 +10,10 @@ namespace Indspire.Soaring.Engagement.Models
     {
         public int TotalCount { get; set; }
 
+        public int Page { get; set; }
+
+        public int PageSize { get; set; }
+
         public IEnumerable<TList> List { get; set; }
 
         public PagedList(IEnumerable<TList> list)

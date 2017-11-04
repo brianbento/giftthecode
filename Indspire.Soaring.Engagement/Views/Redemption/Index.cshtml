@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Indspire.Soaring.Engagement.Database.Redemption>
+﻿@using Indspire.Soaring.Engagement.Extensions
+
+@model IEnumerable<Indspire.Soaring.Engagement.Database.Redemption>
 
 @if (Model != null)
 {
@@ -69,5 +71,9 @@
                 }
             </tbody>
         </table>
+
+        <div>
+            @await Html.PartialAsync("_Pagination", list.GetPagination())            
+        </div>
     }
 }
