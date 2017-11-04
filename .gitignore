@@ -152,3 +152,5 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+/.vs/Indspire.Soaring.Engagement/v15/Server/sqlite3
+/Indspire.Soaring.Engagement/.vs/Indspire.Soaring.Engagement/v15/Server/sqlite3
