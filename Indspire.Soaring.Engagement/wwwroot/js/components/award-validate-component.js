@@ -14,7 +14,7 @@
             }
 
             m.submit = function () {
-                $.post('/data/samples/ValidateCodeResponse', { code: self.data.code() },
+                $.get('/json/ValidateCodeResponse', { code: self.data.code() },
                     function (response) {
                         //success
                         debugger;

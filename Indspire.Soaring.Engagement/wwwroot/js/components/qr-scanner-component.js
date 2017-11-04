@@ -5,11 +5,11 @@
         self.types = {
             Award: {
                 Name: 'Award',
-                Endpoint: '/Data/Samples/PointsAwardedResponse.json'
+                Endpoint: '/json/PointsAwardedResponse.json'
             },
             Redemption: {
                 Name: 'Redemption',
-                Endpoint: '/Data/Samples/RedemptionResponse.json'
+                Endpoint: '/json/RedemptionResponse.json'
             }
         }
 
@@ -84,26 +84,25 @@
                     postData.AwardNumber = self.data.awardNumber;
                 }
 
-                if (self.state.type === self.types.RedemptionNumber) {
+                if (self.state.type === self.types.Redemption) {
                     postData.RedemptionNumber = self.data.redemptionNumber;
                 }
 
                 self.state.loading(true);
 
-                $.post(self.state.type.Endpoint, postData,
-                    function (response) {
+                $.get(self.state.type.Endpoint, postData)
+                    .done(function (response) {
                         //success
                         self.state.success("Success!")
-                    },
-                    function (error) {
+                        self.data.code(null);
+                    }).fail(function (error) {
                         //error
                         self.state.error("Error!")
-                    },
-                    function () {
+                    }).always(function () {
                         //always
                         self.state.loading(false);
-                    }
-                )
+                    });
+                
             }
         };
 
