@@ -10,6 +10,7 @@ using Indspire.Soaring.Engagement.Database;
 using Microsoft.AspNetCore.Authorization;
 using Indspire.Soaring.Engagement.Models;
 using Indspire.Soaring.Engagement.ViewModels;
+using Indspire.Soaring.Engagement.Utils;
 
 namespace Indspire.Soaring.Engagement.Controllers
 {
@@ -94,10 +95,16 @@ namespace Indspire.Soaring.Engagement.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AwardID,VendorID,EventNumber,Name,Description,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
+        public async Task<IActionResult> Create([Bind("Name,Description,Points")] Award award)
         {
+            var dataUtils = new DataUtils();
             if (ModelState.IsValid)
             {
+                award.CreatedDate = DateTime.UtcNow;
+                award.ModifiedDate = award.CreatedDate;
+                award.Deleted = false;
+                award.EventNumber = dataUtils.GenerateNumber();
+
                 _context.Add(award);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -126,7 +133,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AwardID,VendorID,EventNumber,Name,Description,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
+        public async Task<IActionResult> Edit(int id, [Bind("AwardID,Name,Description,Points")] Award award)
         {
             if (id != award.AwardID)
             {
@@ -137,6 +144,18 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 try
                 {
+                    var awardFromDB = _context.Award
+                        .FirstOrDefault(i => i.AwardID == award.AwardID);
+
+                    if (awardFromDB != null)
+                    {
+                        awardFromDB.Name = award.Name;
+                        awardFromDB.Description = award.Description;
+                        awardFromDB.Points = award.Points;
+                        awardFromDB.ModifiedDate = DateTime.UtcNow;
+                    }
+
+
                     _context.Update(award);
                     await _context.SaveChangesAsync();
                 }

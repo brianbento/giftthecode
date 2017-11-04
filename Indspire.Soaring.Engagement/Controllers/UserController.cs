@@ -9,6 +9,7 @@ using Indspire.Soaring.Engagement.Data;
 using Indspire.Soaring.Engagement.Database;
 using Microsoft.AspNetCore.Authorization;
 using Indspire.Soaring.Engagement.Models;
+using Indspire.Soaring.Engagement.Utils;
 
 namespace Indspire.Soaring.Engagement.Controllers
 {
@@ -59,12 +60,14 @@ namespace Indspire.Soaring.Engagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ExternalID")] User user)
         {
+            var dataUtils = new DataUtils();
+
             if (ModelState.IsValid)
             {
                 user.CreatedDate = DateTime.UtcNow;
                 user.ModifiedDate = user.CreatedDate;
                 user.Deleted = false;
-                user.UserNumber = GenerateNumber();
+                user.UserNumber = dataUtils.GenerateNumber();
 
                 _context.Add(user);
 
@@ -169,18 +172,6 @@ namespace Indspire.Soaring.Engagement.Controllers
             return _context.User.Any(e => e.UserID == id);
         }
 
-        public string GenerateNumber()
-        {
-            Random random = new Random();
-            string r = "";
-            int i;
-
-            for (i = 1; i < 6; i++)
-            {
-                r += random.Next(0, 9).ToString();
-            }
-
-            return r;
-        }
+        
     }
 }
