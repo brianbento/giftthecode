@@ -32,7 +32,10 @@
 
         self.events = {
             onScan: function (content) {
-                self.data.code(content)
+                if (content) {
+                    self.data.code(content)
+                    self.methods.submit();
+                }
             },
             onActive: function () {
                 self.state.scannerActive(true);
@@ -58,7 +61,7 @@
 
             m.init = function (params) {
                 if (params.redemptionNumber) {
-                    self.state.type = self.types.RedemptionNumber;
+                    self.state.type = self.types.Redemption;
                     self.data.redemptionNumber = params.redemptionNumber;
                 }
                 if (params.awardNumber) {
@@ -71,9 +74,10 @@
                 self.state.currentCamera(camera);
             }
 
+
             m.submit = function () {
                 var postData = {
-                    UserNumber: self.state.code()
+                    UserNumber: self.data.code()
                 };
 
                 if (self.state.type === self.types.Award) {

@@ -153,5 +153,10 @@ namespace Indspire.Soaring.Engagement.Controllers
         {
             return _context.Redemption.Any(e => e.RedemptionID == id);
         }
+
+        public IActionResult RedeemScan()
+        {
+            return View();
+        }
     }
 }
