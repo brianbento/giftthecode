@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Indspire.Soaring.Engagement.Models;
+using Indspire.Soaring.Engagement.Database;
 
 namespace Indspire.Soaring.Engagement.Data
 {
@@ -22,5 +23,9 @@ namespace Indspire.Soaring.Engagement.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
+
+        public DbSet<Indspire.Soaring.Engagement.Database.Redemption> Redemption { get; set; }
+
+        public DbSet<Indspire.Soaring.Engagement.Database.User> User { get; set; }
     }
 }

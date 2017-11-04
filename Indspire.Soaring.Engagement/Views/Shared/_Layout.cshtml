@@ -36,7 +36,6 @@
         </footer>
     </div>
 
-
     @Html.Partial("~/Views/Shared/_CoreKOTemplates.cshtml")
 
     <script src="~/lib/jquery/dist/jquery.js"></script>
@@ -47,7 +46,8 @@
     <script src="~/js/components/home-page.js"></script>
     <script src="~/js/components/qr-scanner-component.js"></script>
     <script src="~/js/site.js"></script>
-    
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
 
