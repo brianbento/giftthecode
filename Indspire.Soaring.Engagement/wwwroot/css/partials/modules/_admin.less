@@ -75,6 +75,10 @@
     width: 100%;
     background: @raw;
     padding: 1rem;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .admin-backend__main-header-title {
@@ -93,6 +97,38 @@
     .font-bold;
 }
 
+.admin-backend__main-header-actions {
+    flex: 1 1 auto;
+}
+
+.admin-backend__main-header-actions-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 0.5rem 0.8rem;
+    background: @medium;
+    color: @black;
+    .font-semibold;
+    border-radius: 3px;
+
+    &:hover {
+        background: @theme-blue;
+    }
+}
+
+.admin-backend__main-header-actions-link-icon {
+    display: block;
+    font-size: 1.5rem;
+}
+
+admin-backend__main-header-actions-link-text {
+    display: block;
+    white-space: nowrap;
+}
+
+.admin-backend__main-content {
+    padding: 1rem;
+}
 
 
 /*
