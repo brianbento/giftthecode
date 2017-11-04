@@ -1,12 +1,10 @@
 ﻿
 
-<award-validate></award-validate>
 
-<script id="award-index-tmpl" type="text/html">
-    <form method="get" data-bind="submit: methods.submit">
-        <p>This page is intended for Vendors at the conference to issue points to attendees by scanning their QR code.</p>
-        <label>Enter your Code</label>
-        <input type="text" />
-        <button type="submit">Submit Code</button>
-    </form>
-</script>
+
+<form method="get" action="/award/scan">
+    <p>This page is intended for Vendors at the conference to issue points to attendees by scanning their QR code.</p>
+    <label for="AwardNumber">Enter your Code</label>
+    <input type="text" name="AwardNumber" />
+    <button type="submit">Submit Code</button>
+</form>
