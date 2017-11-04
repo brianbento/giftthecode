@@ -7,6 +7,7 @@
         var camerasObs = valueAccessor().cameras;
         var onScan = valueAccessor().onScan;
         var onActive = valueAccessor().onActive;
+        var onInActive = valueAccessor().onInActive;
 
         scanner(new Instascan.Scanner({ video: element }));
 
