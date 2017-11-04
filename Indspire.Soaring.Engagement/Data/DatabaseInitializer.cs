@@ -43,23 +43,23 @@ namespace Indspire.Soaring.Engagement.Data
             if (!string.IsNullOrWhiteSpace(username) &&
                 !string.IsNullOrWhiteSpace(password))
             {
-                var result = await _userManager.CreateAsync(
-
-                    new ApplicationUser
-                    {
-                        UserName = username,
-                        Email = username,
-                        EmailConfirmed = true
-                    },
-
-                    password);
-
-                var adminRole = _roleManager.FindByNameAsync(RoleNames.Administrator);
-
                 var user = await _userManager.FindByNameAsync(username);
 
-                if (user != null)
+                if (user == null)
                 {
+                    var result = await _userManager.CreateAsync(
+
+                        new ApplicationUser
+                        {
+                            UserName = username,
+                            Email = username,
+                            EmailConfirmed = true
+                        },
+
+                        password);
+
+                    var adminRole = _roleManager.FindByNameAsync(RoleNames.Administrator);
+
                     await _userManager.AddToRoleAsync(user, RoleNames.Administrator);
                 }
             }
