@@ -37,9 +37,8 @@ namespace Indspire.Soaring.Engagement.Data
                 });
             }
 
-            // Create the default Admin account and apply the Administrator role
-            var username = configuration.GetValue(typeof(string), "Admin.Username") as string;
-            var password = configuration.GetValue(typeof(string), "Admin.Password") as string;
+            var username = configuration["AdminUsername"];
+            var password = configuration["AdminPassword"];
 
             if (!string.IsNullOrWhiteSpace(username) &&
                 !string.IsNullOrWhiteSpace(password))
