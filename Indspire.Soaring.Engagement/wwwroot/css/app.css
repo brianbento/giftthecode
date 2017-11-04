@@ -86,11 +86,40 @@ h1 {
 /*
  * --   XL MEDIA QUERIES --
 */
+.input {
+  margin-bottom: 1rem;
+}
 .input.input__text label {
   display: block;
 }
 .input.input__text input {
   display: block;
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+}
+/*
+ * -- TABLET (AND UP) MEDIA QUERIES --
+ */
+/*
+ * -- DESKTOP (AND UP) MEDIA QUERIES --
+ */
+/*
+ * --   XL MEDIA QUERIES --
+*/
+.text-danger {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+.text-danger ul {
+  margin: 0;
+  padding: 0;
+  padding: 1rem;
+}
+.text-danger ul li {
+  list-style-type: none;
 }
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
@@ -219,6 +248,30 @@ admin-backend__main-header-actions-link-text {
  * --   XL MEDIA QUERIES --
 */
 .admin-backend__users-table {
+  background: #fff;
+}
+/*
+ * -- TABLET (AND UP) MEDIA QUERIES --
+ */
+/*
+ * -- DESKTOP (AND UP) MEDIA QUERIES --
+ */
+/*
+ * --   XL MEDIA QUERIES --
+*/
+.login-page {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.login-form {
+  width: 100%;
+  max-width: 500px;
+  padding: 1.5rem;
+  border-radius: 5px;
   background: #fff;
 }
 /*

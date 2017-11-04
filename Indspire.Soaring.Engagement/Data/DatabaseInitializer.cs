@@ -58,9 +58,11 @@ namespace Indspire.Soaring.Engagement.Data
 
                         password);
 
+                    var createdUser = await _userManager.FindByNameAsync(username);
+
                     var adminRole = _roleManager.FindByNameAsync(RoleNames.Administrator);
 
-                    await _userManager.AddToRoleAsync(user, RoleNames.Administrator);
+                    await _userManager.AddToRoleAsync(createdUser, RoleNames.Administrator);
                 }
             }
         }
