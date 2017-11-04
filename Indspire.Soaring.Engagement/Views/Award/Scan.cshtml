@@ -1,3 +1,26 @@
-﻿<h1>Award Points</h1>
-<p>Scan a QR code below</p>
-<qr-scanner params="{ type: 'Award', awardNumber: '123213213' }"></qr-scanner>
+﻿@model Indspire.Soaring.Engagement.ViewModels.AwardScanViewModel
+
+@if(Model.AwardNumberInvalid && Model.HasAwardNumber)
+{
+    <p>The code you entered is not valid. Please try again.</p>
+
+}
+
+
+@if (Model.AwardNumberInvalid || !Model.HasAwardNumber)
+{
+    <form method="get" action="/award/scan">
+        <p>This page is intended for Vendors at the conference to issue points to attendees by scanning their QR code.</p>
+        <label for="AwardNumber">Enter your Code</label>
+        <input type="text" name="AwardNumber" />
+        <button type="submit">Submit Code</button>
+    </form>
+}
+
+@if (Model.Award != null)
+{
+
+    <h1>Award Points</h1>
+    <p>Scan a QR code below</p>
+    <qr-scanner params="{ type: 'Award', awardNumber: '@Model.AwardNumber' }"></qr-scanner>
+}
