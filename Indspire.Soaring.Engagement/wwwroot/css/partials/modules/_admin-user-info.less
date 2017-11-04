@@ -1,11 +1,22 @@
 ﻿@import (reference) "../_variables.less";
 @import (reference) "../_mixins.less";
 
-.admin-create-user {
+.admin-user-info {
 }
 
-.admin-create-user__form {
+.admin-user-info__table {
+    background: @raw;
     max-width: 500px;
+    width: 100%;
+    margin-bottom: 1rem;
+
+    tr:nth-child(odd) {
+        background: @raw;
+    }
+
+    tr td:first-child {
+        background: @medium-rare;
+    }
 }
 
 /*

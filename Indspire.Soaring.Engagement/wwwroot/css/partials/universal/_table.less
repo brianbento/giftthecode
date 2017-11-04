@@ -4,9 +4,20 @@
 .table {
     width: 100%;
 
+
     th, td {
         padding: 0.3rem 0.5rem;
         border: solid 1px @medium;
+    }
+
+    th {
+        background: @medium-well;
+        color: @raw;
+        text-transform: uppercase;
+    }
+
+    tr:nth-child(odd) {
+        background: @rare;
     }
 }
 
