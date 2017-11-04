@@ -1,73 +1,83 @@
-﻿@model IEnumerable<Indspire.Soaring.Engagement.Database.Award>
+﻿@using Indspire.Soaring.Engagement.Extensions
 
-@{
+@model IEnumerable<Indspire.Soaring.Engagement.Database.Award>
+
+@if (Model != null)
+{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-}
 
-<h2>Index</h2>
+    <h2>Index</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.EventNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Points)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Deleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ModifiedDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EventNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Points)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Deleted)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatedDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ModifiedDate)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.AwardID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.AwardID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.AwardID">Delete</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.EventNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Points)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Deleted)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CreatedDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ModifiedDate)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EventNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Points)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Deleted)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ModifiedDate)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.AwardID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.AwardID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.AwardID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    var list = Model as PagedList<Indspire.Soaring.Engagement.Database.Award>;
+
+    if (list != null)
+    {
+        @await Html.PartialAsync("_Pagination", list.GetPagination())
+    }
+}

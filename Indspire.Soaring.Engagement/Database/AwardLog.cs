@@ -7,6 +7,8 @@ namespace Indspire.Soaring.Engagement.Database
         public int AwardLogID { get; set; }
         
         public int AwardID { get; set; }
+
+        public Award Award { get; set; }
         
         public int Points { get; set; }
 

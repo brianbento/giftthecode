@@ -19,9 +19,7 @@ namespace Indspire.Soaring.Engagement.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+
             builder.Entity<Redemption>()
                 .Property(i => i.RedemptionID)
                 .ValueGeneratedOnAdd();
@@ -47,6 +45,18 @@ namespace Indspire.Soaring.Engagement.Data
             builder.Entity<User>()
                 .Property(i => i.UserID)
                 .ValueGeneratedOnAdd();
+
+            builder.Entity<Award>()
+                .HasKey(i => i.AwardID);
+
+            builder.Entity<Award>()
+                .Property(i => i.AwardID)
+                .ValueGeneratedOnAdd();
+
+            builder.Entity<Award>()
+                .HasMany(i => i.AwardLogs)
+                .WithOne(rl => rl.Award)
+                .HasForeignKey(i => i.AwardID);
         }
 
         public DbSet<Indspire.Soaring.Engagement.Database.Redemption> Redemption { get; set; }

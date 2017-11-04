@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Indspire.Soaring.Engagement.Models;
 using Indspire.Soaring.Engagement.ViewModels;
 using Indspire.Soaring.Engagement.Utils;
+using Indspire.Soaring.Engagement.Extensions;
 
 namespace Indspire.Soaring.Engagement.Controllers
 {
@@ -25,9 +26,19 @@ namespace Indspire.Soaring.Engagement.Controllers
         }
 
         // GET: Award
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            return View(await _context.Award.ToListAsync());
+            var take = pageSize;
+            var skip = pageSize * (page - 1);
+
+            var awards = await _context.Award
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            var totalCount = await _context.Award.CountAsync();
+
+            return View(awards.ToPagedList(totalCount, page, pageSize));
         }
 
         public async Task<IActionResult> List()
