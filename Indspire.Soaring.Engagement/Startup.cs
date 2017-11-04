@@ -61,7 +61,7 @@ namespace Indspire.Soaring.Engagement
 
             app.UseAuthentication();
 
-            databaseInitializer.Initialize(Configuration);
+            databaseInitializer.Initialize(Configuration).Wait();
 
             app.UseMvc(routes =>
             {

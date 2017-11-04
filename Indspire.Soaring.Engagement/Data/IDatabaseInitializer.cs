@@ -8,6 +8,6 @@ namespace Indspire.Soaring.Engagement.Data
 {
     public interface IDatabaseInitializer
     {
-        void Initialize(IConfiguration configuration);
+        Task Initialize(IConfiguration configuration);
     }
 }
