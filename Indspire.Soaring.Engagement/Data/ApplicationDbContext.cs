@@ -40,6 +40,13 @@ namespace Indspire.Soaring.Engagement.Data
 
             builder.Entity<RedemptionLog>()
                 .HasKey(i => i.RedemptionLogID);
+
+            builder.Entity<User>()
+                .HasKey(i => i.UserID);
+
+            builder.Entity<User>()
+                .Property(i => i.UserID)
+                .ValueGeneratedOnAdd();
         }
 
         public DbSet<Indspire.Soaring.Engagement.Database.Redemption> Redemption { get; set; }
