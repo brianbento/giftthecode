@@ -208,5 +208,63 @@ namespace Indspire.Soaring.Engagement.Controllers
         {
             return _context.Award.Any(e => e.AwardID == id);
         }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> LogAction(string AwardNumber, string UserNumber)
+        {
+            var viewModel = new LogActionJsonViewModel();
+            try
+            {
+               
+                //validate 
+                var award = await _context.Award.FirstOrDefaultAsync(i => i.EventNumber == AwardNumber);
+
+                if(award == null)
+                {
+                    throw new ApplicationException("Award not found.");
+                }
+
+                var user = await _context.User.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
+
+                if(user == null)
+                {
+                    throw new ApplicationException("User not found.");
+                }
+
+                var existingAwardLogByThisUser = await _context.AwardLog.FirstOrDefaultAsync(i =>
+                                                    i.UserID == user.UserID &&
+                                                    i.AwardID == award.AwardID);
+                if(existingAwardLogByThisUser != null)
+                {
+                    throw new ApplicationException("User has already been Awarded points for this action.");
+                }
+
+                //good to go!
+
+                var awardLog = new AwardLog();
+                awardLog.AwardID = award.AwardID;
+                awardLog.CreatedDate = DateTime.UtcNow;
+                awardLog.ModifiedDate = awardLog.CreatedDate;
+                awardLog.Points = award.Points;
+                awardLog.UserID = user.UserID;
+
+                _context.Add(awardLog);
+
+                await _context.SaveChangesAsync();
+
+                viewModel.ResponseData.PointsAwarded = awardLog.Points;
+                viewModel.ResponseData.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
+                viewModel.ResponseData.UserNumber = user.UserNumber;
+
+            } catch(Exception ex)
+            {
+                viewModel.ErrorMessage = ex.Message;
+                viewModel.ResponseData = null;
+            }
+
+            return new JsonResult(viewModel);
+
+        }
     }
 }
