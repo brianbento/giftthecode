@@ -13,22 +13,33 @@ using Indspire.Soaring.Engagement.Models;
 namespace Indspire.Soaring.Engagement.Controllers
 {
     [Authorize(Roles = RoleNames.Administrator)]
-    public class RedemptionController : Controller
+    public class AwardController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public RedemptionController(ApplicationDbContext context)
+        public AwardController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Redemptions
+        // GET: Award
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Redemption.ToListAsync());
+            return View();
         }
 
-        // GET: Redemptions/Details/5
+        public async Task<IActionResult> List()
+        {
+            return View(await _context.Award.ToListAsync());
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Scan()
+        {
+            return View();
+        }
+
+        // GET: Award/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,41 +47,39 @@ namespace Indspire.Soaring.Engagement.Controllers
                 return NotFound();
             }
 
-            var redemption = await _context.Redemption
-                .SingleOrDefaultAsync(m => m.RedemptionID == id);
-            if (redemption == null)
+            var award = await _context.Award
+                .SingleOrDefaultAsync(m => m.AwardID == id);
+            if (award == null)
             {
                 return NotFound();
             }
 
-            return View(redemption);
+            return View(award);
         }
 
-        // GET: Redemptions/Create
+        // GET: Award/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Redemptions/Create
+        // POST: Award/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind("RedemptionID,RedemptionNumber,Name,Description,Deleted,CreatedDate,ModifiedDate")]
-            Redemption redemption)
+        public async Task<IActionResult> Create([Bind("AwardID,VendorID,EventNumber,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(redemption);
+                _context.Add(award);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(redemption);
+            return View(award);
         }
 
-        // GET: Redemptions/Edit/5
+        // GET: Award/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -78,24 +87,22 @@ namespace Indspire.Soaring.Engagement.Controllers
                 return NotFound();
             }
 
-            var redemption = await _context.Redemption.SingleOrDefaultAsync(m => m.RedemptionID == id);
-            if (redemption == null)
+            var award = await _context.Award.SingleOrDefaultAsync(m => m.AwardID == id);
+            if (award == null)
             {
                 return NotFound();
             }
-            return View(redemption);
+            return View(award);
         }
 
-        // POST: Redemptions/Edit/5
+        // POST: Award/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [
-            Bind("RedemptionID,RedemptionNumber,Name,Description,Deleted,CreatedDate,ModifiedDate")]
-            Redemption redemption)
+        public async Task<IActionResult> Edit(int id, [Bind("AwardID,VendorID,EventNumber,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
         {
-            if (id != redemption.RedemptionID)
+            if (id != award.AwardID)
             {
                 return NotFound();
             }
@@ -104,12 +111,12 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 try
                 {
-                    _context.Update(redemption);
+                    _context.Update(award);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RedemptionExists(redemption.RedemptionID))
+                    if (!AwardExists(award.AwardID))
                     {
                         return NotFound();
                     }
@@ -120,10 +127,10 @@ namespace Indspire.Soaring.Engagement.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(redemption);
+            return View(award);
         }
 
-        // GET: Redemptions/Delete/5
+        // GET: Award/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -131,36 +138,30 @@ namespace Indspire.Soaring.Engagement.Controllers
                 return NotFound();
             }
 
-            var redemption = await _context.Redemption
-                .SingleOrDefaultAsync(m => m.RedemptionID == id);
-            if (redemption == null)
+            var award = await _context.Award
+                .SingleOrDefaultAsync(m => m.AwardID == id);
+            if (award == null)
             {
                 return NotFound();
             }
 
-            return View(redemption);
+            return View(award);
         }
 
-        // POST: Redemptions/Delete/5
+        // POST: Award/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var redemption = await _context.Redemption.SingleOrDefaultAsync(m => m.RedemptionID == id);
-            _context.Redemption.Remove(redemption);
+            var award = await _context.Award.SingleOrDefaultAsync(m => m.AwardID == id);
+            _context.Award.Remove(award);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RedemptionExists(int id)
+        private bool AwardExists(int id)
         {
-            return _context.Redemption.Any(e => e.RedemptionID == id);
-        }
-
-        [AllowAnonymous]
-        public IActionResult RedeemScan()
-        {
-            return View();
+            return _context.Award.Any(e => e.AwardID == id);
         }
     }
 }

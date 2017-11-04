@@ -1,32 +1,31 @@
-﻿@using Indspire.Soaring.Engagement.Extensions
-@model Indspire.Soaring.Engagement.Database.User
+﻿@model Indspire.Soaring.Engagement.Database.Award
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
-<h2>Edit</h2>
+<h2>Create</h2>
 
-<h4>User</h4>
+<h4>Award</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        @if(!string.IsNullOrEmpty(Model.UserNumber))
-        {
-            <img src="@Model.GetQRCodeAsBase64()" />
-        }
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="UserID" />
             <div class="form-group">
-                <label asp-for="UserNumber" class="control-label"></label>
-                <input asp-for="UserNumber" class="form-control" />
-                <span asp-validation-for="UserNumber" class="text-danger"></span>
+                <label asp-for="VendorID" class="control-label"></label>
+                <input asp-for="VendorID" class="form-control" />
+                <span asp-validation-for="VendorID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ExternalID" class="control-label"></label>
-                <input asp-for="ExternalID" class="form-control" />
-                <span asp-validation-for="ExternalID" class="text-danger"></span>
+                <label asp-for="EventNumber" class="control-label"></label>
+                <input asp-for="EventNumber" class="form-control" />
+                <span asp-validation-for="EventNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Points" class="control-label"></label>
+                <input asp-for="Points" class="form-control" />
+                <span asp-validation-for="Points" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <div class="checkbox">
@@ -46,7 +45,7 @@
                 <span asp-validation-for="ModifiedDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </form>
     </div>
