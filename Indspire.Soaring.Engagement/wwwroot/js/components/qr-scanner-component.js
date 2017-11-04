@@ -32,6 +32,7 @@
 
         self.events = {
             onScan: function (content) {
+                console.log('Scan found:' + content)
                 if (content) {
                     self.data.code(content)
                     self.methods.submit();

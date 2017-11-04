@@ -13,7 +13,7 @@
     <hr />
     @if (!string.IsNullOrEmpty(Model.UserNumber))
     {
-        <img src="@Model.GetQRCodeAsBase64()" />
+        <img src="data:image/png;base64,@Model.GetQRCodeAsBase64()" />
     }
     <dl class="dl-horizontal">
         <dt>
