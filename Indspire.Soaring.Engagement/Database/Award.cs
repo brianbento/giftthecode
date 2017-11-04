@@ -2,9 +2,9 @@ namespace Indspire.Soaring.Engagement.Database
 {
     using System;
 
-    public class Action
+    public class Award
     {
-        public int ActionID { get; set; }
+        public int AwardID { get; set; }
 
         public int VendorID { get; set; }
 

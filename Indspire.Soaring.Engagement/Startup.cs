@@ -36,11 +36,15 @@ namespace Indspire.Soaring.Engagement
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
+            services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
+
             services.AddMvc();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IHostingEnvironment env,
+            IDatabaseInitializer databaseInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -56,6 +60,8 @@ namespace Indspire.Soaring.Engagement
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            databaseInitializer.Initialize(Configuration);
 
             app.UseMvc(routes =>
             {
