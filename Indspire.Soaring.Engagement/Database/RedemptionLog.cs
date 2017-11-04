@@ -7,6 +7,8 @@ namespace Indspire.Soaring.Engagement.Database
 
         public int RedemptionID { get; set; }
 
+        public Redemption Redemption { get; set; }
+
         public int UserID { get; set; }
     }
 }

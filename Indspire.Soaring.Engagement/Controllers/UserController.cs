@@ -106,9 +106,17 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 try
                 {
-                    user.ModifiedDate = DateTime.UtcNow;
+                    var userFromDatabase = _context.User
+                        .FirstOrDefault(i => i.UserID == user.UserID);
 
-                    _context.Update(user);
+                    if (userFromDatabase != null)
+                    {
+                        userFromDatabase.ExternalID = user.ExternalID;
+                        userFromDatabase.ModifiedDate = DateTime.UtcNow;
+                    }
+
+                    _context.Update(userFromDatabase);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
