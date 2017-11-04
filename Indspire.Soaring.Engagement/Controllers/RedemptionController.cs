@@ -58,11 +58,14 @@ namespace Indspire.Soaring.Engagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("RedemptionID,RedemptionNumber,Name,Description,Deleted,CreatedDate,ModifiedDate")]
+            [Bind("RedemptionNumber,Name,Description")]
             Redemption redemption)
         {
             if (ModelState.IsValid)
             {
+                redemption.ModifiedDate = redemption.CreatedDate = DateTime.UtcNow;
+                redemption.Deleted = false;
+
                 _context.Add(redemption);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -92,7 +95,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [
-            Bind("RedemptionID,RedemptionNumber,Name,Description,Deleted,CreatedDate,ModifiedDate")]
+            Bind("RedemptionID,RedemptionNumber,Name,Description")]
             Redemption redemption)
         {
             if (id != redemption.RedemptionID)
@@ -104,7 +107,19 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 try
                 {
-                    _context.Update(redemption);
+                    var redemptionFromDatabase = await _context.Redemption
+                        .FirstOrDefaultAsync(i => i.RedemptionID == redemption.RedemptionID);
+
+                    if (redemptionFromDatabase != null)
+                    {
+                        redemptionFromDatabase.RedemptionNumber = redemption.RedemptionNumber;
+                        redemptionFromDatabase.Name = redemption.Name;
+                        redemptionFromDatabase.Description = redemption.Description;
+                        redemptionFromDatabase.ModifiedDate = DateTime.UtcNow;
+                    }
+
+                    _context.Update(redemptionFromDatabase);
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -133,6 +148,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             var redemption = await _context.Redemption
                 .SingleOrDefaultAsync(m => m.RedemptionID == id);
+
             if (redemption == null)
             {
                 return NotFound();
