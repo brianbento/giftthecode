@@ -54,5 +54,9 @@ namespace Indspire.Soaring.Engagement.Data
         public DbSet<Indspire.Soaring.Engagement.Database.User> User { get; set; }
 
         public DbSet<Indspire.Soaring.Engagement.Database.Award> Award { get; set; }
+
+        public DbSet<Indspire.Soaring.Engagement.Database.AwardLog> AwardLog { get; set; }
+
+        public DbSet<Indspire.Soaring.Engagement.Database.RedemptionLog> RedemptionLog { get; set; }
     }
 }
