@@ -1,8 +1,8 @@
 ﻿@import (reference) "../_variables.less";
 @import (reference) "../_mixins.less";
 
-@theme-color-names: blue;
-@theme-color-hex: @theme-blue;
+@theme-color-names: blue,red,green;
+@theme-color-hex: @theme-blue,@theme-red,@theme-green;
 @theme-color-names-length: length(@theme-color-names);
 
 
@@ -18,6 +18,9 @@
     font-size: 1rem;
     transition: color 0.25s ease-in, background-color 0.25s ease-in, border-color 0.25s ease-in;
     position: relative;
+    text-align: center;
+    .font-semibold;
+    text-transform: uppercase;
 
     &::before {
         position: absolute;

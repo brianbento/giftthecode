@@ -6,49 +6,96 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Details</h2>
+<div class="admin-backend__main-header">
+    <div class="admin-backend__main-header-title">
+        <a class="admin-backend__main-header-title-back fa fa-chevron-left" asp-action="Index"></a>
+        <span class="admin-backend__main-header-title-icon fa fa-info-circle"></span>
+        <span class="admin-backend__main-header-title-text">User Details</span>
+    </div>
 
-<div>
-    <h4>User</h4>
-    <hr />
+    <div class="admin-backend__main-header-actions">
+
+    </div>
+</div>
+
+<div class="admin-backend__main-content">
+
     @if (!string.IsNullOrEmpty(Model.UserNumber))
     {
         <img src="@Model.GetQRCodeAsBase64()" />
     }
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.UserNumber)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.UserNumber)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ExternalID)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ExternalID)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Deleted)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Deleted)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedDate)
-        </dd>
-    </dl>
+
+    <table class="admin-user-info__table table">
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.UserNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.UserNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.ExternalID)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.ExternalID)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.CreatedDate)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.ModifiedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.ModifiedDate)
+            </td>
+        </tr>
+    </table>
+
+    @*<dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.UserNumber)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.UserNumber)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ExternalID)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ExternalID)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Deleted)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Deleted)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.CreatedDate)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ModifiedDate)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ModifiedDate)
+            </dd>
+        </dl>*@
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.UserID" class="blue-button">Edit</a>
+    </div>
+
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.UserID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
