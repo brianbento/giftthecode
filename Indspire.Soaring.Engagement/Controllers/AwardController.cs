@@ -156,7 +156,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                     }
 
 
-                    _context.Update(award);
+                    _context.Update(awardFromDB);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
