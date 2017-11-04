@@ -4,14 +4,23 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<div class="admin-backend__main-header">
+    <div class="admin-backend__main-header-title">
+        <span class="admin-backend__main-header-title-icon fa fa-user"></span>
+        <span class="admin-backend__main-header-title-text">Users</span>
+    </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
+    <div class="admin-backend__main-header-actions">
+        <a class="admin-backend__main-header-actions-link" asp-action="Create">
+            <span class="admin-backend__main-header-actions-link-icon fa fa-user-plus" aria-hidden="true"></span>
+        </a>
+    </div>
+</div>
+
+<div class="admin-backend__main-content dmin-backend__users">
+    <table class="admin-backend__users-table table">
+        <thead>
+            <tr>
                 <th>
                     @Html.DisplayNameFor(model => model.UserNumber)
                 </th>
@@ -27,33 +36,34 @@
                 <th>
                     @Html.DisplayNameFor(model => model.ModifiedDate)
                 </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExternalID)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Deleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModifiedDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.UserID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.UserID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.UserID">Delete</a>
-            </td>
-        </tr>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExternalID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Deleted)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ModifiedDate)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.UserID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.UserID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.UserID">Delete</a>
+                    </td>
+                </tr>
 }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+</div>

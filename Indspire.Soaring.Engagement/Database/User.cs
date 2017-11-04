@@ -15,5 +15,6 @@ namespace Indspire.Soaring.Engagement.Database
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿@model Indspire.Soaring.Engagement.Database.User
+﻿@using Indspire.Soaring.Engagement.Extensions
+@model Indspire.Soaring.Engagement.Database.User
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,6 +11,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
+        @if(!string.IsNullOrEmpty(Model.UserNumber))
+        {
+            <img src="@Model.GetQRCodeAsBase64()" />
+        }
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="UserID" />
