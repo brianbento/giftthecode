@@ -1,14 +1,24 @@
-﻿@import (reference) "../_variables.less";
-@import (reference) "../_mixins.less";
+﻿@import "../_variables.less";
+@import "../_mixins.less";
 
-.some-class {
+.input{
+
+    &.input__text {
+
+        label {
+            display: block;
+        }
+
+        input {
+            display: block;
+        }
+    }
 }
 
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  */
 @media (min-width: @tablet-breakpoint) {
-
 }
 
 
@@ -16,12 +26,10 @@
  * -- DESKTOP (AND UP) MEDIA QUERIES --
  */
 @media (min-width: @desktop-breakpoint) {
-
 }
 
 /*
  * --   XL MEDIA QUERIES --
 */
 @media (min-width: @xl-breakpoint) {
-
 }

@@ -5,13 +5,6 @@
     <UserSecretsId>aspnet-Indspire.Soaring.Engagement-F7271D48-4EA1-4121-9943-2A50038EDA15</UserSecretsId>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Views\Admin\**" />
-    <Content Remove="Views\Admin\**" />
-    <EmbeddedResource Remove="Views\Admin\**" />
-    <None Remove="Views\Admin\**" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
@@ -28,6 +21,10 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\js\viewmodels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Admin\Admin.cshtml" />
   </ItemGroup>
 
 </Project>
