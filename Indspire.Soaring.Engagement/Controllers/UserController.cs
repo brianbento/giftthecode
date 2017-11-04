@@ -57,11 +57,17 @@ namespace Indspire.Soaring.Engagement.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UserID,UserNumber,ExternalID,Deleted,CreatedDate,ModifiedDate")] User user)
+        public async Task<IActionResult> Create([Bind("ExternalID")] User user)
         {
             if (ModelState.IsValid)
             {
+                user.CreatedDate = DateTime.UtcNow;
+                user.ModifiedDate = user.CreatedDate;
+                user.Deleted = false;
+                user.UserNumber = GenerateNumber();
+
                 _context.Add(user);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -89,7 +95,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserID,UserNumber,ExternalID,Deleted,CreatedDate,ModifiedDate")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("UserID,ExternalID")] User user)
         {
             if (id != user.UserID)
             {
@@ -100,6 +106,8 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 try
                 {
+                    user.ModifiedDate = DateTime.UtcNow;
+
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
@@ -151,6 +159,20 @@ namespace Indspire.Soaring.Engagement.Controllers
         private bool UserExists(int id)
         {
             return _context.User.Any(e => e.UserID == id);
+        }
+
+        public string GenerateNumber()
+        {
+            Random random = new Random();
+            string r = "";
+            int i;
+
+            for (i = 1; i < 6; i++)
+            {
+                r += random.Next(0, 9).ToString();
+            }
+
+            return r;
         }
     }
 }
