@@ -26,7 +26,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         // GET: Award
         public async Task<IActionResult> Index()
         {
-            return View();
+            return View(await _context.Award.ToListAsync());
         }
 
         public async Task<IActionResult> List()
@@ -94,7 +94,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AwardID,VendorID,EventNumber,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
+        public async Task<IActionResult> Create([Bind("AwardID,VendorID,EventNumber,Name,Description,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
         {
             if (ModelState.IsValid)
             {
@@ -126,7 +126,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AwardID,VendorID,EventNumber,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
+        public async Task<IActionResult> Edit(int id, [Bind("AwardID,VendorID,EventNumber,Name,Description,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
         {
             if (id != award.AwardID)
             {
