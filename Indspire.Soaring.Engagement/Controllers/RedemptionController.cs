@@ -158,7 +158,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult RedeemScan()
+        public IActionResult Scan()
         {
             return View();
         }

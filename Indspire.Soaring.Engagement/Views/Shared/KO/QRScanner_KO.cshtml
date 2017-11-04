@@ -4,8 +4,10 @@
     <p data-bind="text: state.error"></p>
     <!-- /ko -->
 
+    <!-- ko if: data.cameras().length > 1 -->
     <!-- ko foreach: data.cameras -->
     <button data-bind="click: $parent.methods.changeCamera, text: name, css: { 'active': name === $parent.state.currentCamera().name }">cam</button>
+    <!-- /ko -->
     <!-- /ko -->
 
     <!-- ko ifnot: data.cameras().length > 0-->
