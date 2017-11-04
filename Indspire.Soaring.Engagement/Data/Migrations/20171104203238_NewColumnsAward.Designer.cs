@@ -11,9 +11,10 @@ using System;
 namespace Indspire.Soaring.Engagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171104203238_NewColumnsAward")]
+    partial class NewColumnsAward
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,22 +67,6 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.HasKey("RedemptionID");
 
                     b.ToTable("Redemption");
-                });
-
-            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.RedemptionLog", b =>
-                {
-                    b.Property<int>("RedemptionLogID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("RedemptionID");
-
-                    b.Property<int>("UserID");
-
-                    b.HasKey("RedemptionLogID");
-
-                    b.HasIndex("RedemptionID");
-
-                    b.ToTable("RedemptionLog");
                 });
 
             modelBuilder.Entity("Indspire.Soaring.Engagement.Database.User", b =>
@@ -261,14 +246,6 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.RedemptionLog", b =>
-                {
-                    b.HasOne("Indspire.Soaring.Engagement.Database.Redemption", "Redemption")
-                        .WithMany("RedemptionLogs")
-                        .HasForeignKey("RedemptionID")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
