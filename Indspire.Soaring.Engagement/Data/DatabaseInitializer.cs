@@ -25,7 +25,7 @@ namespace Indspire.Soaring.Engagement.Data
         }
 
         //This example just creates an Administrator role and one Admin users
-        public async void Initialize(IConfiguration configuration)
+        public async Task Initialize(IConfiguration configuration)
         {
             _context.Database.EnsureCreated();
 
@@ -67,7 +67,16 @@ namespace Indspire.Soaring.Engagement.Data
                         await _userManager.AddToRoleAsync(createdUser, RoleNames.Administrator);
                     }
                 }
+                else
+                {
+                    if (!await _userManager.IsInRoleAsync(user, RoleNames.Administrator))
+                    {
+                        await _userManager.AddToRoleAsync(user, RoleNames.Administrator);
+                    }
+                }
             }
-        }
+
+            return;
+        }        
     }
 }
