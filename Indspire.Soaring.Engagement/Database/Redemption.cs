@@ -1,6 +1,7 @@
 namespace Indspire.Soaring.Engagement.Database
 {
     using System;
+    using System.Collections.Generic;
 
     public class Redemption
     {
@@ -17,5 +18,7 @@ namespace Indspire.Soaring.Engagement.Database
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }
+
+        public IList<RedemptionLog> RedemptionLogs { get; set; }
     }
 }
