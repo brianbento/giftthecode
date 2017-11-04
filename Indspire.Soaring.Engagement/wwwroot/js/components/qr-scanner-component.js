@@ -5,11 +5,11 @@
         self.types = {
             Award: {
                 Name: 'Award',
-                Endpoint: '/json/PointsAwardedResponse.json'
+                Endpoint: '/award/logaction'
             },
             Redemption: {
                 Name: 'Redemption',
-                Endpoint: '/json/RedemptionResponse.json'
+                Endpoint: '/redemption/logaction'
             }
         }
 
@@ -91,8 +91,9 @@
 
                 self.state.loading(true);
 
-                $.get(self.state.type.Endpoint, postData)
+                $.post(self.state.type.Endpoint, postData)
                     .done(function (response) {
+                        debugger;
                         //success
                         self.state.success("Success!")
                         self.data.code(null);

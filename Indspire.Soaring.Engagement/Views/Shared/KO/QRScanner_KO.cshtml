@@ -17,7 +17,7 @@
     <video data-bind="qrScanner: { scanner: data.scanner, onScan: events.onScan, onActive: events.onScan, onInActive: events.onInActive, cameras: data.cameras }"></video>
     
     <form data-bind="submit: methods.submit">
-        <label for="manual-entry">Enter Code</label>
+        <label for="manual-entry">Enter UserNumber/Code Manually</label>
         <input id="manual-entry" type="text" data-bind="textInput: data.code "/> 
         <button type="submit">Submit Code</button>
     </form>
