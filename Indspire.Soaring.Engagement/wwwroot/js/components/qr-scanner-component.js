@@ -57,7 +57,14 @@
             var m = this;
 
             m.init = function (params) {
-                self.state.type = self.types.Award;
+                if (params.redemptionNumber) {
+                    self.state.type = self.types.RedemptionNumber;
+                    self.data.redemptionNumber = params.redemptionNumber;
+                }
+                if (params.awardNumber) {
+                    self.state.type = self.types.Award;
+                    self.data.awardNumber = params.awardNumber;
+                }
             };
 
             m.changeCamera = function (camera) {
@@ -71,6 +78,10 @@
 
                 if (self.state.type === self.types.Award) {
                     postData.AwardNumber = self.data.awardNumber;
+                }
+
+                if (self.state.type === self.types.RedemptionNumber) {
+                    postData.RedemptionNumber = self.data.redemptionNumber;
                 }
 
                 self.state.loading(true);
