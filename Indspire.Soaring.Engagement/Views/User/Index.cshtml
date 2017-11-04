@@ -41,7 +41,8 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model) {
+            @foreach (var item in Model)
+            {
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.UserNumber)
@@ -58,13 +59,15 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.ModifiedDate)
                     </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.UserID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.UserID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.UserID">Delete</a>
+                    <td class="table__icons-row">
+                        <div class="table__icons-row-wrapper">
+                            <a asp-action="Edit" asp-route-id="@item.UserID" class="table__icons-row-icon"><span class="fa fa-pencil"></span></a>
+                            <a asp-action="Details" asp-route-id="@item.UserID" class="table__icons-row-icon"><span class="fa fa-info-circle"></span></a>
+                            <a asp-action="Delete" asp-route-id="@item.UserID" class="table__icons-row-icon"><span class="fa fa-trash"></span></a>
+                        </div>
                     </td>
                 </tr>
-}
+            }
         </tbody>
     </table>
 </div>

@@ -80,6 +80,16 @@ h1 {
   padding: 0.3rem 0.5rem;
   border: solid 1px #aaa;
 }
+.table__icons-row-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+.table__icons-row-icon {
+  font-size: 1.3rem;
+  color: #000;
+}
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  */
@@ -204,13 +214,14 @@ h1 {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   width: 100%;
   max-width: 60px;
   transition: max-width 0.2s ease-in-out;
   overflow: hidden;
+  z-index: 1000;
 }
 .admin-backend__nav:hover {
   max-width: 250px;
