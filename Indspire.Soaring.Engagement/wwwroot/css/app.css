@@ -46,7 +46,7 @@ body {
   left: 0;
   top: 0;
   width: 100%;
-  max-width: 50px;
+  max-width: 60px;
   transition: max-width 0.2s ease-in-out;
   overflow: hidden;
 }
@@ -64,7 +64,6 @@ body {
   list-style-type: none;
   margin: 0;
   display: block;
-  margin: 0.8rem 0;
 }
 .admin-backend__nav-list-item-link {
   display: flex;
@@ -80,8 +79,8 @@ body {
 .admin-backend__nav-list-item-link-icon {
   font-size: 2rem;
   flex: 0 0 50px;
-  height: 50px;
-  width: 50px;
+  height: 60px;
+  width: 60px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -90,7 +89,7 @@ body {
   padding: 0.8rem 1rem 0.8rem 0.8rem;
 }
 .admin-backend__main {
-  padding-left: 50px;
+  padding-left: 60px;
   background: #fff;
 }
 .admin-backend__main-header {
