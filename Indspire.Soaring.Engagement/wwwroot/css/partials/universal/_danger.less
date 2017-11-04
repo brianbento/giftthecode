@@ -2,20 +2,34 @@
 @import (reference) "../_mixins.less";
 
 .text-danger {
-    color: #a94442;
-    background-color: #f2dede;
-    border-color: #ebccd1;
-    border-radius: 4px;
-    margin-bottom: 1rem;
-
-    ul {
-        margin: 0;
-        padding: 0;
-        padding: 1rem;
-
-        li {
-            list-style-type: none;
+    &.validation-summary-valid {
+        ul {
+            margin: 0;
         }
+    }
+
+    &.validation-summary-errors {
+        ul {
+            margin: 0;
+            padding: 0;
+
+            li {
+                list-style-type: none;
+                padding: 1rem;
+                color: #a94442;
+                background-color: #f2dede;
+                border-color: #ebccd1;
+                border-radius: 4px;
+                margin-bottom: 1rem;
+            }
+        }
+    }
+
+    &.field-validation-error {
+        margin-top: 0.3rem;
+        display: block;
+        .font-semibold;
+        color: #a94442;
     }
 }
 
