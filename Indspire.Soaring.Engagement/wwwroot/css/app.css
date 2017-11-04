@@ -15,6 +15,9 @@ textarea,
 body {
   background: #ccc;
 }
+.body-content {
+  height: 100vh;
+}
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  */
@@ -76,6 +79,16 @@ h1 {
 .table td {
   padding: 0.3rem 0.5rem;
   border: solid 1px #aaa;
+}
+.table__icons-row-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+.table__icons-row-icon {
+  font-size: 1.3rem;
+  color: #000;
 }
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
@@ -201,13 +214,14 @@ h1 {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   width: 100%;
   max-width: 60px;
   transition: max-width 0.2s ease-in-out;
   overflow: hidden;
+  z-index: 1000;
 }
 .admin-backend__nav:hover {
   max-width: 250px;
@@ -249,7 +263,8 @@ h1 {
 }
 .admin-backend__main {
   padding-left: 60px;
-  background: #fff;
+  background: #eee;
+  height: 100%;
 }
 .admin-backend__main-header {
   background: #fff;
@@ -273,6 +288,11 @@ h1 {
   font-size: 1.5rem;
   font-weight: 700;
 }
+.admin-backend__main-header-title-back {
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: #007DC5;
+}
 .admin-backend__main-header-actions {
   flex: 1 1 auto;
 }
@@ -288,6 +308,7 @@ h1 {
 }
 .admin-backend__main-header-actions-link:hover {
   background: #007DC5;
+  color: #fff;
 }
 .admin-backend__main-header-actions-link-icon {
   display: block;
@@ -348,6 +369,18 @@ admin-backend__main-header-actions-link-text {
 }
 .login-form__forgot {
   text-align: center;
+}
+/*
+ * -- TABLET (AND UP) MEDIA QUERIES --
+ */
+/*
+ * -- DESKTOP (AND UP) MEDIA QUERIES --
+ */
+/*
+ * --   XL MEDIA QUERIES --
+*/
+.admin-create-user__form {
+  max-width: 500px;
 }
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --

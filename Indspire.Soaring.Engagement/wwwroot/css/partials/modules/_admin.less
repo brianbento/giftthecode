@@ -13,13 +13,14 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     width: 100%;
     max-width: @nav-base-width;
     transition: max-width 0.2s ease-in-out;
     overflow: hidden;
+    z-index: 1000;
 
     &:hover {
         max-width: 250px;
@@ -67,7 +68,8 @@
 
 .admin-backend__main {
     padding-left: @nav-base-width;
-    background: @raw;
+    background: @rare;
+    height: 100%;
 }
 
 // Header
@@ -97,6 +99,12 @@
     .font-bold;
 }
 
+.admin-backend__main-header-title-back  {
+    text-decoration: none;
+    font-size: 1.2rem;
+    color: @theme-blue;
+}
+
 .admin-backend__main-header-actions {
     flex: 1 1 auto;
 }
@@ -113,6 +121,7 @@
 
     &:hover {
         background: @theme-blue;
+        color: @raw;
     }
 }
 
