@@ -10,6 +10,8 @@ using Indspire.Soaring.Engagement.Database;
 using Microsoft.AspNetCore.Authorization;
 using Indspire.Soaring.Engagement.Models;
 using Indspire.Soaring.Engagement.ViewModels;
+using Indspire.Soaring.Engagement.Utils;
+using Indspire.Soaring.Engagement.Extensions;
 
 namespace Indspire.Soaring.Engagement.Controllers
 {
@@ -24,9 +26,19 @@ namespace Indspire.Soaring.Engagement.Controllers
         }
 
         // GET: Award
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            return View(await _context.Award.ToListAsync());
+            var take = pageSize;
+            var skip = pageSize * (page - 1);
+
+            var awards = await _context.Award
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            var totalCount = await _context.Award.CountAsync();
+
+            return View(awards.ToPagedList(totalCount, page, pageSize));
         }
 
         public async Task<IActionResult> List()
@@ -94,10 +106,16 @@ namespace Indspire.Soaring.Engagement.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AwardID,VendorID,EventNumber,Name,Description,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
+        public async Task<IActionResult> Create([Bind("Name,Description,Points")] Award award)
         {
+            var dataUtils = new DataUtils();
             if (ModelState.IsValid)
             {
+                award.CreatedDate = DateTime.UtcNow;
+                award.ModifiedDate = award.CreatedDate;
+                award.Deleted = false;
+                award.EventNumber = dataUtils.GenerateNumber();
+
                 _context.Add(award);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -126,7 +144,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AwardID,VendorID,EventNumber,Name,Description,Points,Deleted,CreatedDate,ModifiedDate")] Award award)
+        public async Task<IActionResult> Edit(int id, [Bind("AwardID,Name,Description,Points")] Award award)
         {
             if (id != award.AwardID)
             {
@@ -137,7 +155,19 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 try
                 {
-                    _context.Update(award);
+                    var awardFromDB = _context.Award
+                        .FirstOrDefault(i => i.AwardID == award.AwardID);
+
+                    if (awardFromDB != null)
+                    {
+                        awardFromDB.Name = award.Name;
+                        awardFromDB.Description = award.Description;
+                        awardFromDB.Points = award.Points;
+                        awardFromDB.ModifiedDate = DateTime.UtcNow;
+                    }
+
+
+                    _context.Update(awardFromDB);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -188,6 +218,64 @@ namespace Indspire.Soaring.Engagement.Controllers
         private bool AwardExists(int id)
         {
             return _context.Award.Any(e => e.AwardID == id);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> LogAction(string AwardNumber, string UserNumber)
+        {
+            var viewModel = new LogActionJsonViewModel();
+            try
+            {
+               
+                //validate 
+                var award = await _context.Award.FirstOrDefaultAsync(i => i.EventNumber == AwardNumber);
+
+                if(award == null)
+                {
+                    throw new ApplicationException("Award not found.");
+                }
+
+                var user = await _context.User.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
+
+                if(user == null)
+                {
+                    throw new ApplicationException("User not found.");
+                }
+
+                var existingAwardLogByThisUser = await _context.AwardLog.FirstOrDefaultAsync(i =>
+                                                    i.UserID == user.UserID &&
+                                                    i.AwardID == award.AwardID);
+                if(existingAwardLogByThisUser != null)
+                {
+                    throw new ApplicationException("User has already been Awarded points for this action.");
+                }
+
+                //good to go!
+
+                var awardLog = new AwardLog();
+                awardLog.AwardID = award.AwardID;
+                awardLog.CreatedDate = DateTime.UtcNow;
+                awardLog.ModifiedDate = awardLog.CreatedDate;
+                awardLog.Points = award.Points;
+                awardLog.UserID = user.UserID;
+
+                _context.Add(awardLog);
+
+                await _context.SaveChangesAsync();
+
+                viewModel.ResponseData.PointsAwarded = awardLog.Points;
+                viewModel.ResponseData.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
+                viewModel.ResponseData.UserNumber = user.UserNumber;
+
+            } catch(Exception ex)
+            {
+                viewModel.ErrorMessage = ex.Message;
+                viewModel.ResponseData = null;
+            }
+
+            return new JsonResult(viewModel);
+
         }
     }
 }

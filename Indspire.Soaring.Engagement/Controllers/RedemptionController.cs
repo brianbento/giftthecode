@@ -9,6 +9,7 @@ using Indspire.Soaring.Engagement.Data;
 using Indspire.Soaring.Engagement.Database;
 using Microsoft.AspNetCore.Authorization;
 using Indspire.Soaring.Engagement.Models;
+using Indspire.Soaring.Engagement.Extensions;
 
 namespace Indspire.Soaring.Engagement.Controllers
 {
@@ -22,10 +23,21 @@ namespace Indspire.Soaring.Engagement.Controllers
             _context = context;
         }
 
-        // GET: Redemptions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            int page = 1, 
+            int pageSize = 20)
         {
-            return View(await _context.Redemption.ToListAsync());
+            var take = pageSize;
+            var skip = pageSize * (page - 1);
+
+            var redemptions = await _context.Redemption
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            var totalCount = await _context.Redemption.CountAsync();
+
+            return View(redemptions.ToPagedList(totalCount, page, pageSize));
         }
 
         // GET: Redemptions/Details/5

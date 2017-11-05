@@ -1,29 +1,17 @@
-﻿@model IEnumerable<Indspire.Soaring.Engagement.Database.Award>
+﻿@using Indspire.Soaring.Engagement.Extensions
 
-@{
+@model IEnumerable<Indspire.Soaring.Engagement.Database.Award>
+
+@if (Model != null)
+{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-}
 
-<div class="admin-backend__main-header">
-    <div class="admin-backend__main-header-title">
-        <span class="admin-backend__main-header-title-icon fa fa-trophy"></span>
-        <span class="admin-backend__main-header-title-text">Awards</span>
-    </div>
+    <h2>Index</h2>
 
-    <div class="admin-backend__main-header-actions">
-        <a class="admin-backend__main-header-actions-link" asp-action="Create">
-
-            <span class="admin-backend__main-header-actions-link-icon fa-stack">
-                <i class="fa fa-trophy fa-stack-2x"></i>
-                <i class="fa fa-plus fa-stack-1x"></i>
-            </span>
-        </a>
-    </div>
-</div>
-
-
-<div class="admin-backend__main-content admin-backend__awards">
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
     <table class="table">
         <thead>
             <tr>
@@ -48,9 +36,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.ModifiedDate)
                 </th>
-                <th>
-                    Actions
-                </th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -78,19 +64,20 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.ModifiedDate)
                     </td>
-                    <td class="table__icons-row">
-                        <div class="table__icons-row-wrapper">
-                            <a asp-action="Edit" asp-route-id="@item.AwardID" class="table__icons-row-icon">
-                                <span class="fa fa-pencil"></span>
-                            </a>
-                            <a asp-action="Details" asp-route-id="@item.AwardID" class="table__icons-row-icon">
-                                <span class="fa fa-info-circle"></span></a>
-                            <a asp-action="Delete" asp-route-id="@item.AwardID" class="table__icons-row-icon">
-                                <span class="fa fa-trash"></span></a>
-                            </div>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.AwardID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.AwardID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.AwardID">Delete</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-</div>
+
+    var list = Model as PagedList<Indspire.Soaring.Engagement.Database.Award>;
+
+    if (list != null)
+    {
+        @await Html.PartialAsync("_Pagination", list.GetPagination())
+    }
+}

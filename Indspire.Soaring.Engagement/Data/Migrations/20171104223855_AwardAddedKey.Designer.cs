@@ -11,9 +11,10 @@ using System;
 namespace Indspire.Soaring.Engagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171104223855_AwardAddedKey")]
+    partial class AwardAddedKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,8 +65,6 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.Property<int>("UserID");
 
                     b.HasKey("AwardLogID");
-
-                    b.HasIndex("AwardID");
 
                     b.ToTable("AwardLog");
                 });
@@ -285,14 +284,6 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.AwardLog", b =>
-                {
-                    b.HasOne("Indspire.Soaring.Engagement.Database.Award", "Award")
-                        .WithMany("AwardLogs")
-                        .HasForeignKey("AwardID")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Indspire.Soaring.Engagement.Database.RedemptionLog", b =>
