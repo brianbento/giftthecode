@@ -18,7 +18,18 @@ namespace Indspire.Soaring.Engagement.Models
 
         public PagedList(IEnumerable<TList> list)
         {
-            this.List = list;
+            if (list == null)
+            {
+                this.List = new List<TList>();
+            }
+            else
+            {
+                this.List = list;
+            }
+
+            this.TotalCount = 0;
+            this.Page = 1;
+            this.PageSize = 10;
         }
 
         public IEnumerator<TList> GetEnumerator()
