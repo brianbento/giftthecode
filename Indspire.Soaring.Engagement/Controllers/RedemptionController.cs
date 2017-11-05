@@ -266,17 +266,21 @@ namespace Indspire.Soaring.Engagement.Controllers
                 }
 
 
-                //good to go!
-                var redemptionLog = new RedemptionLog();
-                redemptionLog.RedemptionID = redemption.RedemptionID;
-                redemptionLog.CreatedDate = DateTime.UtcNow;
-                redemptionLog.ModifiedDate = redemptionLog.CreatedDate;
-                redemptionLog.UserID = user.UserID;
-               
 
-                _context.Add(redemptionLog);
 
-                await _context.SaveChangesAsync();
+                if (hasEnoughPoints)
+                {
+                    //good to go!
+                    var redemptionLog = new RedemptionLog();
+                    redemptionLog.RedemptionID = redemption.RedemptionID;
+                    redemptionLog.CreatedDate = DateTime.UtcNow;
+                    redemptionLog.ModifiedDate = redemptionLog.CreatedDate;
+                    redemptionLog.UserID = user.UserID;
+                    _context.Add(redemptionLog);
+                    await _context.SaveChangesAsync();
+                }
+
+                
 
                 viewModel.ResponseData.PointsShort = pointsShort;
                 viewModel.ResponseData.Success = hasEnoughPoints;

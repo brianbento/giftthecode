@@ -1,45 +1,76 @@
 ﻿<script id="qr-scanner-tmpl" type="text/html">
 
-    <!-- ko if: state.confirmation -->
+    <!-- ko if: state.awardConfirmation -->
     <div>
         <div>
-            <span>User Number:</span> <span data-bind="text: data.confirmation.userNumber"></span>
+            <span>User Number:</span> <span data-bind="text: data.awardConfirmation.userNumber"></span>
         </div>
         <div>
-            <span>Points Awarded:</span> <span data-bind="text: data.confirmation.pointsAwarded"></span>
+            <span>Points Awarded:</span> <span data-bind="text: data.awardConfirmation.pointsAwarded"></span>
         </div>
         <div>
-            <span>Points Balance:</span> <span data-bind="text: data.confirmation.pointsBalance"></span>
+            <span>Points Balance:</span> <span data-bind="text: data.awardConfirmation.pointsBalance"></span>
         </div>
         <button data-bind="click: methods.dismissConfirmation">Ok</button>
     </div>
     <!-- /ko -->
 
+    <!-- ko if: state.redemptionConfirmation -->
+    <div>
 
+        <!-- ko if: data.redemptionConfirmation.success -->
+        <h3>Success!</h3>
+        <!-- /ko -->
+
+        <!-- ko ifnot: data.redemptionConfirmation.success -->
+        <h3>Error!</h3>
+        <!-- /ko -->
+
+        <div>
+            <span>User Number:</span> <span data-bind="text: data.redemptionConfirmation.userNumber"></span>
+        </div>
+        
+        <div>
+            <span>Points Balance:</span> <span data-bind="text: data.redemptionConfirmation.pointsBalance"></span>
+        </div>
+        <!-- ko if: data.redemptionConfirmation.pointsShort() > 0 -->
+        <div>
+            <span>Points Short:</span> <span data-bind="text: data.redemptionConfirmation.pointsShort"></span>
+        </div>
+        <!-- /ko -->
+        <button data-bind="click: methods.dismissConfirmation">Ok</button>
+    </div>
+    <!-- /ko -->
     <!-- ko if: state.error() != null -->
     <div>
         <span data-bind="text: state.error"></span>
         <button data-bind="click: methods.dismissError">Ok</button>
     </div>
     <!-- /ko -->
-
     <!-- ko if: data.cameras().length > 1 -->
-    <!-- ko foreach: data.cameras -->
-    <button data-bind="click: $parent.methods.changeCamera, text: name, css: { 'active': name === $parent.state.currentCamera().name }">cam</button>
+    <div class="scanner__camera-buttons">
+        <!-- ko foreach: data.cameras -->
+        <div class="scanner__camera-buttons-item">
+            <button class="blue-button" data-bind="click: $parent.methods.changeCamera, text: name, css: { 'active': name === $parent.state.currentCamera().name }">cam</button>
+        </div>
+        <!-- /ko -->
+    </div>
     <!-- /ko -->
-    <!-- /ko -->
-
     <!-- ko ifnot: data.cameras().length > 0-->
     <div>Looking for cameras...</div>
     <!-- /ko -->
 
-    <video data-bind="qrScanner: { scanner: data.scanner, onScan: events.onScan, onActive: events.onScan, onInActive: events.onInActive, cameras: data.cameras }"></video>
-    
+    <div class="scanner__camera-wrapper">
+        <video class="scanner__camera" data-bind="qrScanner: { scanner: data.scanner, onScan: events.onScan, onActive: events.onScan, onInActive: events.onInActive, cameras: data.cameras }"></video>
+    </div>
+
     <form data-bind="submit: methods.submit">
-        <label for="manual-entry">Enter UserNumber/Code Manually</label>
-        <input id="manual-entry" type="text" data-bind="textInput: data.code "/> 
-        <button type="submit">Submit Code</button>
+        <div class="input input__text">
+            <label for="manual-entry">Enter UserNumber/Code Manually</label>
+            <input id="manual-entry" type="text" data-bind="textInput: data.code " />
+        </div>
+        <button class="blue-button" type="submit">Submit Code</button>
     </form>
-    
+
 
 </script>

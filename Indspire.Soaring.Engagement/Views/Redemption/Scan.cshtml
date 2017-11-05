@@ -24,7 +24,7 @@
 @if (Model.Redemption != null)
 {
 
-    <h1>Redeem Points</h1>
+    <h1>Log Redemption for @Model.Redemption.Name (@Model.Redemption.PointsRequired Points)</h1>
     <p>Scan a QR code below</p>
     <qr-scanner params="{ type: 'Redemption', redemptionNumber: '@Model.RedemptionNumber' }"></qr-scanner>
 }

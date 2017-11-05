@@ -20,7 +20,8 @@
             currentCamera: ko.observable(null),
             scannerActive: ko.observable(false),
             loading: ko.observable(false),
-            confirmation: ko.observable(false)
+            awardConfirmation: ko.observable(false),
+            redemptionConfirmation: ko.observable(false),
         }
 
         self.data = {
@@ -29,16 +30,22 @@
             code: ko.observable(null),
             awardNumber: null,
             redemptionNumber: null,
-            confirmation: {
+            awardConfirmation: {
                 pointsBalance: ko.observable(0),
                 pointsAwarded: ko.observable(0),
+                userNumber: ko.observable(null)
+            },
+            redemptionConfirmation: {
+                success: ko.observable(false),
+                pointsBalance: ko.observable(0),
+                pointsShort: ko.observable(0),
                 userNumber: ko.observable(null)
             }
         };
 
         self.events = {
             onScan: function (content) {
-                console.log('Scan found:' + content)
+                
                 if (content) {
                     self.data.code(content)
                     self.methods.submit();
@@ -83,17 +90,21 @@
 
 
             m.submit = function () {
-                var postData = {
-                    UserNumber: self.data.code()
-                };
 
                 if (self.state.type === self.types.Award) {
-                    postData.AwardNumber = self.data.awardNumber;
+                    m.submitAward();
                 }
 
                 if (self.state.type === self.types.Redemption) {
-                    postData.RedemptionNumber = self.data.redemptionNumber;
+                    m.submitRedemption();
                 }
+            };
+
+            m.submitAward = function () {
+                var postData = {
+                    UserNumber: self.data.code(),
+                    AwardNumber: self.data.awardNumber
+                };
 
                 self.methods.dismissError();
                 self.methods.dismissConfirmation();
@@ -101,11 +112,11 @@
 
                 $.post(self.state.type.Endpoint, postData)
                     .done(function (response) {
-                        
+
                         if (response.errorMessage) {
                             m.showError(response.errorMessage);
                         } else {
-                            m.showConfirmation(response.responseData);
+                            m.showAwardConfirmation(response.responseData);
                         }
 
                     }).fail(function (error) {
@@ -115,8 +126,35 @@
                         //always
                         self.state.loading(false);
                     });
+            }
 
-            };
+            m.submitRedemption = function () {
+                var postData = {
+                    UserNumber: self.data.code(),
+                    RedemptionNumber: self.data.redemptionNumber
+                };
+
+                self.methods.dismissError();
+                self.methods.dismissConfirmation();
+                self.state.loading(true);
+
+                $.post(self.state.type.Endpoint, postData)
+                    .done(function (response) {
+
+                        if (response.errorMessage) {
+                            m.showError(response.errorMessage);
+                        } else {
+                            m.showRedemptionConfirmation(response.responseData);
+                        }
+
+                    }).fail(function (error) {
+                        //error
+                        m.showError(error);
+                    }).always(function () {
+                        //always
+                        self.state.loading(false);
+                    });
+            }
 
             m.showError = function (errorMsg) {
                 self.state.error(errorMsg);
@@ -127,19 +165,34 @@
                 self.state.error(null);
             };
 
-            m.showConfirmation = function (data) {
+            m.showAwardConfirmation = function (data) {
                 self.data.code(null);
-                self.data.confirmation.pointsAwarded(data.pointsAwarded);
-                self.data.confirmation.pointsBalance(data.pointsBalance);
-                self.data.confirmation.userNumber(data.userNumber);
-                self.state.confirmation(true);
+                self.data.awardConfirmation.pointsAwarded(data.pointsAwarded);
+                self.data.awardConfirmation.pointsBalance(data.pointsBalance);
+                self.data.awardConfirmation.userNumber(data.userNumber);
+                self.state.awardConfirmation(true);
+            };
+
+            m.showRedemptionConfirmation = function (data) {
+                self.data.code(null);
+                self.data.redemptionConfirmation.success(data.success);
+                self.data.redemptionConfirmation.pointsShort(data.pointsShort);
+                self.data.redemptionConfirmation.pointsBalance(data.pointsBalance);
+                self.data.redemptionConfirmation.userNumber(data.userNumber);
+                self.state.redemptionConfirmation(true);
             };
 
             m.dismissConfirmation = function () {
-                self.state.confirmation(false);
-                self.data.confirmation.pointsAwarded(0);
-                self.data.confirmation.pointsBalance(0);
-                self.data.confirmation.userNumber(null);
+                self.state.awardConfirmation(false);
+                self.data.awardConfirmation.pointsAwarded(0);
+                self.data.awardConfirmation.pointsBalance(0);
+                self.data.awardConfirmation.userNumber(null);
+
+                self.state.redemptionConfirmation(false);
+                self.data.redemptionConfirmation.success(false);
+                self.data.redemptionConfirmation.pointsShort(0);
+                self.data.redemptionConfirmation.pointsBalance(0);
+                self.data.redemptionConfirmation.userNumber(null);
             };
         };
 
