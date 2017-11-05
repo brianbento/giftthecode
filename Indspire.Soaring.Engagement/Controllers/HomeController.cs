@@ -12,7 +12,7 @@ namespace Indspire.Soaring.Engagement.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToActionPermanent("Login", "Account");
         }
 
         public IActionResult Error()
