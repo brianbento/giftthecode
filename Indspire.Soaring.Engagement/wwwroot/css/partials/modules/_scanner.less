@@ -2,11 +2,14 @@
 @import (reference) "../_mixins.less";
 
 .scanner {
+    .admin-backend__top {
+        display: none;
+    }
 }
 
-.scanner-content {
-    padding-top: ~"calc(" @logo-height ~" + 2rem)";
+.scanner-content {    
     width: 100%;
+    background: @raw;
 }
 
 .scanner-content__wrapper {
@@ -14,10 +17,9 @@
     width: 100%;
     margin: 0 auto;
     padding: 2rem;
-    border-radius: 4px;
-    .box-shadow-bottom;
+    height: 100vh;
     background: @raw;
-    margin-top: 2rem;
+    text-align: center;
 }
 
 .scanner__camera-wrapper {
@@ -27,12 +29,13 @@
     padding-bottom: 100%;
     overflow: hidden;
     margin-bottom: 2rem;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .scanner__camera-buttons {
     display: flex;
     margin-bottom: 1rem;
-    width: 100%;
     margin-left: -0.5rem;
     margin-right: -0.5rem;
     overflow: hidden;
@@ -45,7 +48,7 @@
     display: flex;
 
     button {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         display: block;
         width: 100%;
         height: 100%;
@@ -66,10 +69,37 @@
     transform: translateX(-50%) scaleX(-1) !important;
 }
 
+.scanner__manual-entry {
+    input {
+        display: block;
+        margin: 0 auto;
+    }
+}
+
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  */
 @media (min-width: @tablet-breakpoint) {
+    .scanner {
+        .admin-backend__top {
+            display: flex;
+        }
+    }
+
+    .scanner-content {
+        overflow: hidden;
+        height: 100vh;
+    }
+    .scanner__content-wrapper {
+        margin-bottom: 2rem;
+        border-radius: 4px;
+        height: auto;
+        .box-shadow-bottom;
+    }
+
+    .scanner-content {
+        padding-top: ~"calc(" @logo-height ~" + 2rem)";
+    }
 }
 
 
