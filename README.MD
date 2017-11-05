@@ -1,4 +1,4 @@
-## Gift Of Code 2017 -mIndspire - Youth Engagement Challenge
+## Gift Of Code 2017 - Indspire Youth Engagement Challenge
 
 The Indspire Engagement Portal is an online platform to provide motivation for Soaring Conference attendees to interact with different activities and aspects of the conference.
 
