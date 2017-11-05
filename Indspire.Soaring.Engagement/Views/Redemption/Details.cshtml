@@ -5,51 +5,61 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Details</h2>
+<div class="admin-backend__main-header">
+    <div class="admin-backend__main-header-title">
+        <a class="admin-backend__main-header-title-back fa fa-chevron-left" asp-action="Index"></a>
+        <span class="admin-backend__main-header-title-icon fa fa-info-circle"></span>
+        <span class="admin-backend__main-header-title-text">Redemption Item Details</span>
+    </div>
 
-<div>
-    <h4>Redemption</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.RedemptionNumber)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.RedemptionNumber)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Deleted)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Deleted)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedDate)
-        </dd>
-    </dl>
+    <div class="admin-backend__main-header-actions">
+
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.RedemptionID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="admin-backend__main-content">
+    <table class="table__admin-info table">
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.RedemptionNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.RedemptionNumber)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Name)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Description)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.CreatedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.CreatedDate)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(model => model.ModifiedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.ModifiedDate)
+            </td>
+        </tr>
+        </table>
+
+    <a asp-action="Edit" asp-route-id="@Model.RedemptionID" class="blue-button">Edit</a>
 </div>

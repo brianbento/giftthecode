@@ -455,7 +455,7 @@ h1 {
 }
 .admin-backend__main-header {
   background: #fff;
-  padding: 1rem;
+  padding: 1rem 2rem;
   display: flex;
   width: 100%;
   align-items: center;
@@ -530,7 +530,7 @@ admin-backend__main-header-actions-link-text {
   white-space: nowrap;
 }
 .admin-backend__main-content {
-  padding: 1rem;
+  padding: 2rem;
 }
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --

@@ -15,12 +15,12 @@
 
         <div class="admin-backend__main-header-actions">
             <a class="admin-backend__main-header-actions-link" asp-action="Create">
-                <span class="admin-backend__main-header-actions-link-icon fa fa-user-plus" aria-hidden="true"></span>
+                <span class="admin-backend__main-header-actions-link-icon fa fa-user-plus fa-2x" aria-hidden="true"></span>
             </a>
         </div>
     </div>
 
-    <div class="admin-backend__main-content dmin-backend__users">
+    <div class="admin-backend__main-content admin-backend__users">
         <table class="admin-backend__users-table table">
             <thead>
                 <tr>
@@ -29,9 +29,6 @@
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.ExternalID)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Deleted)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.CreatedDate)
@@ -55,9 +52,6 @@
                             @Html.DisplayFor(modelItem => item.ExternalID)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Deleted)
-                        </td>
-                        <td>
                             @Html.DisplayFor(modelItem => item.CreatedDate)
                         </td>
                         <td>
@@ -65,21 +59,32 @@
                         </td>
                         <td class="table__icons-row">
                             <div class="table__icons-row-wrapper">
-                                <a asp-action="Edit" asp-route-id="@item.UserID" class="table__icons-row-icon"><span class="fa fa-pencil"></span></a>
-                                <a asp-action="Details" asp-route-id="@item.UserID" class="table__icons-row-icon"><span class="fa fa-info-circle"></span></a>
-                                <a asp-action="Delete" asp-route-id="@item.UserID" class="table__icons-row-icon"><span class="fa fa-trash"></span></a>
+                                <a asp-action="Edit" asp-route-id="@item.UserID" class="table__icons-row-icon">
+                                    <span class="fa fa-pencil"></span>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.UserID" class="table__icons-row-icon">
+                                    <span class="fa fa-info-circle"></span>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.UserID" class="table__icons-row-icon">
+                                    <span class="fa fa-trash"></span>
+                                </a>
                             </div>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
+
+        @{
+            var list = Model as PagedList<Indspire.Soaring.Engagement.Database.User>;
+        }
+
+
+        @if (list != null)
+        {
+            @await Html.PartialAsync("_Pagination", list.GetPagination())
+        }
+
     </div>
 
-    var list = Model as PagedList<Indspire.Soaring.Engagement.Database.User>;
-
-    if (list != null)
-    {
-        @await Html.PartialAsync("_Pagination", list.GetPagination())
-    }
 }
