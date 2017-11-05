@@ -1,7 +1,26 @@
 ﻿<script id="qr-scanner-tmpl" type="text/html">
 
-    <!-- ko if: state.error != null -->
-    <p data-bind="text: state.error"></p>
+    <!-- ko if: state.confirmation -->
+    <div>
+        <div>
+            <span>User Number:</span> <span data-bind="text: data.confirmation.userNumber"></span>
+        </div>
+        <div>
+            <span>Points Awarded:</span> <span data-bind="text: data.confirmation.pointsAwarded"></span>
+        </div>
+        <div>
+            <span>Points Balance:</span> <span data-bind="text: data.confirmation.pointsBalance"></span>
+        </div>
+        <button data-bind="click: methods.dismissConfirmation">Ok</button>
+    </div>
+    <!-- /ko -->
+
+
+    <!-- ko if: state.error() != null -->
+    <div>
+        <span data-bind="text: state.error"></span>
+        <button data-bind="click: methods.dismissError">Ok</button>
+    </div>
     <!-- /ko -->
 
     <!-- ko if: data.cameras().length > 1 -->

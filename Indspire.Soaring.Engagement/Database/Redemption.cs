@@ -15,6 +15,9 @@ namespace Indspire.Soaring.Engagement.Database
         
         public string Description { get; set; }
 
+        [DisplayName("Points Required")]
+        public int PointsRequired { get; set; }
+
         public bool Deleted { get; set; } = false;
 
         [DisplayName("Created Date")]

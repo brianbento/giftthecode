@@ -59,6 +59,14 @@
                 @Html.DisplayFor(model => model.ModifiedDate)
             </td>
         </tr>
+        <tr>
+            <td>
+                Scan Link
+            </td>
+            <td>
+                <a href="/award/scan?AwardNumber=@Model.EventNumber">Scan a QR Code (Award Points)</a>
+            </td>
+        </tr>
     </table>
     <a asp-action="Edit" asp-route-id="@Model.AwardID" class="blue-button">Edit</a>
 </div>

@@ -1,3 +1,5 @@
+using System;
+
 namespace Indspire.Soaring.Engagement.Database
 {
 
@@ -10,5 +12,9 @@ namespace Indspire.Soaring.Engagement.Database
         public Redemption Redemption { get; set; }
 
         public int UserID { get; set; }
+
+        public DateTime CreatedDate { get; set; }
+
+        public DateTime ModifiedDate { get; set; }
     }
 }

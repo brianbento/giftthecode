@@ -10,6 +10,8 @@ using Indspire.Soaring.Engagement.Database;
 using Microsoft.AspNetCore.Authorization;
 using Indspire.Soaring.Engagement.Models;
 using Indspire.Soaring.Engagement.Extensions;
+using Indspire.Soaring.Engagement.ViewModels;
+using Indspire.Soaring.Engagement.Utils;
 
 namespace Indspire.Soaring.Engagement.Controllers
 {
@@ -70,12 +72,15 @@ namespace Indspire.Soaring.Engagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("RedemptionNumber,Name,Description")]
+            [Bind("Name,Description,PointsRequired")]
             Redemption redemption)
         {
+            var dataUtils = new DataUtils();
             if (ModelState.IsValid)
             {
+                redemption.RedemptionNumber = dataUtils.GenerateNumber(); 
                 redemption.ModifiedDate = redemption.CreatedDate = DateTime.UtcNow;
+                redemption.PointsRequired = redemption.PointsRequired;
                 redemption.Deleted = false;
 
                 _context.Add(redemption);
@@ -107,7 +112,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [
-            Bind("RedemptionID,RedemptionNumber,Name,Description")]
+            Bind("RedemptionID,Name,Description,PointsRequired")]
             Redemption redemption)
         {
             if (id != redemption.RedemptionID)
@@ -124,10 +129,10 @@ namespace Indspire.Soaring.Engagement.Controllers
 
                     if (redemptionFromDatabase != null)
                     {
-                        redemptionFromDatabase.RedemptionNumber = redemption.RedemptionNumber;
                         redemptionFromDatabase.Name = redemption.Name;
                         redemptionFromDatabase.Description = redemption.Description;
                         redemptionFromDatabase.ModifiedDate = DateTime.UtcNow;
+                        redemptionFromDatabase.PointsRequired = redemption.PointsRequired;
                     }
 
                     _context.Update(redemptionFromDatabase);
@@ -188,7 +193,105 @@ namespace Indspire.Soaring.Engagement.Controllers
         [AllowAnonymous]
         public IActionResult Scan()
         {
-            return View();
+            var viewModel = new RedemptionScanViewModel();
+            viewModel.RedemptionNumber = $"{Request.Query["RedemptionNumber"]}";
+            if (string.IsNullOrEmpty(viewModel.RedemptionNumber))
+            {
+                viewModel.HasRedemptionNumber = false;
+            }
+            else
+            {
+                viewModel.HasRedemptionNumber = true;
+            }
+
+            if (viewModel.HasRedemptionNumber)
+            {
+                var redemption = _context.Redemption.FirstOrDefault(i => i.RedemptionNumber == viewModel.RedemptionNumber);
+
+                if (redemption == null)
+                {
+                    viewModel.RedemptionNumberInvalid = true;
+                }
+                else
+                {
+                    viewModel.Redemption = redemption;
+                }
+            }
+            return View(viewModel);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> LogAction(string RedemptionNumber, string UserNumber)
+        {
+            var viewModel = new LogRedemptionJsonViewModel();
+            try
+            {
+
+                //validate 
+                var redemption = await _context.Redemption.FirstOrDefaultAsync(i => i.RedemptionNumber == RedemptionNumber);
+
+                if (redemption == null)
+                {
+                    throw new ApplicationException("Redemption not found.");
+                }
+
+                var user = await _context.User.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
+
+                if (user == null)
+                {
+                    throw new ApplicationException("User not found.");
+                }
+
+                var existingRedemptionByUser = await _context.RedemptionLog.FirstOrDefaultAsync(i =>
+                                                    i.UserID == user.UserID &&
+                                                    i.RedemptionID == redemption.RedemptionID);
+                if (existingRedemptionByUser != null)
+                {
+                    throw new ApplicationException("User has already Redeemed this.");
+                }
+
+                //check if we have enough points
+                int pointsShort = 0;
+                int userPoints = PointsUtils.GetPointsForUser(user.UserID, _context);
+                int pointsRequired = redemption.PointsRequired;
+                bool hasEnoughPoints = false;
+
+                pointsShort = pointsRequired - userPoints;
+
+                if(pointsShort <= 0)
+                {
+                    hasEnoughPoints = true;
+                    pointsShort = 0;
+                }
+
+
+                //good to go!
+                var redemptionLog = new RedemptionLog();
+                redemptionLog.RedemptionID = redemption.RedemptionID;
+                redemptionLog.CreatedDate = DateTime.UtcNow;
+                redemptionLog.ModifiedDate = redemptionLog.CreatedDate;
+                redemptionLog.UserID = user.UserID;
+               
+
+                _context.Add(redemptionLog);
+
+                await _context.SaveChangesAsync();
+
+                viewModel.ResponseData.PointsShort = pointsShort;
+                viewModel.ResponseData.Success = hasEnoughPoints;
+                viewModel.ResponseData.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
+                viewModel.ResponseData.UserNumber = user.UserNumber;
+
+            }
+            catch (Exception ex)
+            {
+                viewModel.ErrorMessage = ex.Message;
+                viewModel.ResponseData = null;
+            }
+
+            return new JsonResult(viewModel);
+
         }
     }
 }

@@ -19,7 +19,8 @@
             success: ko.observable(null),
             currentCamera: ko.observable(null),
             scannerActive: ko.observable(false),
-            loading: ko.observable(false)
+            loading: ko.observable(false),
+            confirmation: ko.observable(false)
         }
 
         self.data = {
@@ -27,7 +28,12 @@
             cameras: ko.observableArray([]),
             code: ko.observable(null),
             awardNumber: null,
-            redemptionNumber: null
+            redemptionNumber: null,
+            confirmation: {
+                pointsBalance: ko.observable(0),
+                pointsAwarded: ko.observable(0),
+                userNumber: ko.observable(null)
+            }
         };
 
         self.events = {
@@ -89,23 +95,52 @@
                     postData.RedemptionNumber = self.data.redemptionNumber;
                 }
 
+                self.methods.dismissError();
+                self.methods.dismissConfirmation();
                 self.state.loading(true);
 
                 $.post(self.state.type.Endpoint, postData)
                     .done(function (response) {
-                        debugger;
-                        //success
-                        self.state.success("Success!")
-                        self.data.code(null);
+                        
+                        if (response.errorMessage) {
+                            m.showError(response.errorMessage);
+                        } else {
+                            m.showConfirmation(response.responseData);
+                        }
+
                     }).fail(function (error) {
                         //error
-                        self.state.error("Error!")
+                        m.showError(error);
                     }).always(function () {
                         //always
                         self.state.loading(false);
                     });
-                
-            }
+
+            };
+
+            m.showError = function (errorMsg) {
+                self.state.error(errorMsg);
+                self.data.code(null);
+            };
+
+            m.dismissError = function () {
+                self.state.error(null);
+            };
+
+            m.showConfirmation = function (data) {
+                self.data.code(null);
+                self.data.confirmation.pointsAwarded(data.pointsAwarded);
+                self.data.confirmation.pointsBalance(data.pointsBalance);
+                self.data.confirmation.userNumber(data.userNumber);
+                self.state.confirmation(true);
+            };
+
+            m.dismissConfirmation = function () {
+                self.state.confirmation(false);
+                self.data.confirmation.pointsAwarded(0);
+                self.data.confirmation.pointsBalance(0);
+                self.data.confirmation.userNumber(null);
+            };
         };
 
         self.methods.init(params);
