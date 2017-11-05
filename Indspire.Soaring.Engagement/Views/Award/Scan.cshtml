@@ -20,7 +20,7 @@
 @if (Model.Award != null)
 {
 
-    <h1>Award Points</h1>
+    <h1>Award @Model.Award.Points Points for @Model.Award.Name</h1>
     <p>Scan a QR code below</p>
     <qr-scanner params="{ type: 'Award', awardNumber: '@Model.AwardNumber' }"></qr-scanner>
 }
