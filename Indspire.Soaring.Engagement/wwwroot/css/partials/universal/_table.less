@@ -4,9 +4,8 @@
 .table {
     width: 100%;
 
-
     th, td {
-        padding: 0.3rem 0.5rem;
+        padding: 0.5rem 0.8rem;
         border: solid 1px @medium;
     }
 
@@ -33,8 +32,32 @@
 }
 
 .table__icons-row-icon {
-    font-size: 1.3rem;
+    font-size: 1.7rem;
     color: @black;
+
+    .fa-pencil {
+        transition: color 0.2s ease-in-out;
+
+        &:hover {
+            color: @theme-blue;
+        }
+    }
+
+    .fa-trash {
+        transition: color 0.2s ease-in-out;
+
+        &:hover {
+            color: @theme-red;
+        }
+    }
+
+    .fa-info-circle {
+        transition: color 0.2s ease-in-out;
+
+        &:hover {
+            color: @theme-green;
+        }
+    }
 }
 
 
@@ -51,6 +74,10 @@
     tr td:first-child {
         background: @medium-rare;
     }
+}
+
+.table__actions {
+    width: 150px;
 }
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --

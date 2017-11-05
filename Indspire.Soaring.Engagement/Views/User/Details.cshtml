@@ -18,14 +18,17 @@
     </div>
 </div>
 
-<div class="admin-backend__main-content">
-
-    @if (!string.IsNullOrEmpty(Model.UserNumber))
-    {
-        <img src="data:image/png;base64,@Model.GetQRCodeAsBase64()" />
-    }
+<div class="admin-backend__main-content">    
 
     <table class="table__admin-info table">
+        <tr>
+            <td colspan="2" class="text-center">
+                @if (!string.IsNullOrEmpty(Model.UserNumber))
+                {
+                    <img class="admin-qr-code" src="data:image/png;base64,@Model.GetQRCodeAsBase64()" />
+                }
+            </td>
+        </tr>
         <tr>
             <td>
                 @Html.DisplayNameFor(model => model.UserNumber)

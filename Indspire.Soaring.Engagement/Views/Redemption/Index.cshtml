@@ -35,13 +35,13 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Description)
                     </th>
-                    <th>
+                    @*<th>
                         @Html.DisplayNameFor(model => model.CreatedDate)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.ModifiedDate)
-                    </th>
-                    <th>
+                    </th>*@
+                    <th class="table__actions">
                         Actions
                     </th>
                 </tr>
@@ -59,12 +59,12 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Description)
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.CreatedDate)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.ModifiedDate)
-                        </td>
+                        </td>*@
                         <td class="table__icons-row">
                             <div class="table__icons-row-wrapper">
                                 <a asp-action="Edit" asp-route-id="@item.RedemptionID" class="table__icons-row-icon">
