@@ -14,6 +14,8 @@ namespace Indspire.Soaring.Engagement.Database
 
         public int UserID { get; set; }
 
+        public User User { get; set; }
+
         public bool Deleted { get; set; } = false;
 
         public DateTime CreatedDate { get; set; }

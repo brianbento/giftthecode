@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Indspire.Soaring.Engagement.Data;
 using Indspire.Soaring.Engagement.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Indspire.Soaring.Engagement.Controllers
 {
@@ -12,7 +9,10 @@ namespace Indspire.Soaring.Engagement.Controllers
     {
         public IActionResult Index()
         {
-            return RedirectToActionPermanent("Login", "Account");
+            return RedirectToActionPermanent(
+                "Login", 
+                "Account",
+                new { returnUrl = "/admin" });
         }
 
         public IActionResult Error()

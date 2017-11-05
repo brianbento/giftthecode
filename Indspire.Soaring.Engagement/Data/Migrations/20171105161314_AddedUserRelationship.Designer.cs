@@ -11,8 +11,8 @@ using System;
 namespace Indspire.Soaring.Engagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20171105151514_Update")]
-    partial class Update
+    [Migration("20171105161314_AddedUserRelationship")]
+    partial class AddedUserRelationship
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,6 +68,8 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
 
                     b.HasIndex("AwardID");
 
+                    b.HasIndex("UserID");
+
                     b.ToTable("AwardLog");
                 });
 
@@ -111,6 +113,8 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.HasKey("RedemptionLogID");
 
                     b.HasIndex("RedemptionID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("RedemptionLog");
                 });
@@ -300,6 +304,11 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                         .WithMany("AwardLogs")
                         .HasForeignKey("AwardID")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Indspire.Soaring.Engagement.Database.User", "User")
+                        .WithMany("AwardLogs")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Indspire.Soaring.Engagement.Database.RedemptionLog", b =>
@@ -307,6 +316,11 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.HasOne("Indspire.Soaring.Engagement.Database.Redemption", "Redemption")
                         .WithMany("RedemptionLogs")
                         .HasForeignKey("RedemptionID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Indspire.Soaring.Engagement.Database.User", "User")
+                        .WithMany("RedemptionLogs")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -13,6 +13,8 @@ namespace Indspire.Soaring.Engagement.Database
 
         public int UserID { get; set; }
 
+        public User User { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public DateTime ModifiedDate { get; set; }

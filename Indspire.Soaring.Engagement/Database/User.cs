@@ -1,6 +1,8 @@
 namespace Indspire.Soaring.Engagement.Database
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.ComponentModel;
 
     public class User
@@ -19,5 +21,9 @@ namespace Indspire.Soaring.Engagement.Database
 
         [DisplayName("Modified Date")]
         public DateTime ModifiedDate { get; set; }
+
+        public IList<RedemptionLog> RedemptionLogs { get; set; }
+
+        public IList<AwardLog> AwardLogs { get; set; }
     }
 }
