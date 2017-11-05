@@ -6,10 +6,10 @@
         <img class="admin-backend__top-logo" src="~/images/Indspire-logo.jpg" alt="Indspire" />
         <span class="admin-backend__top-text">Award @Model.Award.Points Points for @Model.Award.Name</span>
 
-        <a href="" class="admin-backend__top-logout">
+        @*<a href="" class="admin-backend__top-logout">
             <span class="admin-backend__top-logout-icon fa fa-sign-out"></span>
             Logout
-        </a>
+        </a>*@
     </div>
 
     <div class="scanner-content">
@@ -34,7 +34,7 @@
 
             @if (Model.Award != null)
             {
-                <h5>Award @Model.Award.Points Points for @Model.Award.Name</h5>
+                <h5 class="desktop-hide">Award @Model.Award.Points Points for @Model.Award.Name</h5>
                 <h6>Scan a QR code below</h6>
                 <qr-scanner params="{ type: 'Award', awardNumber: '@Model.AwardNumber' }"></qr-scanner>
             }
