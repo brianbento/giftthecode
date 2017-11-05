@@ -92,6 +92,18 @@
 .admin-backend__main-header-title-icon, .admin-backend__main-header-title-back {
     font-size: 2rem;
     margin-right: 1rem;
+
+    &.fa-stack {
+        font-size: 1rem;
+
+        .fa-stack-1x {
+            right: -5px;
+            width: auto;
+            left: auto;
+            line-height: normal;
+            bottom: 0;
+        }
+    }
 }
 
 .admin-backend__main-header-title-text {
@@ -122,12 +134,28 @@
     &:hover {
         background: @theme-blue;
         color: @raw;
+
+        .fa-inverse {
+            color: @black;
+        }
     }
 }
 
 .admin-backend__main-header-actions-link-icon {
     display: block;
-    font-size: 1.5rem;
+
+
+    &.fa-stack {
+        font-size: 1rem;
+
+        .fa-stack-1x {
+            right: -5px;
+            width: auto;
+            left: auto;
+            line-height: normal;
+            bottom: 0;
+        }
+    }
 }
 
 admin-backend__main-header-actions-link-text {

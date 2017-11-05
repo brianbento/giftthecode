@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div class="admin-backend__main-content dmin-backend__users">
+<div class="admin-backend__main-content admin-backend__users">
     <table class="admin-backend__users-table table">
         <thead>
             <tr>
@@ -63,9 +63,15 @@
                     </td>
                     <td class="table__icons-row">
                         <div class="table__icons-row-wrapper">
-                            <a asp-action="Edit" asp-route-id="@item.UserID" class="table__icons-row-icon"><span class="fa fa-pencil"></span></a>
-                            <a asp-action="Details" asp-route-id="@item.UserID" class="table__icons-row-icon"><span class="fa fa-info-circle"></span></a>
-                            <a asp-action="Delete" asp-route-id="@item.UserID" class="table__icons-row-icon"><span class="fa fa-trash"></span></a>
+                            <a asp-action="Edit" asp-route-id="@item.UserID" class="table__icons-row-icon">
+                                <span class="fa fa-pencil"></span>
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.UserID" class="table__icons-row-icon">
+                                <span class="fa fa-info-circle"></span>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.UserID" class="table__icons-row-icon">
+                                <span class="fa fa-trash"></span>
+                            </a>
                         </div>
                     </td>
                 </tr>

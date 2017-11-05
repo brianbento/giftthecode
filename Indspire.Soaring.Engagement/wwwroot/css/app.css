@@ -1,4 +1,37 @@
-﻿*,
+﻿.font-normal {
+  font-weight: 400;
+}
+.font-medium {
+  font-weight: 500;
+}
+.font-semibold {
+  font-weight: 600;
+}
+.font-bold {
+  font-weight: 700;
+}
+.font-extrabold {
+  font-weight: 800;
+}
+.font-black {
+  font-weight: 900;
+}
+.color-red {
+  color: #d9534f;
+}
+.color-green {
+  color: #5cb85c;
+}
+.color-blue {
+  color: #007DC5;
+}
+.box-shadow-bottom {
+  box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.4);
+}
+.text-shadow-bottom {
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
+}
+*,
 *:before,
 *:after {
   box-sizing: border-box;
@@ -98,6 +131,18 @@ h1 {
   font-size: 1.3rem;
   color: #000;
 }
+.table__admin-info {
+  background: #fff;
+  max-width: 500px;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.table__admin-info tr:nth-child(odd) {
+  background: #fff;
+}
+.table__admin-info tr td:first-child {
+  background: #ccc;
+}
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  */
@@ -110,17 +155,25 @@ h1 {
 .input {
   margin-bottom: 1rem;
 }
-.input.input__text label {
+.input.input__text label,
+.input.input__textarea label {
   display: block;
   font-weight: 600;
   margin-bottom: 0.3rem;
 }
-.input.input__text input {
+.input.input__text input,
+.input.input__textarea input,
+.input.input__text textarea,
+.input.input__textarea textarea {
   display: block;
   width: 100%;
   padding: 0.5rem 0.8rem;
   border-radius: 4px;
   border: solid 1px #aaa;
+}
+.input.input__text textarea,
+.input.input__textarea textarea {
+  min-height: 150px;
 }
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
@@ -418,6 +471,18 @@ h1 {
   font-size: 2rem;
   margin-right: 1rem;
 }
+.admin-backend__main-header-title-icon.fa-stack,
+.admin-backend__main-header-title-back.fa-stack {
+  font-size: 1rem;
+}
+.admin-backend__main-header-title-icon.fa-stack .fa-stack-1x,
+.admin-backend__main-header-title-back.fa-stack .fa-stack-1x {
+  right: -5px;
+  width: auto;
+  left: auto;
+  line-height: normal;
+  bottom: 0;
+}
 .admin-backend__main-header-title-text {
   font-size: 1.5rem;
   font-weight: 700;
@@ -444,9 +509,21 @@ h1 {
   background: #007DC5;
   color: #fff;
 }
+.admin-backend__main-header-actions-link:hover .fa-inverse {
+  color: #000;
+}
 .admin-backend__main-header-actions-link-icon {
   display: block;
-  font-size: 1.5rem;
+}
+.admin-backend__main-header-actions-link-icon.fa-stack {
+  font-size: 1rem;
+}
+.admin-backend__main-header-actions-link-icon.fa-stack .fa-stack-1x {
+  right: -5px;
+  width: auto;
+  left: auto;
+  line-height: normal;
+  bottom: 0;
 }
 admin-backend__main-header-actions-link-text {
   display: block;
@@ -525,18 +602,6 @@ admin-backend__main-header-actions-link-text {
 /*
  * --   XL MEDIA QUERIES --
 */
-.admin-user-info__table {
-  background: #fff;
-  max-width: 500px;
-  width: 100%;
-  margin-bottom: 1rem;
-}
-.admin-user-info__table tr:nth-child(odd) {
-  background: #fff;
-}
-.admin-user-info__table tr td:first-child {
-  background: #ccc;
-}
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  */

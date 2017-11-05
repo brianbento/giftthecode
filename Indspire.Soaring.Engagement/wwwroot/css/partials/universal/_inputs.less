@@ -3,7 +3,7 @@
 
 .input{
     margin-bottom: 1rem;
-    &.input__text {
+    &.input__text,&.input__textarea {
 
         label {
             display: block;
@@ -11,12 +11,16 @@
             margin-bottom: 0.3rem;
         }
 
-        input {
+        input,textarea {
             display: block;
             width: 100%;
             padding: 0.5rem 0.8rem;
             border-radius: 4px;
             border: solid 1px @medium;
+        }
+
+        textarea {
+            min-height: 150px;
         }
     }
 }
