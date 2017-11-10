@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Indspire.Soaring.Engagement.Utils;
 
 namespace Indspire.Soaring.Engagement.Controllers
 {
@@ -49,6 +50,44 @@ namespace Indspire.Soaring.Engagement.Controllers
             var totalCount = _userManager.Users.Count();
 
             return View(users.ToPagedList(totalCount, page, pageSize));
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(
+
+            [Bind(nameof(ApplicationUser.Email),
+                  nameof(ApplicationUser.UserName))]
+            ApplicationUser user,
+
+            string password,
+            string confirmPassword)
+        {
+            var dataUtils = new DataUtils();
+
+            if (ModelState.IsValid)
+            {
+                var identityResult = await _userManager.CreateAsync(user);
+
+                if (identityResult.Succeeded)
+                {
+                    var passwordResult = await _userManager.AddPasswordAsync(user, password);
+
+                    if (!await _userManager.IsInRoleAsync(user, RoleNames.Editor))
+                    {
+                        await _userManager.AddToRoleAsync(user, RoleNames.Editor);
+                    }
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(user);
         }
 
         public async Task<IActionResult> Delete(string id)
