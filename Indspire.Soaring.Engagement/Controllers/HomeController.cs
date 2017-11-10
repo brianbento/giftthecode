@@ -12,7 +12,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             return RedirectToActionPermanent(
                 "Login", 
                 "Account",
-                new { returnUrl = "/admin" });
+                new { returnUrl = "/user" });
         }
 
         public IActionResult Error()

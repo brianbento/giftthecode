@@ -5,7 +5,7 @@
 <div class="admin-backend">
     <div class="admin-backend__top">
         <img class="admin-backend__top-logo" src="~/images/Indspire-logo.jpg" alt="Indspire" />
-        <span class="admin-backend__top-text">Title Goes Here</span>
+        <span class="admin-backend__top-text">Engagement - Admin Portal</span>
 
         @await Html.PartialAsync("_LoginPartial")
     </div>
@@ -13,12 +13,7 @@
 
         <ul class="admin-backend__nav-list">
 
-            <li class="admin-backend__nav-list-item">
-                <a href="/applicationuser" class="admin-backend__nav-list-item-link link-icon">
-                    <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-user" aria-label="hidden"></span>
-                    <span class="admin-backend__nav-list-item-link-text link_icon__text">App Users</span>
-                </a>
-            </li>
+            
 
             <li class="admin-backend__nav-list-item">
                 <a href="/user" class="admin-backend__nav-list-item-link link-icon">
@@ -38,6 +33,13 @@
                 <a href="/redemption" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-gift" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Redemptions</span>
+                </a>
+            </li>
+
+            <li class="admin-backend__nav-list-item">
+                <a href="/applicationuser" class="admin-backend__nav-list-item-link link-icon">
+                    <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-gear" aria-label="hidden"></span>
+                    <span class="admin-backend__nav-list-item-link-text link_icon__text">App Users</span>
                 </a>
             </li>
 

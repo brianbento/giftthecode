@@ -634,6 +634,7 @@ h1 {
 }
 .admin-backend__nav-list-item-link-text {
   padding: 0.8rem 1rem 0.8rem 0.8rem;
+  white-space: nowrap;
 }
 .admin-backend__main {
   padding-left: 60px;
