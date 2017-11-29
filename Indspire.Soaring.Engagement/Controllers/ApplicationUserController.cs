@@ -1,21 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Indspire.Soaring.Engagement.Extensions;
-using Indspire.Soaring.Engagement.Models;
-using Indspire.Soaring.Engagement.Models.AccountViewModels;
-using Indspire.Soaring.Engagement.Services;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Indspire.Soaring.Engagement.Utils;
-
-namespace Indspire.Soaring.Engagement.Controllers
+﻿namespace Indspire.Soaring.Engagement.Controllers
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Indspire.Soaring.Engagement.Extensions;
+    using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.Services;
+    using Indspire.Soaring.Engagement.Utils;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+
     [Authorize]
     public class ApplicationUserController : Controller
     {

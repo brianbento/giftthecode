@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Indspire.Soaring.Engagement.Data;
-using Indspire.Soaring.Engagement.Database;
-using Microsoft.AspNetCore.Authorization;
-using Indspire.Soaring.Engagement.Models;
-using Indspire.Soaring.Engagement.Utils;
-using Indspire.Soaring.Engagement.Extensions;
-
-namespace Indspire.Soaring.Engagement.Controllers
+﻿namespace Indspire.Soaring.Engagement.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Indspire.Soaring.Engagement.Data;
+    using Indspire.Soaring.Engagement.Database;
+    using Indspire.Soaring.Engagement.Extensions;
+    using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.Utils;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+
     [Authorize(Roles = RoleNames.Administrator)]
     public class UserController : Controller
     {

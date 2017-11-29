@@ -1,27 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Indspire.Soaring.Engagement.Models;
-using Indspire.Soaring.Engagement.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Indspire.Soaring.Engagement.Data;
-using Indspire.Soaring.Engagement.Database;
-using Microsoft.AspNetCore.Authorization;
-using Indspire.Soaring.Engagement.Models;
-using Indspire.Soaring.Engagement.Utils;
-using Indspire.Soaring.Engagement.Extensions;
-
-namespace Indspire.Soaring.Engagement.Controllers
+﻿namespace Indspire.Soaring.Engagement.Controllers
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Indspire.Soaring.Engagement.Data;
+    using Indspire.Soaring.Engagement.Models;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+
     public class AdminController : Controller
     {
         private readonly ApplicationDbContext _context;
