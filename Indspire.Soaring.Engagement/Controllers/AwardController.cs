@@ -72,6 +72,18 @@
             return View(viewModel);
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("[controller]/scan")]
+        public IActionResult PostScan(string awardNumber)
+        {
+            var result = string.IsNullOrWhiteSpace(awardNumber)
+                ? RedirectToAction("Scan", new { AwardNumber = 0 })
+                : RedirectToAction("Scan", new { AwardNumber = awardNumber });
+
+            return result;
+        }
+
         // GET: Award/Details/5
         public async Task<IActionResult> Details(int? id)
         {
