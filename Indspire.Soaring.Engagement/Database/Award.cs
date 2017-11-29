@@ -15,7 +15,7 @@ namespace Indspire.Soaring.Engagement.Database
         [DisplayName("Award Number")]
         public string EventNumber { get; set; }
 
-        [DisplayName("Award Number")]
+        [DisplayName("Points")]
         public int Points { get; set; }
 
         [DisplayName("Name")]

@@ -45,32 +45,29 @@
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Scan()
+        [Route("[controller]/[action]/{awardnumber}")]
+        public async Task<IActionResult> Scan(string awardNumber)
         {
             var viewModel = new AwardScanViewModel();
-            viewModel.AwardNumber = $"{Request.Query["AwardNumber"]}";
-            if(string.IsNullOrEmpty(viewModel.AwardNumber))
-            {
-                viewModel.HasAwardNumber = false;
-            } else
-            {
-                viewModel.HasAwardNumber = true;
-            }
 
-            if(viewModel.HasAwardNumber)
-            {
-                var award = _context.Award.FirstOrDefault(i => i.EventNumber == viewModel.AwardNumber);
+            viewModel.AwardNumber = awardNumber;
 
-                if(award == null)
+            viewModel.HasAwardNumber = !string.IsNullOrWhiteSpace(viewModel.AwardNumber);
+
+            if (viewModel.HasAwardNumber)
+            {
+                var award = await _context.Award.FirstOrDefaultAsync(
+                    i => i.EventNumber == viewModel.AwardNumber);
+
+                if (award == null)
                 {
                     viewModel.AwardNumberInvalid = true;
-                } else
+                }
+                else
                 {
                     viewModel.Award = award;
                 }
             }
-
-
 
             return View(viewModel);
         }

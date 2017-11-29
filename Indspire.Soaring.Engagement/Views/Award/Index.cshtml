@@ -37,12 +37,6 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Points)
                     </th>
-                    @*<th>
-                        @Html.DisplayNameFor(model => model.CreatedDate)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.ModifiedDate)
-                    </th>*@
                     <th class="table__actions">
                         Actions
                     </th>
@@ -64,15 +58,10 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Points)
                         </td>
-                        @*<td>
-                            @Html.DisplayFor(modelItem => item.CreatedDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ModifiedDate)
-                        </td>*@
-
                         <td class="table__icons-row">
                             <div class="table__icons-row-wrapper">
+                                <a asp-action="Scan" asp-route-awardnumber="@item.EventNumber">Scan</a>
+
                                 <a asp-action="Edit" asp-route-id="@item.AwardID" class="table__icons-row-icon">
                                     <span class="fa fa-pencil"></span>
                                 </a>
