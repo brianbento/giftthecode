@@ -7,6 +7,7 @@
     using Indspire.Soaring.Engagement.Database;
     using Indspire.Soaring.Engagement.Extensions;
     using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.Models.AwardViewModels;
     using Indspire.Soaring.Engagement.Utils;
     using Indspire.Soaring.Engagement.ViewModels;
     using Microsoft.AspNetCore.Authorization;
@@ -102,35 +103,42 @@
             return View(award);
         }
 
-        // GET: Award/Create
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new CreateAwardViewModel();
+
+            return View(viewModel);
         }
 
-        // POST: Award/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Points")] Award award)
+        public async Task<IActionResult> Create(CreateAwardViewModel awardViewModel)
         {
             var dataUtils = new DataUtils();
+
             if (ModelState.IsValid)
             {
+                var award = new Award();
+
+                award.Name = awardViewModel.Name;
+                award.Description = awardViewModel.Description;
+                award.Points = awardViewModel.Points;
                 award.CreatedDate = DateTime.UtcNow;
                 award.ModifiedDate = award.CreatedDate;
                 award.Deleted = false;
                 award.EventNumber = dataUtils.GenerateNumber();
 
                 _context.Add(award);
+
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(award);
+
+            return View(awardViewModel);
         }
 
-        // GET: Award/Edit/5
+        [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -139,21 +147,27 @@
             }
 
             var award = await _context.Award.SingleOrDefaultAsync(m => m.AwardID == id);
+
             if (award == null)
             {
                 return NotFound();
             }
-            return View(award);
+
+            var viewModel = new EditAwardViewModel();
+
+            viewModel.AwardID = award.AwardID;
+            viewModel.Description = award.Description;
+            viewModel.Name = award.Name;
+            viewModel.Points = award.Points;
+
+            return View(viewModel);
         }
 
-        // POST: Award/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AwardID,Name,Description,Points")] Award award)
+        public async Task<IActionResult> Edit(int id, EditAwardViewModel awardViewModel)
         {
-            if (id != award.AwardID)
+            if (id != awardViewModel.AwardID)
             {
                 return NotFound();
             }
@@ -162,24 +176,24 @@
             {
                 try
                 {
-                    var awardFromDB = _context.Award
-                        .FirstOrDefault(i => i.AwardID == award.AwardID);
+                    var award = _context.Award
+                        .FirstOrDefault(i => i.AwardID == awardViewModel.AwardID);
 
-                    if (awardFromDB != null)
+                    if (award != null)
                     {
-                        awardFromDB.Name = award.Name;
-                        awardFromDB.Description = award.Description;
-                        awardFromDB.Points = award.Points;
-                        awardFromDB.ModifiedDate = DateTime.UtcNow;
+                        award.Name = awardViewModel.Name;
+                        award.Description = awardViewModel.Description;
+                        award.Points = awardViewModel.Points;
+                        award.ModifiedDate = DateTime.UtcNow;
                     }
 
+                    _context.Update(award);
 
-                    _context.Update(awardFromDB);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AwardExists(award.AwardID))
+                    if (!AwardExists(awardViewModel.AwardID))
                     {
                         return NotFound();
                     }
@@ -188,9 +202,11 @@
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(award);
+
+            return View(awardViewModel);
         }
 
         // GET: Award/Delete/5
