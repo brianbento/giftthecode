@@ -16,11 +16,14 @@
         </div>
 
         <div class="admin-backend__main-header-actions">
-            <a class="admin-backend__main-header-actions-link" asp-action="Create">
+            <a class="admin-backend__main-header-actions-link" title="Create New User" asp-action="Create">
                 <span class="admin-backend__main-header-actions-link-icon fa fa-user-plus fa-2x" aria-hidden="true"></span>
             </a>
-            <a class="admin-backend__main-header-actions-link" asp-action="Scan">
+            <a class="admin-backend__main-header-actions-link" title="Check User Point Balance" asp-action="Scan">
                 <span class="admin-backend__main-header-actions-link-icon fa fa-qrcode fa-2x" aria-hidden="true"></span>
+            </a>
+            <a class="admin-backend__main-header-actions-link" title="Bulk Create Users" asp-action="BulkCreate">
+                <span class="admin-backend__main-header-actions-link-icon fa fa-users fa-2x" aria-hidden="true"></span>
             </a>
         </div>
     </div>

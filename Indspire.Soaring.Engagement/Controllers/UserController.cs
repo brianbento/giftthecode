@@ -225,5 +225,54 @@
             return new JsonResult(viewModel);
         }
 
+        public async Task<IActionResult> BulkCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BulkCreateConfirmation(int amount)
+        {
+            var viewModel = new BulkCreateViewModel();
+            viewModel.Amount = amount;
+            int usersCreated = 0;
+            int maxUsers = 2000;
+
+            try
+            {
+                if (amount < 1)
+                {
+                    throw new ApplicationException("Amount to create must be greater than 0");
+                }
+
+                if (amount > maxUsers)
+                {
+                    throw new ApplicationException($"Amount to create must be less than {maxUsers}");
+                }
+
+
+                for(var i = 0; i < amount; i++)
+                {
+                    var dataUtils = new DataUtils();
+                    User user = new User();
+                    user.UserNumber = dataUtils.GenerateNumber();
+                    _context.Add(user);
+                    await _context.SaveChangesAsync();
+                    usersCreated++;
+                }
+
+                viewModel.AmountCreated = usersCreated;
+                viewModel.Success = true;
+
+                return View("BulkCreateSuccess", viewModel);
+            }catch (Exception ex)
+            {
+                viewModel.Success = false;
+                viewModel.AmountCreated = usersCreated;
+                viewModel.ErrorMessage = $"An error occurred while trying to Bulk Create Users. Error: {ex.Message}.";
+                return View("BulkCreateFailed", viewModel);
+            }
+        }
+
     }
 }
