@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Indspire.Soaring.Engagement.Data;
-using Indspire.Soaring.Engagement.Database;
-using Microsoft.AspNetCore.Authorization;
-using Indspire.Soaring.Engagement.Models;
-using Indspire.Soaring.Engagement.Extensions;
-using Indspire.Soaring.Engagement.ViewModels;
-using Indspire.Soaring.Engagement.Utils;
-
-namespace Indspire.Soaring.Engagement.Controllers
+﻿namespace Indspire.Soaring.Engagement.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Indspire.Soaring.Engagement.Data;
+    using Indspire.Soaring.Engagement.Database;
+    using Indspire.Soaring.Engagement.Extensions;
+    using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.Utils;
+    using Indspire.Soaring.Engagement.ViewModels;
+    using Indspire.Soaring.Engagement.Models.RedemptionViewModels;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+
     [Authorize(Roles = RoleNames.Administrator)]
     public class RedemptionController : Controller
     {
@@ -60,37 +59,46 @@ namespace Indspire.Soaring.Engagement.Controllers
             return View(redemption);
         }
 
-        // GET: Redemptions/Create
+        [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new CreateRedemptionViewModel();
+
+            return View(viewModel);
         }
 
-        // POST: Redemptions/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind("Name,Description,PointsRequired")]
-            Redemption redemption)
+        public async Task<IActionResult> Create(CreateRedemptionViewModel redemptionViewModel)
         {
             var dataUtils = new DataUtils();
+
             if (ModelState.IsValid)
             {
-                redemption.RedemptionNumber = dataUtils.GenerateNumber(); 
+                var redemption = new Redemption();
+
+                redemption.RedemptionNumber = dataUtils.GenerateNumber();
                 redemption.ModifiedDate = redemption.CreatedDate = DateTime.UtcNow;
-                redemption.PointsRequired = redemption.PointsRequired;
+                redemption.PointsRequired = redemptionViewModel.PointsRequired;
                 redemption.Deleted = false;
 
+                if (redemptionViewModel != null)
+                {
+                    redemption.Name = redemptionViewModel.Name;
+                    redemption.PointsRequired = redemptionViewModel.PointsRequired;
+                    redemption.Description = redemptionViewModel.Description;
+                }
+
                 _context.Add(redemption);
+
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(redemption);
+
+            return View(redemptionViewModel);
         }
 
-        // GET: Redemptions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -98,24 +106,31 @@ namespace Indspire.Soaring.Engagement.Controllers
                 return NotFound();
             }
 
-            var redemption = await _context.Redemption.SingleOrDefaultAsync(m => m.RedemptionID == id);
+            var redemption = await _context.Redemption
+                .SingleOrDefaultAsync(m => m.RedemptionID == id);
+
             if (redemption == null)
             {
                 return NotFound();
             }
-            return View(redemption);
+
+            var viewModel = new EditRedemptionViewModel();
+
+            viewModel.RedemptionID = redemption.RedemptionID;
+            viewModel.Description = redemption.Description;
+            viewModel.Name = redemption.Name;
+            viewModel.PointsRequired = redemption.PointsRequired;
+
+            return View(viewModel);
         }
 
-        // POST: Redemptions/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [
-            Bind("RedemptionID,Name,Description,PointsRequired")]
-            Redemption redemption)
+        public async Task<IActionResult> Edit(
+            int id, 
+            EditRedemptionViewModel redemptionViewModel)
         {
-            if (id != redemption.RedemptionID)
+            if (id != redemptionViewModel.RedemptionID)
             {
                 return NotFound();
             }
@@ -124,24 +139,24 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 try
                 {
-                    var redemptionFromDatabase = await _context.Redemption
-                        .FirstOrDefaultAsync(i => i.RedemptionID == redemption.RedemptionID);
+                    var redemption = await _context.Redemption
+                        .FirstOrDefaultAsync(i => i.RedemptionID == redemptionViewModel.RedemptionID);
 
-                    if (redemptionFromDatabase != null)
+                    if (redemption != null)
                     {
-                        redemptionFromDatabase.Name = redemption.Name;
-                        redemptionFromDatabase.Description = redemption.Description;
-                        redemptionFromDatabase.ModifiedDate = DateTime.UtcNow;
-                        redemptionFromDatabase.PointsRequired = redemption.PointsRequired;
+                        redemption.Name = redemptionViewModel.Name;
+                        redemption.Description = redemptionViewModel.Description;
+                        redemption.ModifiedDate = DateTime.UtcNow;
+                        redemption.PointsRequired = redemptionViewModel.PointsRequired;
                     }
 
-                    _context.Update(redemptionFromDatabase);
+                    _context.Update(redemption);
 
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RedemptionExists(redemption.RedemptionID))
+                    if (!RedemptionExists(redemptionViewModel.RedemptionID))
                     {
                         return NotFound();
                     }
@@ -150,9 +165,11 @@ namespace Indspire.Soaring.Engagement.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(redemption);
+
+            return View(redemptionViewModel);
         }
 
         // GET: Redemptions/Delete/5

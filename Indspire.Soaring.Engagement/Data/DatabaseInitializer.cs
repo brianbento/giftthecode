@@ -37,6 +37,14 @@ namespace Indspire.Soaring.Engagement.Data
                 });
             }
 
+            if (!_context.Roles.Any(r => r.Name == RoleNames.Editor))
+            {
+                await _roleManager.CreateAsync(new IdentityRole()
+                {
+                    Name = RoleNames.Editor
+                });
+            }
+
             var username = configuration["AdminUsername"];
             var password = configuration["AdminPassword"];
 
