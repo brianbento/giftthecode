@@ -20,15 +20,23 @@
 
     <nav class="admin-backend__nav">
         <ul class="admin-backend__nav-list">
+
             <li class="admin-backend__nav-list-item">
-                <a asp-action="Index" asp-controller="Atendee" class="admin-backend__nav-list-item-link link-icon">
+                <a is-active-route asp-action="Index" asp-controller="Admin" class="admin-backend__nav-list-item-link link-icon">
+                    <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-tachometer" aria-label="hidden"></span>
+                    <span class="admin-backend__nav-list-item-link-text link_icon__text">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="admin-backend__nav-list-item">
+                <a is-active-route asp-action="Index" asp-controller="Atendee" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-user" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Attendees</span>
                 </a>
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a asp-action="Index" asp-controller="Award" class="admin-backend__nav-list-item-link link-icon">
+                <a is-active-route asp-action="Index" asp-controller="Award" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-trophy" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Awards</span>
                 </a>
@@ -49,7 +57,7 @@
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a asp-action="Index" asp-controller="ApplicationUser" class="admin-backend__nav-list-item-link link-icon">
+                <a is-active-route asp-action="Index" asp-controller="ApplicationUser" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-gear" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">App Users</span>
                 </a>

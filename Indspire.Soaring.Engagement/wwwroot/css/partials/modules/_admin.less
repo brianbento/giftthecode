@@ -187,7 +187,10 @@
 }
 
 .admin-backend__main-header-actions {
-    flex: 1 1 auto;
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
 }
 
 .admin-backend__main-header-actions-link {
@@ -200,6 +203,11 @@
     .font-semibold;
     border-radius: 3px;
     transition: all 0.2s ease-in-out;
+    margin-right: 0.5rem;
+
+    &:last-child {
+        margin-right: 0;
+    }
 
     &:hover {
         background: @theme-blue;
