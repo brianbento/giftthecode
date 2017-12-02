@@ -6,5 +6,6 @@
         public int PointsShort { get; set; }
         public int PointsBalance { get; set; }
         public string UserNumber { get; set; }
+        public string ExternalID { get; set; }
     }
 }
