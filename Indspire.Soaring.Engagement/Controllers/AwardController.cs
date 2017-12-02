@@ -57,7 +57,7 @@
 
             if (viewModel.HasAwardNumber)
             {
-                var award = _context.Award.FirstOrDefaultAsync(i => i.EventNumber == viewModel.AwardNumber);
+                var award = await _context.Award.FirstOrDefaultAsync(i => i.AwardNumber == viewModel.AwardNumber);
 
                 if (award == null)
                 {
@@ -270,7 +270,7 @@
                                                     i.AwardID == award.AwardID);
                 if(existingAwardLogByThisUser != null)
                 {
-                    throw new ApplicationException("User has already been Awarded points for this action.");
+                    throw new ApplicationException($"User has already been Awarded points for this action. User has {PointsUtils.GetPointsForUser(user.UserID, _context)} points.");
                 }
 
                 //good to go!

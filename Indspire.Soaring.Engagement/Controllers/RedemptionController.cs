@@ -265,7 +265,7 @@
                                                     i.RedemptionID == redemption.RedemptionID);
                 if (existingRedemptionByUser != null)
                 {
-                    throw new ApplicationException("User has already Redeemed this.");
+                    throw new ApplicationException($"User has already Redeemed this. User has {PointsUtils.GetPointsForUser(user.UserID, _context)} points.");
                 }
 
                 //check if we have enough points
