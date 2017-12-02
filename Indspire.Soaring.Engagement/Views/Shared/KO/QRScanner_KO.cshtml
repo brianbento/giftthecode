@@ -46,6 +46,20 @@
         </div>
     </div>
     <!-- /ko -->
+    <!-- ko if: state.balanceConfirmation -->
+    <div class="full-screen-overlay">
+
+        <div class="full-screen-overlay__content rich-text">
+            <div class="full-screen-overlay__content-text">
+                <span class="font-semibold">User Number:</span> <span data-bind="text: data.balanceConfirmation.userNumber"></span>
+            </div>
+            <div class="full-screen-overlay__content-text">
+                <span class="font-semibold">Points Balance:</span> <span data-bind="text: data.balanceConfirmation.pointsBalance"></span>
+            </div>
+            <button class="green-button" data-bind="click: methods.dismissConfirmation">Ok</button>
+        </div>
+    </div>
+    <!-- /ko -->
     <!-- ko if: state.error() != null -->
     <div class="full-screen-overlay">
 
