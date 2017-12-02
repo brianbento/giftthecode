@@ -54,7 +54,7 @@
                   .GroupBy(i => i.AwardID)
                   .Select(i => new AwardsRow()
                   {
-                      AwardNumber = i.FirstOrDefault().Award.EventNumber,
+                      AwardNumber = i.FirstOrDefault().Award.AwardNumber,
                       TimesAwards = i.Count(),
                       Name = i.FirstOrDefault().Award.Name,
                       Description = i.FirstOrDefault().Award.Description
