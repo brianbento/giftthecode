@@ -13,6 +13,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
 
     [Authorize(Roles = RoleNames.Administrator)]
     public class AwardController : Controller
@@ -25,19 +26,39 @@
         }
 
         // GET: Award
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string search = null)
         {
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
-            var awards = await _context.Award
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync();
+           
+            List<Award> awards = null;
+            int totalCount = 0;
 
-            var totalCount = await _context.Award.CountAsync();
+            if (string.IsNullOrEmpty(search))
+            {
+                awards = await _context.Award
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
 
-            return View(awards.ToPagedList(totalCount, page, pageSize));
+                totalCount = await _context.Award.CountAsync();
+            }
+            else
+            {
+                awards = await _context.Award
+                    .Where(i => i.AwardNumber.Contains(search) || i.Name.Contains(search) || i.Description.Contains(search))
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+
+                totalCount = await _context.Award
+                    .Where(i => i.AwardNumber.Contains(search) || i.Name.Contains(search) || i.Description.Contains(search))
+                    .CountAsync();
+            }
+
+
+            return View(awards.ToPagedList(totalCount, page, pageSize, search));
         }
 
         public async Task<IActionResult> List()

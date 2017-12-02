@@ -12,6 +12,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Indspire.Soaring.Engagement.ViewModels;
+    using System.Collections.Generic;
 
     [Authorize(Roles = RoleNames.Administrator)]
     public class UserController : Controller
@@ -24,19 +25,36 @@
         }
 
         // GET: User
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string search = null)
         {
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
-            var users = await _context.User
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync();
+            List<User> users = null;
+            int totalCount = 0;
 
-            var totalCount = await _context.User.CountAsync();
+            if (string.IsNullOrEmpty(search))
+            {
+                users = await _context.User
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
 
-            return View(users.ToPagedList(totalCount, page, pageSize));
+                totalCount = await _context.User.CountAsync();
+            } else
+            {
+                users = await _context.User
+                    .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search))
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+
+                totalCount = await _context.User
+                    .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search)).CountAsync();
+            }
+
+
+            return View(users.ToPagedList(totalCount, page, pageSize, search));
         }
 
         // GET: User/Details/5

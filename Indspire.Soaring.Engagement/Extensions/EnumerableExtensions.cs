@@ -9,7 +9,8 @@
             this IEnumerable<TList> list,
             int totalCount,
             int page,
-            int pageSize)
+            int pageSize,
+            string search = null)
         {
             return new PagedList<TList>(list)
             {
@@ -17,7 +18,9 @@
 
                 Page = page,
 
-                PageSize = pageSize                
+                PageSize = pageSize,
+                
+                Search = search
             };
         }
     }

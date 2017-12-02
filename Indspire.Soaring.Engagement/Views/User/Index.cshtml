@@ -16,6 +16,11 @@
         </div>
 
         <div class="admin-backend__main-header-actions">
+            <form method="get" asp-action="Index">
+                <label>Search</label>
+                <input type="text" placeholder="Enter Number or External ID" name="search" value="@list.Search" />
+                <button type="submit">Go</button>
+            </form>
             <a class="admin-backend__main-header-actions-link" title="Create New User" asp-action="Create">
                 <span class="admin-backend__main-header-actions-link-icon fa fa-user-plus fa-2x" aria-hidden="true"></span>
             </a>

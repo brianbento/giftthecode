@@ -13,6 +13,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using System.Collections.Generic;
 
     [Authorize(Roles = RoleNames.Administrator)]
     public class RedemptionController : Controller
@@ -26,19 +27,40 @@
 
         public async Task<IActionResult> Index(
             int page = 1, 
-            int pageSize = 20)
+            int pageSize = 20,
+            string search = null)
         {
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
-            var redemptions = await _context.Redemption
-                .Skip(skip)
-                .Take(take)
-                .ToListAsync();
 
-            var totalCount = await _context.Redemption.CountAsync();
+            List<Redemption> redemptions = null;
+            int totalCount = 0;
 
-            return View(redemptions.ToPagedList(totalCount, page, pageSize));
+
+            if (string.IsNullOrEmpty(search))
+            {
+                redemptions = await _context.Redemption
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+
+                totalCount = await _context.Redemption.CountAsync();
+            }
+            else
+            {
+                redemptions = await _context.Redemption
+                    .Where(i => i.Name.Contains(search) || i.RedemptionNumber.Contains(search) || i.Description.Contains(search))
+                    .Skip(skip)
+                    .Take(take)
+                    .ToListAsync();
+
+                totalCount = await _context.Redemption
+                    .Where(i => i.Name.Contains(search) || i.RedemptionNumber.Contains(search) || i.Description.Contains(search))
+                    .CountAsync();
+            }
+
+            return View(redemptions.ToPagedList(totalCount, page, pageSize, search));
         }
 
         // GET: Redemptions/Details/5
