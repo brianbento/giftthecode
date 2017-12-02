@@ -293,6 +293,8 @@
                     var dataUtils = new DataUtils();
                     User user = new User();
                     user.UserNumber = dataUtils.GenerateNumber();
+                    user.CreatedDate = DateTime.UtcNow;
+                    user.ModifiedDate = user.CreatedDate;   
                     _context.Add(user);
                     await _context.SaveChangesAsync();
                     usersCreated++;
