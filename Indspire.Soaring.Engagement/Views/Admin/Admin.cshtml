@@ -11,7 +11,7 @@
 
 <div class="admin-backend__main-header">
     <div class="admin-backend__main-header-title">
-        <span class="admin-backend__main-header-title-icon fa fa-info-circle"></span>
+        <span class="admin-backend__main-header-title-icon fa fa-tachometer"></span>
         @if (SignInManager.IsSignedIn(User))
         {
             <span class="admin-backend__main-header-title-text">Hello @UserManager.GetUserName(User)</span>
@@ -59,7 +59,7 @@
 
         @if (Model.UserList.Any())
         {
-            <h3>Top 25 USers</h3>
+            <h3>Top 25 Users</h3>
             <table class="table">
                 <thead>
                     <tr>

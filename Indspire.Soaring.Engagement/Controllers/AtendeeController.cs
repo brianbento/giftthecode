@@ -7,6 +7,7 @@
     using Indspire.Soaring.Engagement.Database;
     using Indspire.Soaring.Engagement.Extensions;
     using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.Models.AtendeeViewModels;
     using Indspire.Soaring.Engagement.Utils;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,11 @@
     using System.Collections.Generic;
 
     [Authorize(Roles = RoleNames.Administrator)]
-    public class UserController : Controller
+    public class AtendeeController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public UserController(ApplicationDbContext context)
+        public AtendeeController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -68,50 +69,56 @@
                 return NotFound();
             }
 
-            var user = await _context.User
+            var atendee = await _context.User
                 .SingleOrDefaultAsync(m => m.UserID == id);
-            if (user == null)
+
+            if (atendee == null)
             {
                 return NotFound();
             }
 
-            viewModel.User = user;
-            viewModel.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
+            viewModel.User = atendee;
+            viewModel.PointsBalance = PointsUtils.GetPointsForUser(atendee.UserID, _context);
 
             return View(viewModel);
         }
 
-        // GET: User/Create
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new CreateAtendeeViewModel();
+
+            return View(viewModel);
         }
 
-        // POST: User/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ExternalID")] User user)
+        public async Task<IActionResult> Create(CreateAtendeeViewModel atendeeViewModel)
         {
             var dataUtils = new DataUtils();
 
             if (ModelState.IsValid)
             {
-                user.CreatedDate = DateTime.UtcNow;
-                user.ModifiedDate = user.CreatedDate;
-                user.Deleted = false;
-                user.UserNumber = dataUtils.GenerateNumber();
+                var atendee = new User();
 
-                _context.Add(user);
+                atendee.ModifiedDate = atendee.CreatedDate = DateTime.UtcNow;
+                atendee.Deleted = false;
+                atendee.UserNumber = dataUtils.GenerateNumber();
+
+                if (atendeeViewModel != null)
+                {
+                    atendee.ExternalID = atendeeViewModel.ExternalID;
+                }
+
+                _context.Add(atendee);
 
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+
+            return View(atendeeViewModel);
         }
 
-        // GET: User/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -120,21 +127,25 @@
             }
 
             var user = await _context.User.SingleOrDefaultAsync(m => m.UserID == id);
+
             if (user == null)
             {
                 return NotFound();
             }
-            return View(user);
+
+            var viewModel = new EditAtendeeViewModel();
+
+            viewModel.ExternalID = user.ExternalID;
+            viewModel.UserID = user.UserID;
+
+            return View(viewModel);
         }
 
-        // POST: User/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserID,ExternalID")] User user)
+        public async Task<IActionResult> Edit(int id, EditAtendeeViewModel atendeeViewModel)
         {
-            if (id != user.UserID)
+            if (id != atendeeViewModel.UserID)
             {
                 return NotFound();
             }
@@ -143,22 +154,22 @@
             {
                 try
                 {
-                    var userFromDatabase = _context.User
-                        .FirstOrDefault(i => i.UserID == user.UserID);
+                    var atendee = _context.User
+                        .FirstOrDefault(i => i.UserID == atendeeViewModel.UserID);
 
-                    if (userFromDatabase != null)
+                    if (atendee != null)
                     {
-                        userFromDatabase.ExternalID = user.ExternalID;
-                        userFromDatabase.ModifiedDate = DateTime.UtcNow;
+                        atendee.ExternalID = atendeeViewModel.ExternalID;
+                        atendee.ModifiedDate = DateTime.UtcNow;
                     }
 
-                    _context.Update(userFromDatabase);
+                    _context.Update(atendee);
 
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.UserID))
+                    if (!UserExists(atendeeViewModel.UserID))
                     {
                         return NotFound();
                     }
@@ -167,9 +178,11 @@
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+
+            return View(atendeeViewModel);
         }
 
         // GET: User/Delete/5
@@ -180,24 +193,28 @@
                 return NotFound();
             }
 
-            var user = await _context.User
+            var atendee = await _context.User
                 .SingleOrDefaultAsync(m => m.UserID == id);
-            if (user == null)
+
+            if (atendee == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(atendee);
         }
 
-        // POST: User/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _context.User.SingleOrDefaultAsync(m => m.UserID == id);
-            _context.User.Remove(user);
+            var atendee = await _context.User.SingleOrDefaultAsync(m => m.UserID == id);
+
+            _context.User.Remove(atendee);
+
             await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 

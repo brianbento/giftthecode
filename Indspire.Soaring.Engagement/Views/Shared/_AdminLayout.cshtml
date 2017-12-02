@@ -29,7 +29,7 @@
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a is-active-route asp-action="Index" asp-controller="User" class="admin-backend__nav-list-item-link link-icon">
+                <a is-active-route asp-action="Index" asp-controller="Atendee" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-user" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Attendees</span>
                 </a>
@@ -43,7 +43,14 @@
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a is-active-route asp-action="Index" asp-controller="Redemption" class="admin-backend__nav-list-item-link link-icon">
+                <a asp-action="Index" asp-controller="Instance" class="admin-backend__nav-list-item-link link-icon">
+                    <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-user" aria-label="hidden"></span>
+                    <span class="admin-backend__nav-list-item-link-text link_icon__text">Events</span>
+                </a>
+            </li>
+
+            <li class="admin-backend__nav-list-item">
+                <a asp-action="Index" asp-controller="Redemption" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-gift" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Redemptions</span>
                 </a>
