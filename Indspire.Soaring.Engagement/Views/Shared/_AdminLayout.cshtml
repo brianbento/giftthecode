@@ -3,6 +3,7 @@
 }
 
 <div class="admin-backend">
+
     <div class="admin-backend__top">
         <img class="admin-backend__top-logo" src="~/images/Indspire-logo.jpg" alt="Indspire" />
         <span class="admin-backend__top-text">Engagement - Admin Portal</span>
@@ -16,32 +17,40 @@
             @await Html.PartialAsync("_LoginPartial")
         </div>
     </div>
-    <nav class="admin-backend__nav">
 
+    <nav class="admin-backend__nav">
         <ul class="admin-backend__nav-list">
+
             <li class="admin-backend__nav-list-item">
-                <a asp-action="Index" asp-controller="User" class="admin-backend__nav-list-item-link link-icon">
+                <a is-active-route asp-action="Index" asp-controller="Admin" class="admin-backend__nav-list-item-link link-icon">
+                    <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-tachometer" aria-label="hidden"></span>
+                    <span class="admin-backend__nav-list-item-link-text link_icon__text">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="admin-backend__nav-list-item">
+                <a is-active-route asp-action="Index" asp-controller="User" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-user" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Attendees</span>
                 </a>
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a asp-action="Index" asp-controller="Award" class="admin-backend__nav-list-item-link link-icon">
+                <a is-active-route asp-action="Index" asp-controller="Award" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-trophy" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Awards</span>
                 </a>
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a asp-action="Index" asp-controller="Redemption" class="admin-backend__nav-list-item-link link-icon">
+                <a is-active-route asp-action="Index" asp-controller="Redemption" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-gift" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Redemptions</span>
                 </a>
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a asp-action="Index" asp-controller="ApplicationUser" class="admin-backend__nav-list-item-link link-icon">
+                <a is-active-route asp-action="Index" asp-controller="ApplicationUser" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-gear" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">App Users</span>
                 </a>
