@@ -18,8 +18,9 @@
     </div>
 
     <div class="admin-backend__main-content">
-        <form asp-action="Create" class="admin-form">
+        <form asp-action="Edit" class="admin-form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="InstanceID" />
 
             <div class="input input__text">
                 <label asp-for="Name" class="control-label">Name</label>
@@ -40,7 +41,7 @@
             </div>
 
             <div class="admin-create-user__form-submit">
-                <input type="submit" value="Create" class="blue-button admin-create-user__form-submit-button" />
+                <input type="submit" value="Save" class="blue-button admin-create-user__form-submit-button" />
             </div>
         </form>
     </div>
