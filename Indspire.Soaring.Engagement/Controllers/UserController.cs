@@ -7,6 +7,7 @@
     using Indspire.Soaring.Engagement.Database;
     using Indspire.Soaring.Engagement.Extensions;
     using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.Models.AtendeeViewModels;
     using Indspire.Soaring.Engagement.Utils;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -56,37 +57,42 @@
             return View(user);
         }
 
-        // GET: User/Create
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new CreateAtendeeViewModel();
+
+            return View(viewModel);
         }
 
-        // POST: User/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ExternalID")] User user)
+        public async Task<IActionResult> Create(CreateAtendeeViewModel userViewModel)
         {
             var dataUtils = new DataUtils();
 
             if (ModelState.IsValid)
             {
-                user.CreatedDate = DateTime.UtcNow;
-                user.ModifiedDate = user.CreatedDate;
+                var user = new User();
+
+                user.ModifiedDate = user.CreatedDate = DateTime.UtcNow;
                 user.Deleted = false;
                 user.UserNumber = dataUtils.GenerateNumber();
+
+                if (userViewModel != null)
+                {
+                    user.ExternalID = userViewModel.ExternalID;
+                }
 
                 _context.Add(user);
 
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+
+            return View(userViewModel);
         }
 
-        // GET: User/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,21 +101,25 @@
             }
 
             var user = await _context.User.SingleOrDefaultAsync(m => m.UserID == id);
+
             if (user == null)
             {
                 return NotFound();
             }
-            return View(user);
+
+            var viewModel = new EditAtendeeViewModel();
+
+            viewModel.ExternalID = user.ExternalID;
+            viewModel.UserID = user.UserID;
+
+            return View(viewModel);
         }
 
-        // POST: User/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("UserID,ExternalID")] User user)
+        public async Task<IActionResult> Edit(int id, EditAtendeeViewModel userViewModel)
         {
-            if (id != user.UserID)
+            if (id != userViewModel.UserID)
             {
                 return NotFound();
             }
@@ -119,11 +129,11 @@
                 try
                 {
                     var userFromDatabase = _context.User
-                        .FirstOrDefault(i => i.UserID == user.UserID);
+                        .FirstOrDefault(i => i.UserID == userViewModel.UserID);
 
                     if (userFromDatabase != null)
                     {
-                        userFromDatabase.ExternalID = user.ExternalID;
+                        userFromDatabase.ExternalID = userViewModel.ExternalID;
                         userFromDatabase.ModifiedDate = DateTime.UtcNow;
                     }
 
@@ -133,7 +143,7 @@
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.UserID))
+                    if (!UserExists(userViewModel.UserID))
                     {
                         return NotFound();
                     }
@@ -142,9 +152,11 @@
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+
+            return View(userViewModel);
         }
 
         // GET: User/Delete/5
