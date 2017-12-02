@@ -64,7 +64,7 @@
                 Scan Link
             </td>
             <td>
-                <a href="/award/scan?AwardNumber=@Model.EventNumber">Scan a QR Code (Award Points)</a>
+                <a asp-action="Scan" asp-route-id="@Model.EventNumber">Scan a QR Code (Award Points)</a>
             </td>
         </tr>
     </table>

@@ -7,6 +7,8 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
+    var list = Model as PagedList<Indspire.Soaring.Engagement.Database.Award>;
+
     <div class="admin-backend__main-header">
         <div class="admin-backend__main-header-title">
             <span class="admin-backend__main-header-title-icon fa fa-trophy"></span>
@@ -22,81 +24,79 @@
     </div>
 
     <div class="admin-backend__main-content admin-backend__users">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.EventNumber)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Description)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Points)
-                    </th>
-                    @*<th>
-                        @Html.DisplayNameFor(model => model.CreatedDate)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.ModifiedDate)
-                    </th>*@
-                    <th class="table__actions">
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+
+
+        @if (Model != null && Model.Count() > 0)
+        {
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AwardNumber)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Description)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Points)
-                        </td>
-                        @*<td>
-                            @Html.DisplayFor(modelItem => item.CreatedDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.ModifiedDate)
-                        </td>*@
-
-                        <td class="table__icons-row">
-                            <div class="table__icons-row-wrapper">
-                                <a asp-action="Edit" asp-route-id="@item.AwardID" class="table__icons-row-icon">
-                                    <span class="fa fa-pencil"></span>
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.AwardID" class="table__icons-row-icon">
-                                    <span class="fa fa-info-circle"></span>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.AwardID" class="table__icons-row-icon">
-                                    <span class="fa fa-trash"></span>
-                                </a>
-                            </div>
-                        </td>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EventNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Description)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Points)
+                        </th>
+                        <th class="table__actions">
+                            Actions
+                        </th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
 
-        @{
-            var list = Model as PagedList<Indspire.Soaring.Engagement.Database.Award>;
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EventNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Points)
+                            </td>
+                            <td class="table__icons-row">
+                                <div class="table__icons-row-wrapper">
+                                    <a asp-action="Scan" asp-route-awardnumber="@item.EventNumber">Scan</a>
+
+                                    <a asp-action="Edit" asp-route-id="@item.AwardID" class="table__icons-row-icon">
+                                        <span class="fa fa-pencil"></span>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.AwardID" class="table__icons-row-icon">
+                                        <span class="fa fa-info-circle"></span>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.AwardID" class="table__icons-row-icon">
+                                        <span class="fa fa-trash"></span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div>
+                No awards created yet.
+                <a asp-action="Create">Click here</a> to create a new award.
+            </div>
         }
 
-        @if (list != null)
+        @if (list != null && list.TotalCount > 0)
         {
             @await Html.PartialAsync("_Pagination", list.GetPagination())
         }
-        
     </div>
 }
