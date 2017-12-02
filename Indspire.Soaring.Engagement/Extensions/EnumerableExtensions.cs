@@ -1,11 +1,8 @@
-﻿using Indspire.Soaring.Engagement.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Indspire.Soaring.Engagement.Extensions
+﻿namespace Indspire.Soaring.Engagement.Extensions
 {
+    using System.Collections.Generic;
+    using Indspire.Soaring.Engagement.Models;
+
     public static class EnumerableExtensions
     {
         public static PagedList<TList> ToPagedList<TList>(

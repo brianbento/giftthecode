@@ -10,7 +10,7 @@
     <div class="admin-backend__main-header-title">
         <a class="admin-backend__main-header-title-back fa fa-chevron-left" asp-action="Index"></a>
         <span class="admin-backend__main-header-title-icon fa fa-info-circle"></span>
-        <span class="admin-backend__main-header-title-text">User Details</span>
+        <span class="admin-backend__main-header-title-text">Atendee Details</span>
     </div>
 
     <div class="admin-backend__main-header-actions">
@@ -63,42 +63,8 @@
         </tr>
     </table>
 
-    @*<dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.UserNumber)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.UserNumber)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.ExternalID)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.ExternalID)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.Deleted)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.Deleted)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.CreatedDate)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.ModifiedDate)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.ModifiedDate)
-            </dd>
-        </dl>*@
-
     <div>
         <a asp-action="Edit" asp-route-id="@Model.UserID" class="blue-button">Edit</a>
     </div>
-
 </div>
 

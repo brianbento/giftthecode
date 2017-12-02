@@ -19,47 +19,34 @@
     <nav class="admin-backend__nav">
 
         <ul class="admin-backend__nav-list">
-
-            
-
             <li class="admin-backend__nav-list-item">
-                <a href="/user" class="admin-backend__nav-list-item-link link-icon">
+                <a asp-action="Index" asp-controller="User" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-user" aria-label="hidden"></span>
-                    <span class="admin-backend__nav-list-item-link-text link_icon__text">Users</span>
+                    <span class="admin-backend__nav-list-item-link-text link_icon__text">Atendees</span>
                 </a>
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a href="/award" class="admin-backend__nav-list-item-link link-icon">
+                <a asp-action="Index" asp-controller="Award" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-trophy" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Awards</span>
                 </a>
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a href="/redemption" class="admin-backend__nav-list-item-link link-icon">
+                <a asp-action="Index" asp-controller="Redemption" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-gift" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">Redemptions</span>
                 </a>
             </li>
 
             <li class="admin-backend__nav-list-item">
-                <a href="/applicationuser" class="admin-backend__nav-list-item-link link-icon">
+                <a asp-action="Index" asp-controller="ApplicationUser" class="admin-backend__nav-list-item-link link-icon">
                     <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-gear" aria-label="hidden"></span>
                     <span class="admin-backend__nav-list-item-link-text link_icon__text">App Users</span>
                 </a>
             </li>
-
-            @*<li class="admin-backend__nav-list-item">
-                <a href="" class="admin-backend__nav-list-item-link link-icon">
-                    <span class="admin-backend__nav-list-item-link-icon link-icon__icon fa fa-gear" aria-label="hidden"></span>
-                    <span class="admin-backend__nav-list-item-link-text link_icon__text">Settings</span>
-                </a>
-            </li>*@
-
-
         </ul>
-
     </nav>
 
     <div class="admin-backend__main">
@@ -67,7 +54,6 @@
         @RenderBody()
 
     </div>
-
 </div>
 
 @RenderSection("Scripts", required: false)
