@@ -8,10 +8,7 @@
     {
         public IActionResult Index()
         {
-            return RedirectToAction(
-                "Login",
-                "Account",
-                new { returnUrl = "/admin" });
+            return RedirectToAction("Index", "Admin");
         }
 
         public IActionResult Error()

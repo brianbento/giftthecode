@@ -36,6 +36,7 @@
             if (string.IsNullOrEmpty(search))
             {
                 users = await _context.User
+                    .OrderByDescending(i => i.CreatedDate)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
@@ -45,6 +46,7 @@
             {
                 users = await _context.User
                     .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search))
+                    .OrderByDescending(i => i.CreatedDate)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
@@ -52,7 +54,6 @@
                 totalCount = await _context.User
                     .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search)).CountAsync();
             }
-
 
             return View(users.ToPagedList(totalCount, page, pageSize, search));
         }

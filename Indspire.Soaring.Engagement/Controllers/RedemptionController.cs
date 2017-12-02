@@ -41,6 +41,7 @@
             if (string.IsNullOrEmpty(search))
             {
                 redemptions = await _context.Redemption
+                    .OrderByDescending(i => i.CreatedDate)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
@@ -51,6 +52,7 @@
             {
                 redemptions = await _context.Redemption
                     .Where(i => i.Name.Contains(search) || i.RedemptionNumber.Contains(search) || i.Description.Contains(search))
+                    .OrderByDescending(i => i.CreatedDate)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();

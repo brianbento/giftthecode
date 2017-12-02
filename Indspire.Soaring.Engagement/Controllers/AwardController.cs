@@ -38,6 +38,7 @@
             if (string.IsNullOrEmpty(search))
             {
                 awards = await _context.Award
+                    .OrderByDescending(i => i.CreatedDate)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
@@ -48,6 +49,7 @@
             {
                 awards = await _context.Award
                     .Where(i => i.AwardNumber.Contains(search) || i.Name.Contains(search) || i.Description.Contains(search))
+                    .OrderByDescending(i => i.CreatedDate)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
