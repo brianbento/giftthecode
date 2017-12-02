@@ -6,6 +6,11 @@ namespace Indspire.Soaring.Engagement.Database
 
     public class Award
     {
+        public int InstanceID { get; set; }
+
+        [DisplayName("Event")]
+        public Instance Instance { get; set; }
+
         [DisplayName("Award ID")]
         public int AwardID { get; set; }
 

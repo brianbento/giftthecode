@@ -73,8 +73,8 @@
         }
 
         [HttpPost]
+        [ActionName("Scan")]
         [AllowAnonymous]
-        [Route("[controller]/scan")]
         public IActionResult PostScan(string awardNumber)
         {
             var result = string.IsNullOrWhiteSpace(awardNumber)

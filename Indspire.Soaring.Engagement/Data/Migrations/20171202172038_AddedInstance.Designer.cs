@@ -11,9 +11,10 @@ using System;
 namespace Indspire.Soaring.Engagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171202172038_AddedInstance")]
+    partial class AddedInstance
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,8 +25,6 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                 {
                     b.Property<int>("AwardID")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<string>("AwardNumber");
 
                     b.Property<DateTime>("CreatedDate");
 
@@ -83,15 +82,9 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.Property<int>("InstanceID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime>("CreatedDate");
-
                     b.Property<bool>("DefaultInstance");
 
-                    b.Property<bool>("Deleted");
-
                     b.Property<string>("Description");
-
-                    b.Property<DateTime>("ModifiedDate");
 
                     b.Property<string>("Name");
 
