@@ -10,6 +10,10 @@
             Redemption: {
                 Name: 'Redemption',
                 Endpoint: '/redemption/logaction'
+            },
+            Balance: {
+                Name: 'Balance',
+                Endpoint: '/user/checkbalance'
             }
         }
 
@@ -22,6 +26,7 @@
             loading: ko.observable(false),
             awardConfirmation: ko.observable(false),
             redemptionConfirmation: ko.observable(false),
+            balanceConfirmation: ko.observable(false)
         }
 
         self.data = {
@@ -39,6 +44,11 @@
                 success: ko.observable(false),
                 pointsBalance: ko.observable(0),
                 pointsShort: ko.observable(0),
+                userNumber: ko.observable(null)
+            },
+            balanceConfirmation: {
+                success: ko.observable(false),
+                pointsBalance: ko.observable(0),
                 userNumber: ko.observable(null)
             }
         };
@@ -82,6 +92,10 @@
                     self.state.type = self.types.Award;
                     self.data.awardNumber = params.awardNumber;
                 }
+
+                if (!params.redemptionNumber && !params.awardNumber) {
+                    self.state.type = self.types.Balance;
+                }
             };
 
             m.changeCamera = function (camera) {
@@ -97,6 +111,10 @@
 
                 if (self.state.type === self.types.Redemption) {
                     m.submitRedemption();
+                }
+
+                if (self.state.type === self.types.Balance) {
+                    m.submitCheckBalance();
                 }
             };
 
@@ -156,6 +174,33 @@
                     });
             }
 
+            m.submitCheckBalance = function () {
+                var postData = {
+                    UserNumber: self.data.code()
+                };
+
+                self.methods.dismissError();
+                self.methods.dismissConfirmation();
+                self.state.loading(true);
+
+                $.post(self.state.type.Endpoint, postData)
+                    .done(function (response) {
+
+                        if (response.errorMessage) {
+                            m.showError(response.errorMessage);
+                        } else {
+                            m.showBalanceConfirmation(response.responseData);
+                        }
+
+                    }).fail(function (error) {
+                        //error
+                        m.showError(error);
+                    }).always(function () {
+                        //always
+                        self.state.loading(false);
+                    });
+            }
+
             m.showError = function (errorMsg) {
                 self.state.error(errorMsg);
                 self.data.code(null);
@@ -182,6 +227,14 @@
                 self.state.redemptionConfirmation(true);
             };
 
+            m.showBalanceConfirmation = function (data) {
+                self.data.code(null);
+                self.data.balanceConfirmation.success(data.success);
+                self.data.balanceConfirmation.pointsBalance(data.pointsBalance);
+                self.data.balanceConfirmation.userNumber(data.userNumber);
+                self.state.balanceConfirmation(true);
+            };
+
             m.dismissConfirmation = function () {
                 self.state.awardConfirmation(false);
                 self.data.awardConfirmation.pointsAwarded(0);
@@ -193,6 +246,11 @@
                 self.data.redemptionConfirmation.pointsShort(0);
                 self.data.redemptionConfirmation.pointsBalance(0);
                 self.data.redemptionConfirmation.userNumber(null);
+
+                self.state.balanceConfirmation(false);
+                self.data.balanceConfirmation.success(false);
+                self.data.balanceConfirmation.pointsBalance(0);
+                self.data.balanceConfirmation.userNumber(null);
             };
         };
 

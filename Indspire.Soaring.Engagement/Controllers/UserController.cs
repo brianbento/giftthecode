@@ -11,6 +11,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
+    using Indspire.Soaring.Engagement.ViewModels;
 
     [Authorize(Roles = RoleNames.Administrator)]
     public class UserController : Controller
@@ -41,6 +42,8 @@
         // GET: User/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var viewModel = new UserDetailsViewModel();
+
             if (id == null)
             {
                 return NotFound();
@@ -53,7 +56,10 @@
                 return NotFound();
             }
 
-            return View(user);
+            viewModel.User = user;
+            viewModel.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
+
+            return View(viewModel);
         }
 
         // GET: User/Create
@@ -181,6 +187,92 @@
             return _context.User.Any(e => e.UserID == id);
         }
 
-        
+        [AllowAnonymous]
+        [Route("[controller]/scan")]
+        public IActionResult Scan()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("[controller]/checkbalance")]
+        public async Task<IActionResult> CheckBalance(string UserNumber)
+        {
+            var viewModel = new CheckBalanceJsonViewModel();
+            try
+            {
+
+                //validate 
+                var user = await _context.User.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
+
+                if (user == null)
+                {
+                    throw new ApplicationException("User not found.");
+                }
+
+
+                viewModel.ResponseData.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
+                viewModel.ResponseData.UserNumber = user.UserNumber;
+
+            }
+            catch (Exception ex)
+            {
+                viewModel.ErrorMessage = ex.Message;
+                viewModel.ResponseData = null;
+            }
+
+            return new JsonResult(viewModel);
+        }
+
+        public async Task<IActionResult> BulkCreate()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BulkCreateConfirmation(int amount)
+        {
+            var viewModel = new BulkCreateViewModel();
+            viewModel.Amount = amount;
+            int usersCreated = 0;
+            int maxUsers = 2000;
+
+            try
+            {
+                if (amount < 1)
+                {
+                    throw new ApplicationException("Amount to create must be greater than 0");
+                }
+
+                if (amount > maxUsers)
+                {
+                    throw new ApplicationException($"Amount to create must be less than {maxUsers}");
+                }
+
+
+                for(var i = 0; i < amount; i++)
+                {
+                    var dataUtils = new DataUtils();
+                    User user = new User();
+                    user.UserNumber = dataUtils.GenerateNumber();
+                    _context.Add(user);
+                    await _context.SaveChangesAsync();
+                    usersCreated++;
+                }
+
+                viewModel.AmountCreated = usersCreated;
+                viewModel.Success = true;
+
+                return View("BulkCreateSuccess", viewModel);
+            }catch (Exception ex)
+            {
+                viewModel.Success = false;
+                viewModel.AmountCreated = usersCreated;
+                viewModel.ErrorMessage = $"An error occurred while trying to Bulk Create Users. Error: {ex.Message}.";
+                return View("BulkCreateFailed", viewModel);
+            }
+        }
+
     }
 }

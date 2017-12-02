@@ -57,8 +57,7 @@
 
             if (viewModel.HasAwardNumber)
             {
-                var award = await _context.Award.FirstOrDefaultAsync(
-                    i => i.EventNumber == viewModel.AwardNumber);
+                var award = await _context.Award.FirstOrDefaultAsync(i => i.AwardNumber == viewModel.AwardNumber);
 
                 if (award == null)
                 {
@@ -126,7 +125,7 @@
                 award.CreatedDate = DateTime.UtcNow;
                 award.ModifiedDate = award.CreatedDate;
                 award.Deleted = false;
-                award.EventNumber = dataUtils.GenerateNumber();
+                award.AwardNumber = dataUtils.GenerateNumber();
 
                 _context.Add(award);
 
@@ -252,7 +251,7 @@
             {
                
                 //validate 
-                var award = await _context.Award.FirstOrDefaultAsync(i => i.EventNumber == AwardNumber);
+                var award = await _context.Award.FirstOrDefaultAsync(i => i.AwardNumber == AwardNumber);
 
                 if(award == null)
                 {
@@ -271,7 +270,7 @@
                                                     i.AwardID == award.AwardID);
                 if(existingAwardLogByThisUser != null)
                 {
-                    throw new ApplicationException("User has already been Awarded points for this action.");
+                    throw new ApplicationException($"User has already been Awarded points for this action. User has {PointsUtils.GetPointsForUser(user.UserID, _context)} points.");
                 }
 
                 //good to go!
