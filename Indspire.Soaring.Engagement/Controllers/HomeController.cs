@@ -9,10 +9,10 @@ namespace Indspire.Soaring.Engagement.Controllers
     {
         public IActionResult Index()
         {
-            return RedirectToActionPermanent(
-                "Login", 
+            return RedirectToAction(
+                "Login",
                 "Account",
-                new { returnUrl = "/user" });
+                new { returnUrl = "/admin" });
         }
 
         public IActionResult Error()

@@ -54,7 +54,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             //    .Take(25)
             //    .ToListAsync();
 
-            return View("~/Views/Admin/Admin.cshtml");
+            return View();
         }
     }
 }
