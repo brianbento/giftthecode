@@ -61,7 +61,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             if(viewModel.HasAwardNumber)
             {
-                var award = _context.Award.FirstOrDefault(i => i.EventNumber == viewModel.AwardNumber);
+                var award = _context.Award.FirstOrDefault(i => i.AwardNumber == viewModel.AwardNumber);
 
                 if(award == null)
                 {
@@ -114,7 +114,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                 award.CreatedDate = DateTime.UtcNow;
                 award.ModifiedDate = award.CreatedDate;
                 award.Deleted = false;
-                award.EventNumber = dataUtils.GenerateNumber();
+                award.AwardNumber = dataUtils.GenerateNumber();
 
                 _context.Add(award);
                 await _context.SaveChangesAsync();
@@ -229,7 +229,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                
                 //validate 
-                var award = await _context.Award.FirstOrDefaultAsync(i => i.EventNumber == AwardNumber);
+                var award = await _context.Award.FirstOrDefaultAsync(i => i.AwardNumber == AwardNumber);
 
                 if(award == null)
                 {
