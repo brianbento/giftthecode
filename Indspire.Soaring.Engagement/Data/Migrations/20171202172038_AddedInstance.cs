@@ -36,20 +36,20 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                 table: "Award",
                 column: "InstanceID");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Award_Instance_InstanceID",
-                table: "Award",
-                column: "InstanceID",
-                principalTable: "Instance",
-                principalColumn: "InstanceID",
-                onDelete: ReferentialAction.Cascade);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_Award_Instance_InstanceID",
+            //    table: "Award",
+            //    column: "InstanceID",
+            //    principalTable: "Instance",
+            //    principalColumn: "InstanceID",
+            //    onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Award_Instance_InstanceID",
-                table: "Award");
+            //migrationBuilder.DropForeignKey(
+            //    name: "FK_Award_Instance_InstanceID",
+            //    table: "Award");
 
             migrationBuilder.DropTable(
                 name: "Instance");
