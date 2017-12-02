@@ -214,6 +214,7 @@
 
                 viewModel.ResponseData.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
                 viewModel.ResponseData.UserNumber = user.UserNumber;
+                viewModel.ResponseData.ExternalID = user.ExternalID;
 
             }
             catch (Exception ex)
@@ -272,6 +273,38 @@
                 viewModel.ErrorMessage = $"An error occurred while trying to Bulk Create Users. Error: {ex.Message}.";
                 return View("BulkCreateFailed", viewModel);
             }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> SetExternalID(string userNumber, string externalID)
+        {
+            var viewModel = new SetUserExternalIDJsonViewModel();
+            try
+            {
+
+                var user = await _context.User.FirstOrDefaultAsync(i => i.UserNumber == userNumber);
+
+                if(user == null)
+                {
+                    throw new ApplicationException("User not found");
+                }
+
+                user.ExternalID = externalID;
+
+                _context.Update(user);
+
+                await _context.SaveChangesAsync();
+
+                viewModel.ResponseData.Success = true;
+
+            } catch (Exception ex)
+            {
+                viewModel.ErrorMessage = ex.Message;
+                viewModel.ResponseData.Success = false;
+            }
+
+            return Json(viewModel);
         }
 
     }

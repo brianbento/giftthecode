@@ -1,0 +1,19 @@
+﻿<script id="set-user-externalid-tmpl" type="text/html">
+
+    <!-- ko if: state.showForm -->
+    <form method="post" data-bind="submit: methods.submit" asp-controller="User" asp-action="SetExternalID">
+        <label>Set External ID</label>
+        <input type="text" data-bind="value: data.externalID" />
+        <button type="submit">Set</button>
+    </form>
+    <!-- /ko -->
+
+    <!-- ko if: state.error -->
+    <p data-bind="text: state.error"></p>
+    <!-- /ko -->
+
+    <!-- ko if: state.success -->
+    <p data-bind="text: state.success"></p>
+    <!-- /ko -->
+
+</script>

@@ -50,7 +50,8 @@
                 success: ko.observable(false),
                 pointsBalance: ko.observable(0),
                 userNumber: ko.observable(null)
-            }
+            },
+            externalID: ko.observable(null)
         };
 
         self.events = {
@@ -212,6 +213,7 @@
 
             m.showAwardConfirmation = function (data) {
                 self.data.code(null);
+                self.data.externalID(data.externalID);
                 self.data.awardConfirmation.pointsAwarded(data.pointsAwarded);
                 self.data.awardConfirmation.pointsBalance(data.pointsBalance);
                 self.data.awardConfirmation.userNumber(data.userNumber);
@@ -220,6 +222,7 @@
 
             m.showRedemptionConfirmation = function (data) {
                 self.data.code(null);
+                self.data.externalID(data.externalID);
                 self.data.redemptionConfirmation.success(data.success);
                 self.data.redemptionConfirmation.pointsShort(data.pointsShort);
                 self.data.redemptionConfirmation.pointsBalance(data.pointsBalance);
@@ -229,6 +232,7 @@
 
             m.showBalanceConfirmation = function (data) {
                 self.data.code(null);
+                self.data.externalID(data.externalID);
                 self.data.balanceConfirmation.success(data.success);
                 self.data.balanceConfirmation.pointsBalance(data.pointsBalance);
                 self.data.balanceConfirmation.userNumber(data.userNumber);
@@ -251,6 +255,8 @@
                 self.data.balanceConfirmation.success(false);
                 self.data.balanceConfirmation.pointsBalance(0);
                 self.data.balanceConfirmation.userNumber(null);
+
+                self.data.externalID(null);
             };
         };
 

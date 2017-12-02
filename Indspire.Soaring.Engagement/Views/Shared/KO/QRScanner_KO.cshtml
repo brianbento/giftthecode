@@ -14,6 +14,9 @@
                 <span class="font-semibold">Points Balance:</span> <span data-bind="text: data.awardConfirmation.pointsBalance"></span>
             </div>
             <button class="green-button" data-bind="click: methods.dismissConfirmation">Ok</button>
+
+            <set-user-externalid params="{ userNumber: data.awardConfirmation.userNumber, externalID: data.externalID }"></set-user-externalid>
+
         </div>
     </div>
     <!-- /ko -->
@@ -43,6 +46,8 @@
             </div>
             <!-- /ko -->
             <button class="blue-button" data-bind="click: methods.dismissConfirmation">Ok</button>
+
+            <set-user-externalid params="{ userNumber: data.redemptionConfirmation.userNumber, externalID: data.externalID }"></set-user-externalid>
         </div>
     </div>
     <!-- /ko -->
@@ -58,6 +63,7 @@
             </div>
             <button class="green-button" data-bind="click: methods.dismissConfirmation">Ok</button>
         </div>
+        <set-user-externalid params="{ userNumber: data.balanceConfirmation.userNumber, externalID: data.externalID }"></set-user-externalid>
     </div>
     <!-- /ko -->
     <!-- ko if: state.error() != null -->

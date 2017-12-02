@@ -303,6 +303,7 @@
                 viewModel.ResponseData.Success = hasEnoughPoints;
                 viewModel.ResponseData.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
                 viewModel.ResponseData.UserNumber = user.UserNumber;
+                viewModel.ResponseData.ExternalID = user.ExternalID;
 
             }
             catch (Exception ex)
