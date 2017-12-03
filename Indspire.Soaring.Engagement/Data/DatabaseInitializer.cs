@@ -27,7 +27,7 @@ namespace Indspire.Soaring.Engagement.Data
         //This example just creates an Administrator role and one Admin users
         public async Task Initialize(IConfiguration configuration)
         {
-            //_context.Database.EnsureCreated();
+            _context.Database.EnsureCreated();
 
             if (!_context.Roles.Any(r => r.Name == RoleNames.Administrator))
             {
