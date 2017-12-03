@@ -5,7 +5,7 @@
 
     public static class UserExtensions
     {
-        public static string GetQRCodeAsBase64(this User user)
+        public static string GetQRCodeAsBase64(this Attendee user)
         {
             if(string.IsNullOrEmpty(user.UserNumber))
             {

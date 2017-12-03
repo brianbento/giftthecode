@@ -4,7 +4,7 @@ namespace Indspire.Soaring.Engagement.Database
     using System.Collections.Generic;
     using System.ComponentModel;
 
-    public class User
+    public class Attendee
     {
         [DisplayName("User ID")]
         public int UserID { get; set; }

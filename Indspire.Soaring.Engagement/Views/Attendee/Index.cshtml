@@ -1,10 +1,10 @@
 ﻿@using Indspire.Soaring.Engagement.Extensions
 
-@model IEnumerable<Indspire.Soaring.Engagement.Database.User>
+@model IEnumerable<Indspire.Soaring.Engagement.Database.Attendee>
 
 @if (Model != null)
 {
-    var list = Model as PagedList<Indspire.Soaring.Engagement.Database.User>;
+    var list = Model as PagedList<Indspire.Soaring.Engagement.Database.Attendee>;
 
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -82,8 +82,8 @@
         else
         {
             <div>
-                No atendees created yet.
-                <a asp-action="Create">Click here</a> to create a new atendee.
+                No attendees created yet.
+                <a asp-action="Create">Click here</a> to create a new attendee.
             </div>
         }
 

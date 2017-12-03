@@ -277,7 +277,7 @@
                     throw new ApplicationException("Redemption not found.");
                 }
 
-                var user = await _context.User.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
+                var user = await _context.Attendee.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
 
                 if (user == null)
                 {

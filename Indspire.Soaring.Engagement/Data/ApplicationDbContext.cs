@@ -39,14 +39,14 @@ namespace Indspire.Soaring.Engagement.Data
             builder.Entity<RedemptionLog>()
                 .HasKey(i => i.RedemptionLogID);
 
-            builder.Entity<User>()
+            builder.Entity<Attendee>()
                 .HasKey(i => i.UserID);
 
-            builder.Entity<User>()
+            builder.Entity<Attendee>()
                 .Property(i => i.UserID)
                 .ValueGeneratedOnAdd();
 
-            builder.Entity<User>()
+            builder.Entity<Attendee>()
                 .HasMany(i => i.RedemptionLogs)
                 .WithOne(rl => rl.User)
                 .HasForeignKey(i => i.UserID);
@@ -63,7 +63,7 @@ namespace Indspire.Soaring.Engagement.Data
                 .WithOne(rl => rl.Award)
                 .HasForeignKey(i => i.AwardID);
 
-            builder.Entity<User>()
+            builder.Entity<Attendee>()
                 .HasMany(i => i.AwardLogs)
                 .WithOne(rl => rl.User)
                 .HasForeignKey(i => i.UserID);
@@ -79,7 +79,7 @@ namespace Indspire.Soaring.Engagement.Data
 
         public DbSet<Indspire.Soaring.Engagement.Database.Redemption> Redemption { get; set; }
 
-        public DbSet<Indspire.Soaring.Engagement.Database.User> User { get; set; }
+        public DbSet<Indspire.Soaring.Engagement.Database.Attendee> Attendee { get; set; }
 
         public DbSet<Indspire.Soaring.Engagement.Database.Award> Award { get; set; }
 

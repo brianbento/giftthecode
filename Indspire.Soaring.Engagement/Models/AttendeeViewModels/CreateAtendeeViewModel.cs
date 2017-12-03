@@ -1,9 +1,9 @@
-﻿namespace Indspire.Soaring.Engagement.Models.AtendeeViewModels
+﻿namespace Indspire.Soaring.Engagement.Models.AttendeeViewModels
 {
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
 
-    public class CreateAtendeeViewModel
+    public class CreateAttendeeViewModel
     {
         [Required]
         [DisplayName("External ID")]

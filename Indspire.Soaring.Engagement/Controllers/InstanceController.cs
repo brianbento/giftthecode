@@ -53,16 +53,16 @@
 
             if (ModelState.IsValid)
             {
-                var atendee = new Instance();
+                var instance = new Instance();
 
                 if (instanceViewModel != null)
                 {
-                    atendee.ModifiedDate = atendee.CreatedDate = DateTime.UtcNow;
-                    atendee.Description = instanceViewModel.Description;
-                    atendee.Name = instanceViewModel.Name;
+                    instance.ModifiedDate = instance.CreatedDate = DateTime.UtcNow;
+                    instance.Description = instanceViewModel.Description;
+                    instance.Name = instanceViewModel.Name;
                 }
 
-                _context.Add(atendee);
+                _context.Add(instance);
 
                 await _context.SaveChangesAsync();
 
@@ -109,18 +109,18 @@
             {
                 try
                 {
-                    var atendee = _context.Instance
+                    var instance = _context.Instance
                         .FirstOrDefault(i => i.InstanceID == instanceViewModel.InstanceID);
 
-                    if (atendee != null)
+                    if (instance != null)
                     {
-                        atendee.Name = instanceViewModel.Name;
-                        atendee.DefaultInstance = instanceViewModel.DefaultInstance;
-                        atendee.Description = instanceViewModel.Description;
-                        atendee.ModifiedDate = DateTime.UtcNow;
+                        instance.Name = instanceViewModel.Name;
+                        instance.DefaultInstance = instanceViewModel.DefaultInstance;
+                        instance.Description = instanceViewModel.Description;
+                        instance.ModifiedDate = DateTime.UtcNow;
                     }
 
-                    _context.Update(atendee);
+                    _context.Update(instance);
 
                     await _context.SaveChangesAsync();
                 }

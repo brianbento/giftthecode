@@ -7,7 +7,7 @@
     using Indspire.Soaring.Engagement.Database;
     using Indspire.Soaring.Engagement.Extensions;
     using Indspire.Soaring.Engagement.Models;
-    using Indspire.Soaring.Engagement.Models.AtendeeViewModels;
+    using Indspire.Soaring.Engagement.Models.AttendeeViewModels;
     using Indspire.Soaring.Engagement.Utils;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -16,11 +16,11 @@
     using System.Collections.Generic;
 
     [Authorize(Roles = RoleNames.Administrator)]
-    public class AtendeeController : Controller
+    public class AttendeeController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public AtendeeController(ApplicationDbContext context)
+        public AttendeeController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -31,28 +31,28 @@
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
-            List<User> users = null;
+            List<Attendee> users = null;
             int totalCount = 0;
 
             if (string.IsNullOrEmpty(search))
             {
-                users = await _context.User
+                users = await _context.Attendee
                     .OrderByDescending(i => i.CreatedDate)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
 
-                totalCount = await _context.User.CountAsync();
+                totalCount = await _context.Attendee.CountAsync();
             } else
             {
-                users = await _context.User
+                users = await _context.Attendee
                     .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search))
                     .OrderByDescending(i => i.CreatedDate)
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
 
-                totalCount = await _context.User
+                totalCount = await _context.Attendee
                     .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search)).CountAsync();
             }
 
@@ -69,54 +69,54 @@
                 return NotFound();
             }
 
-            var atendee = await _context.User
+            var attendee = await _context.Attendee
                 .SingleOrDefaultAsync(m => m.UserID == id);
 
-            if (atendee == null)
+            if (attendee == null)
             {
                 return NotFound();
             }
 
-            viewModel.User = atendee;
-            viewModel.PointsBalance = PointsUtils.GetPointsForUser(atendee.UserID, _context);
+            viewModel.User = attendee;
+            viewModel.PointsBalance = PointsUtils.GetPointsForUser(attendee.UserID, _context);
 
             return View(viewModel);
         }
 
         public IActionResult Create()
         {
-            var viewModel = new CreateAtendeeViewModel();
+            var viewModel = new CreateAttendeeViewModel();
 
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateAtendeeViewModel atendeeViewModel)
+        public async Task<IActionResult> Create(CreateAttendeeViewModel attendeeViewModel)
         {
             var dataUtils = new DataUtils();
 
             if (ModelState.IsValid)
             {
-                var atendee = new User();
+                var attendee = new Attendee();
 
-                atendee.ModifiedDate = atendee.CreatedDate = DateTime.UtcNow;
-                atendee.Deleted = false;
-                atendee.UserNumber = dataUtils.GenerateNumber();
+                attendee.ModifiedDate = attendee.CreatedDate = DateTime.UtcNow;
+                attendee.Deleted = false;
+                attendee.UserNumber = dataUtils.GenerateNumber();
 
-                if (atendeeViewModel != null)
+                if (attendeeViewModel != null)
                 {
-                    atendee.ExternalID = atendeeViewModel.ExternalID;
+                    attendee.ExternalID = attendeeViewModel.ExternalID;
                 }
 
-                _context.Add(atendee);
+                _context.Add(attendee);
 
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(atendeeViewModel);
+            return View(attendeeViewModel);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -126,14 +126,14 @@
                 return NotFound();
             }
 
-            var user = await _context.User.SingleOrDefaultAsync(m => m.UserID == id);
+            var user = await _context.Attendee.SingleOrDefaultAsync(m => m.UserID == id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            var viewModel = new EditAtendeeViewModel();
+            var viewModel = new EditAttendeeViewModel();
 
             viewModel.ExternalID = user.ExternalID;
             viewModel.UserID = user.UserID;
@@ -143,9 +143,9 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EditAtendeeViewModel atendeeViewModel)
+        public async Task<IActionResult> Edit(int id, EditAttendeeViewModel attendeeViewModel)
         {
-            if (id != atendeeViewModel.UserID)
+            if (id != attendeeViewModel.UserID)
             {
                 return NotFound();
             }
@@ -154,22 +154,22 @@
             {
                 try
                 {
-                    var atendee = _context.User
-                        .FirstOrDefault(i => i.UserID == atendeeViewModel.UserID);
+                    var attendee = _context.Attendee
+                        .FirstOrDefault(i => i.UserID == attendeeViewModel.UserID);
 
-                    if (atendee != null)
+                    if (attendee != null)
                     {
-                        atendee.ExternalID = atendeeViewModel.ExternalID;
-                        atendee.ModifiedDate = DateTime.UtcNow;
+                        attendee.ExternalID = attendeeViewModel.ExternalID;
+                        attendee.ModifiedDate = DateTime.UtcNow;
                     }
 
-                    _context.Update(atendee);
+                    _context.Update(attendee);
 
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(atendeeViewModel.UserID))
+                    if (!AttendeeExists(attendeeViewModel.UserID))
                     {
                         return NotFound();
                     }
@@ -182,7 +182,7 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(atendeeViewModel);
+            return View(attendeeViewModel);
         }
 
         // GET: User/Delete/5
@@ -193,15 +193,15 @@
                 return NotFound();
             }
 
-            var atendee = await _context.User
+            var attendee = await _context.Attendee
                 .SingleOrDefaultAsync(m => m.UserID == id);
 
-            if (atendee == null)
+            if (attendee == null)
             {
                 return NotFound();
             }
 
-            return View(atendee);
+            return View(attendee);
         }
 
         [HttpPost]
@@ -209,18 +209,18 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var atendee = await _context.User.SingleOrDefaultAsync(m => m.UserID == id);
+            var attendee = await _context.Attendee.SingleOrDefaultAsync(m => m.UserID == id);
 
-            _context.User.Remove(atendee);
+            _context.Attendee.Remove(attendee);
 
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(int id)
+        private bool AttendeeExists(int id)
         {
-            return _context.User.Any(e => e.UserID == id);
+            return _context.Attendee.Any(e => e.UserID == id);
         }
 
         [AllowAnonymous]
@@ -240,7 +240,7 @@
             {
 
                 //validate 
-                var user = await _context.User.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
+                var user = await _context.Attendee.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
 
                 if (user == null)
                 {
@@ -291,7 +291,7 @@
                 for(var i = 0; i < amount; i++)
                 {
                     var dataUtils = new DataUtils();
-                    User user = new User();
+                    Attendee user = new Attendee();
                     user.UserNumber = dataUtils.GenerateNumber();
                     user.CreatedDate = DateTime.UtcNow;
                     user.ModifiedDate = user.CreatedDate;   
@@ -321,7 +321,7 @@
             try
             {
 
-                var user = await _context.User.FirstOrDefaultAsync(i => i.UserNumber == userNumber);
+                var user = await _context.Attendee.FirstOrDefaultAsync(i => i.UserNumber == userNumber);
 
                 if(user == null)
                 {

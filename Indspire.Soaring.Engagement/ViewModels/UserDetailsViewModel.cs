@@ -8,7 +8,7 @@ namespace Indspire.Soaring.Engagement.ViewModels
 {
     public class UserDetailsViewModel
     {
-        public User User { get; set; }
+        public Attendee User { get; set; }
         public int PointsBalance { get; set; }
     }
 }

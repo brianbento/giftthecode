@@ -21,7 +21,7 @@ namespace Indspire.Soaring.Engagement.Database
         public int UserID { get; set; }
 
         [DisplayName("User")]
-        public User User { get; set; }
+        public Attendee User { get; set; }
 
         [DisplayName("Deleted")]
         public bool Deleted { get; set; } = false;

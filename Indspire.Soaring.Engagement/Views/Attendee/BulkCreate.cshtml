@@ -1,0 +1,11 @@
+﻿@{
+    ViewData["Title"] = "Create Bulk Attendees";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<form method="post" asp-action="BulkCreateConfirmation">
+    <h1>Create Bulk Attendees</h1>
+    <p>Enter a number below to automatically create unique attendees.</p>
+    <label>Attendees to Create</label>
+    <input type="number" name="amount" />
+    <button type="submit">Create Attendees</button>
+</form>
