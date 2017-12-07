@@ -1,0 +1,33 @@
+﻿@using Indspire.Soaring.Engagement.Data
+@using Microsoft.EntityFrameworkCore
+
+@inject ApplicationDbContext DbContext
+
+@if (DbContext != null)
+{
+    var instances = await DbContext.Instance
+        .OrderBy(i => i.Name)
+        .ToListAsync();
+
+    if (instances != null && instances.Count > 0)
+    {
+        <form asp-action="Select" asp-controller="Instance" method="post">
+            <label class="admin-backend__top-event-select-label" for="event-selector">Event:</label>
+            <select id="event-selector" name="InstanceID" class="admin-backend__top-event-select">
+
+                @foreach (var instance in instances)
+                {
+                    <option class="admin-backend__top-event-select-item"
+                            value="@instance.InstanceID">
+                        @instance.Name
+                    </option>
+                }
+            </select>
+            <button type="submit">Select</button>
+        </form>
+    }
+    else
+    {
+        <h1>No instances.</h1>
+    }
+}

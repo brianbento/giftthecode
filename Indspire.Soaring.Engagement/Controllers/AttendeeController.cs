@@ -92,12 +92,21 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateAttendeeViewModel attendeeViewModel)
+        public async Task<IActionResult> Create(
+            CreateAttendeeViewModel attendeeViewModel)
         {
             var dataUtils = new DataUtils();
 
             if (ModelState.IsValid)
             {
+                var instanceID = 
+                    Request.Cookies.ContainsKey("InstanceID") &&
+                    int.TryParse(Request.Cookies["InstanceID"], out int tempInstanceID)
+                        ? tempInstanceID
+                        : -1;
+
+                var instance = await _context.Instance.FirstOrDefaultAsync(i => i.InstanceID == instanceID);
+
                 var attendee = new Attendee();
 
                 attendee.ModifiedDate = attendee.CreatedDate = DateTime.UtcNow;

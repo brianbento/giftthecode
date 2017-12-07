@@ -10,6 +10,7 @@
     using Indspire.Soaring.Engagement.Models.InstanceViewModels;
     using Indspire.Soaring.Engagement.Utils;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
@@ -70,6 +71,46 @@
             }
 
             return View(instanceViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Select(SelectInstanceViewModel instanceViewModel)
+        {
+            var returnUrl = "/admin";
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var instance = _context.Instance
+                        .FirstOrDefault(i => i.InstanceID == instanceViewModel.InstanceID);
+
+                    if (instance != null)
+                    {
+                        Response.Cookies.Append(
+                            "InstanceID",
+                            instance.InstanceID.ToString(),
+                            new CookieOptions()
+                            {
+                                Secure = true
+                            });
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!InstanceExists(instanceViewModel.InstanceID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
+
+            return Redirect(returnUrl);
         }
 
         public async Task<IActionResult> Edit(int? id)
