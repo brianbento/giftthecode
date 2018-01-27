@@ -8,6 +8,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+#if !DISABLE_UP_MIGRATIONS
             migrationBuilder.AddColumn<string>(
                 name: "Description",
                 table: "Award",
@@ -19,6 +20,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                 table: "Award",
                 type: "nvarchar(max)",
                 nullable: true);
+#endif
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

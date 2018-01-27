@@ -9,6 +9,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+#if !DISABLE_UP_MIGRATIONS
             migrationBuilder.AddColumn<int>(
                 name: "InstanceID",
                 table: "Award",
@@ -43,6 +44,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
             //    principalTable: "Instance",
             //    principalColumn: "InstanceID",
             //    onDelete: ReferentialAction.Cascade);
+#endif
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

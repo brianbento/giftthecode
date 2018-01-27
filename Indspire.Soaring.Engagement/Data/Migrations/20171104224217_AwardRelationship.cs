@@ -8,6 +8,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+#if !DISABLE_UP_MIGRATIONS
             migrationBuilder.CreateIndex(
                 name: "IX_AwardLog_AwardID",
                 table: "AwardLog",
@@ -20,6 +21,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                 principalTable: "Award",
                 principalColumn: "AwardID",
                 onDelete: ReferentialAction.Cascade);
+#endif
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -8,6 +8,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+#if !DISABLE_UP_MIGRATIONS
             migrationBuilder.DropForeignKey(
                 name: "FK_AwardLog_User_UserID",
                 table: "AwardLog");
@@ -44,6 +45,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                 principalTable: "Attendee",
                 principalColumn: "UserID",
                 onDelete: ReferentialAction.Cascade);
+#endif
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

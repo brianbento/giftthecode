@@ -9,6 +9,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+#if !DISABLE_UP_MIGRATIONS
             migrationBuilder.CreateTable(
                 name: "RedemptionLog",
                 columns: table => new
@@ -33,6 +34,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                 name: "IX_RedemptionLog_RedemptionID",
                 table: "RedemptionLog",
                 column: "RedemptionID");
+#endif
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
