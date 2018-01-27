@@ -6,6 +6,12 @@ namespace Indspire.Soaring.Engagement.Database
 
     public class Redemption
     {
+        [DisplayName("Instance ID")]
+        public int InstanceID { get; set; }
+
+        [DisplayName("Instance")]
+        public Instance Instance { get; set; }
+
         [DisplayName("Redemption ID")]
         public int RedemptionID { get; set; }
 

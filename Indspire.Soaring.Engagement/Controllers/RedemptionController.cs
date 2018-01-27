@@ -25,7 +25,7 @@
             _context = context;
         }
 
-        public async Task<IActionResult> Index(
+        public IActionResult Index(
             int page = 1, 
             int pageSize = 20,
             string search = null)
@@ -33,39 +33,33 @@
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
+            IEnumerable<Redemption> redemptions = null;
 
-            List<Redemption> redemptions = null;
             int totalCount = 0;
 
+            var instanceSelector = new InstanceSelector(HttpContext);
 
-            if (string.IsNullOrEmpty(search))
-            {
-                redemptions = await _context.Redemption
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+            var selectedInstanceID = instanceSelector.GetInstanceID();
 
-                totalCount = await _context.Redemption.CountAsync();
-            }
-            else
-            {
-                redemptions = await _context.Redemption
-                    .Where(i => i.Name.Contains(search) || i.RedemptionNumber.Contains(search) || i.Description.Contains(search))
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+            var filterFunc = string.IsNullOrWhiteSpace(search)
+                ? new Func<Redemption, bool>(i => i.InstanceID == selectedInstanceID)
+                : new Func<Redemption, bool>(i =>
+                    i.InstanceID == selectedInstanceID &&
+                    (i.Name.Contains(search) ||
+                    i.RedemptionNumber.Contains(search) ||
+                    i.Description.Contains(search)));
 
-                totalCount = await _context.Redemption
-                    .Where(i => i.Name.Contains(search) || i.RedemptionNumber.Contains(search) || i.Description.Contains(search))
-                    .CountAsync();
-            }
+            redemptions = _context.Redemption
+                .Where(filterFunc)
+                .OrderByDescending(i => i.CreatedDate)
+                .Skip(skip)
+                .Take(take);
+
+            totalCount = _context.Redemption.Count();
 
             return View(redemptions.ToPagedList(totalCount, page, pageSize, search));
         }
 
-        // GET: Redemptions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -99,8 +93,13 @@
 
             if (ModelState.IsValid)
             {
+                var instanceSelector = new InstanceSelector(HttpContext);
+
+                var selectedInstanceID = instanceSelector.GetInstanceID();
+
                 var redemption = new Redemption();
 
+                redemption.InstanceID = selectedInstanceID;
                 redemption.RedemptionNumber = dataUtils.GenerateNumber();
                 redemption.ModifiedDate = redemption.CreatedDate = DateTime.UtcNow;
                 redemption.PointsRequired = redemptionViewModel.PointsRequired;

@@ -16,9 +16,14 @@
 
         public bool DefaultInstance { get; set; }
 
+        [DisplayName("Awards")]
         public IList<Award> Awards { get; set; }
 
+        [DisplayName("Attendees")]
         public IList<Attendee> Attendees { get; set; }
+
+        [DisplayName("Redemptions")]
+        public IList<Redemption> Redemptions { get; set; }
 
         [DisplayName("Deleted")]
         public bool Deleted { get; set; } = false;
