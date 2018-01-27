@@ -11,19 +11,21 @@
 
     if (instances != null && instances.Count > 0)
     {
-        <form asp-action="Select" asp-controller="Instance" method="post">
-            <label class="admin-backend__top-event-select-label" for="event-selector">Event:</label>
-            <select id="event-selector" name="InstanceID" class="admin-backend__top-event-select">
+        <form class="instance-selector" asp-action="Select" asp-controller="Instance" method="post">
+            <div class="instance-selector__input input input__select">
+                <label class="admin-backend__top-event-select-label" for="event-selector">Event:</label>
+                <select id="event-selector" name="InstanceID" class="admin-backend__top-event-select">
 
-                @foreach (var instance in instances)
-                {
-                    <option class="admin-backend__top-event-select-item"
-                            value="@instance.InstanceID">
-                        @instance.Name
-                    </option>
-                }
-            </select>
-            <button type="submit">Select</button>
+                    @foreach (var instance in instances)
+                    {
+                        <option class="admin-backend__top-event-select-item"
+                                value="@instance.InstanceID">
+                            @instance.Name
+                        </option>
+                    }
+                </select>
+                <button class="blue-button" type="submit">Select</button>
+            </div>
         </form>
     }
     else

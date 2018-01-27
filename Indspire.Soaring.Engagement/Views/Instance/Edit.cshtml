@@ -8,8 +8,8 @@
     <div class="admin-backend__main-header">
         <div class="admin-backend__main-header-title">
             <a class="admin-backend__main-header-title-back fa fa-chevron-left" asp-action="Index"></a>
-            <span class="admin-backend__main-header-title-icon fa fa-user-plus"></span>
-            <span class="admin-backend__main-header-title-text">Edit Instance</span>
+            <span class="admin-backend__main-header-title-icon fa fa-plus"></span>
+            <span class="admin-backend__main-header-title-text">Edit Event</span>
         </div>
 
         <div class="admin-backend__main-header-actions">
@@ -34,9 +34,9 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <div class="input input__text">
-                <label asp-for="DefaultInstance" class="control-label">Default Instance</label>
+            <div class="input input__checkbox">
                 <input asp-for="DefaultInstance" class="form-control" />
+                <label asp-for="DefaultInstance" class="control-label">Default Instance</label>
                 <span asp-validation-for="DefaultInstance" class="text-danger"></span>
             </div>
 

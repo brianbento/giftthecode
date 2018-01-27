@@ -154,7 +154,7 @@
 
 .admin-backend__main-header-title {
     display: flex;
-    width: 100%;
+    flex: 1 1 auto;
     align-items: center;
 }
 
@@ -187,10 +187,11 @@
 }
 
 .admin-backend__main-header-actions {
-    flex: 1 0 auto;
+    flex: 1 1 auto;
     display: flex;
     align-items: center;
     overflow: hidden;
+    justify-content: flex-end;
 }
 
 .admin-backend__main-header-actions-link {
@@ -246,6 +247,26 @@ admin-backend__main-header-actions-link-text {
 
 .admin-qr-code {
     max-width: 250px;
+}
+
+.admin-backend__main-header-search {
+    margin-right: 0.5rem;
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: center;
+}
+
+.admin-backend__main-header-search-label {
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.admin-backend__main-header-search-input {
+
+}
+
+.admin-backend__main-header-search-button {
+
 }
 
 /*

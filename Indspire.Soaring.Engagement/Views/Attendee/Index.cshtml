@@ -15,12 +15,16 @@
             <span class="admin-backend__main-header-title-text">Attendees</span>
         </div>
 
+        <form class="admin-backend__main-header-search" method="get" asp-action="Index">
+            <div class="input input__text input__joined">
+                <label class="admin-backend__main-header-search-label">Search Attendees</label>
+                <input class="admin-backend__main-header-search-input" type="text" placeholder="Enter Number or External ID" name="search" value="@list.Search" />
+                <button class="admin-backend__main-header-search-submit gray-button" type="submit">Search</button>
+            </div>
+        </form>
+
         <div class="admin-backend__main-header-actions">
-            <form method="get" asp-action="Index">
-                <label>Search</label>
-                <input type="text" placeholder="Enter Number or External ID" name="search" value="@list.Search" />
-                <button type="submit">Go</button>
-            </form>
+
             <a class="admin-backend__main-header-actions-link" title="Create New User" asp-action="Create">
                 <span class="admin-backend__main-header-actions-link-icon fa fa-user-plus fa-2x" aria-hidden="true"></span>
             </a>
@@ -34,7 +38,7 @@
     </div>
 
     <div class="admin-backend__main-content admin-backend__users">
-       
+
         @if (Model != null && Model.Count() > 0)
         {
             <table class="admin-backend__users-table table">
