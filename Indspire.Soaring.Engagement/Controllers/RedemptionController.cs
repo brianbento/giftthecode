@@ -55,7 +55,9 @@
                 .Skip(skip)
                 .Take(take);
 
-            totalCount = _context.Redemption.Count();
+            totalCount = _context.Redemption
+                .Where(filterFunc)
+                .Count();
 
             return View(redemptions.ToPagedList(totalCount, page, pageSize, search));
         }
