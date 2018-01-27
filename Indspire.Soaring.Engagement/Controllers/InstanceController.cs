@@ -105,12 +105,9 @@
 
                 await _context.SaveChangesAsync();
 
-                // TODO: move this code to its own class
-                var selectedInstanceCookieIDAsString = HttpContext.Request.Cookies["InstanceID"];
+                var instanceSelector = new InstanceSelector(HttpContext);
 
-                var selectedInstanceID = 0;
-
-                int.TryParse(selectedInstanceCookieIDAsString, out selectedInstanceID);
+                var selectedInstanceID = instanceSelector.GetInstanceID();
 
                 // if the deleted instance was the selected one,
                 // defaults to the first instance, if any.
@@ -121,13 +118,7 @@
 
                     if (firstInstance != null)
                     {
-                        HttpContext.Response.Cookies.Append(
-                            "InstanceID",
-                            firstInstance.InstanceID.ToString(),
-                            new CookieOptions()
-                            {
-                                Secure = true
-                            });
+                        instanceSelector.SetInstanceID(firstInstance.InstanceID);
                     }
                 }
             }
@@ -143,6 +134,11 @@
 
             if (ModelState.IsValid)
             {
+                if (!string.IsNullOrWhiteSpace(instanceViewModel.ReturnUrl))
+                {
+                    returnUrl = instanceViewModel.ReturnUrl;
+                }
+
                 try
                 {
                     var instance = _context.Instance
@@ -150,13 +146,9 @@
 
                     if (instance != null)
                     {
-                        HttpContext.Response.Cookies.Append(
-                            "InstanceID",
-                            instance.InstanceID.ToString(),
-                            new CookieOptions()
-                            {
-                                Secure = true
-                            });
+                        var instanceSelector = new InstanceSelector(HttpContext);
+
+                        instanceSelector.SetInstanceID(instance.InstanceID);
                     }
                 }
                 catch (DbUpdateConcurrencyException)

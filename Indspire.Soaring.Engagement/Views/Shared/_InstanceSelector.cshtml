@@ -6,22 +6,22 @@
 @inject ApplicationDbContext DbContext
 @inject IHttpContextAccessor HttpContextAccessor
 
-@if (DbContext != null)
+@if (DbContext != null &&
+     HttpContextAccessor != null)
 {
     var instances = await DbContext.Instance
         .OrderBy(i => i.Name)
         .ToListAsync();
 
-    var selectedInstanceCookieIDAsString = HttpContextAccessor.HttpContext.Request.Cookies["InstanceID"];
+    var instanceSelector = new InstanceSelector(HttpContextAccessor.HttpContext);
 
-    var selectedInstanceID = 0;
-
-    int.TryParse(selectedInstanceCookieIDAsString, out selectedInstanceID);
+    var selectedInstanceID = instanceSelector.GetInstanceID();
 
     if (instances != null && instances.Count > 0)
     {
         <form asp-action="Select" asp-controller="Instance" method="post">
             <label class="admin-backend__top-event-select-label" for="event-selector">Instance:</label>
+            <input type="hidden" name="ReturnUrl" value="@HttpContextAccessor.HttpContext.Request.Path" />
             <select id="event-selector" name="InstanceID" class="admin-backend__top-event-select">
 
                 @foreach (var instance in instances)
