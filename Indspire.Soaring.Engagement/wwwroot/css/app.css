@@ -208,7 +208,9 @@ h1 {
 .input.input__text input,
 .input.input__textarea input,
 .input.input__text textarea,
-.input.input__textarea textarea {
+.input.input__textarea textarea,
+.input.input__text select,
+.input.input__textarea select {
   display: block;
   width: 100%;
   padding: 0.5rem 0.8rem;
