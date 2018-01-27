@@ -18,6 +18,8 @@
 
         public IList<Award> Awards { get; set; }
 
+        public IList<Attendee> Attendees { get; set; }
+
         [DisplayName("Deleted")]
         public bool Deleted { get; set; } = false;
 

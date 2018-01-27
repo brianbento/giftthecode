@@ -75,6 +75,11 @@ namespace Indspire.Soaring.Engagement.Data
                 .HasMany(i => i.Awards)
                 .WithOne(i => i.Instance)
                 .HasForeignKey(i => i.InstanceID);
+
+            builder.Entity<Instance>()
+                .HasMany(i => i.Attendees)
+                .WithOne(i => i.Instance)
+                .HasForeignKey(i => i.InstanceID);
         }
 
         public DbSet<Indspire.Soaring.Engagement.Database.Redemption> Redemption { get; set; }

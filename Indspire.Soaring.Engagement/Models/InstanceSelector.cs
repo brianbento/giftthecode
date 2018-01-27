@@ -25,11 +25,15 @@ namespace Indspire.Soaring.Engagement.Models
         public int GetInstanceID()
         {
             var selectedInstanceCookieIDAsString =
-                this.HttpContext.Request.Cookies[cookieName];
+                this.HttpContext.Request.Cookies.ContainsKey(cookieName)
+                    ? this.HttpContext.Request.Cookies[cookieName]
+                    : string.Empty;
 
-            var selectedInstanceID = 0;
-
-            int.TryParse(selectedInstanceCookieIDAsString, out selectedInstanceID);
+            var selectedInstanceID =
+                !string.IsNullOrWhiteSpace(selectedInstanceCookieIDAsString) &&
+                int.TryParse(selectedInstanceCookieIDAsString, out int tempInstanceID)
+                        ? tempInstanceID
+                        : -1;
 
             return selectedInstanceID;
         }
