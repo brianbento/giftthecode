@@ -21,8 +21,13 @@
     {
         <form asp-action="Select" asp-controller="Instance" method="post">
             <label class="admin-backend__top-event-select-label" for="event-selector">Instance:</label>
+            
             <input type="hidden" name="ReturnUrl" value="@HttpContextAccessor.HttpContext.Request.Path" />
-            <select id="event-selector" name="InstanceID" class="admin-backend__top-event-select">
+
+            <select id="event-selector"
+                    name="InstanceID"
+                    class="admin-backend__top-event-select"
+                    data-bind="postBack">
 
                 @foreach (var instance in instances)
                 {
