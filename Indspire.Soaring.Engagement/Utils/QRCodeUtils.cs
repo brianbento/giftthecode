@@ -22,5 +22,12 @@ namespace Indspire.Soaring.Engagement.Utils
             string qrCodeImageAsBase64 = qrCode.GetGraphic(20);
             return qrCodeImageAsBase64;
         }
+
+        public static byte[] GenerateQRCodeAsBytes(string content)
+        {
+            QRCodeData qrCodeData = GenerateQRCode(content);
+            var qrCode = new PngByteQRCode(qrCodeData);
+            return qrCode.GetGraphic(4);
+        }
     }
 }
