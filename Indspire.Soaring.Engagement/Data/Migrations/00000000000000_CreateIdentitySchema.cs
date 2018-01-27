@@ -11,6 +11,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+#if !DISABLE_UP_MIGRATIONS
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -190,6 +191,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+#endif
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

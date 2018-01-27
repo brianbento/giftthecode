@@ -12,7 +12,7 @@
             margin-bottom: 0.3rem;
         }
 
-        input, textarea {
+        input, textarea, select {
             display: block;
             width: 100%;
             padding: 0.5rem 0.8rem;
@@ -49,6 +49,33 @@
 
         button {
             flex: 0 0 100%;
+        }
+    }
+
+    &.input__checkbox {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        input, label {
+            cursor: pointer;
+        }
+
+        input {
+            margin-right: 0.3rem;
+        }
+
+        .text-danger {
+            flex: 0 0 100%;
+        }
+    }
+
+    &.input__select {
+        display: flex;
+        align-items: center;
+
+        select {
+            margin-right: 0.5rem;
         }
     }
 }

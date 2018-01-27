@@ -6,6 +6,12 @@ namespace Indspire.Soaring.Engagement.Database
 
     public class Attendee
     {
+        [DisplayName("Instance ID")]
+        public int InstanceID { get; set; }
+
+        [DisplayName("Instance")]
+        public Instance Instance { get; set; }
+
         [DisplayName("User ID")]
         public int UserID { get; set; }
 

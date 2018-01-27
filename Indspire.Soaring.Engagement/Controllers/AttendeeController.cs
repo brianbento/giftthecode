@@ -25,64 +25,73 @@
             _context = context;
         }
 
-        // GET: User
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string search = null)
+        public IActionResult Index(
+            int page = 1,
+            int pageSize = 10,
+            string search = null)
         {
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
-            List<Attendee> users = null;
+            IEnumerable<Attendee> users = new List<Attendee>();
+
             int totalCount = 0;
 
-            if (string.IsNullOrEmpty(search))
-            {
-                users = await _context.Attendee
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+            var instanceSelector = new InstanceSelector(HttpContext);
 
-                totalCount = await _context.Attendee.CountAsync();
-            } else
-            {
-                users = await _context.Attendee
-                    .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search))
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+            var selectedInstanceID = instanceSelector.GetInstanceID();
 
-                totalCount = await _context.Attendee
-                    .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search)).CountAsync();
-            }
+            var filterFunc = string.IsNullOrWhiteSpace(search)
+                ? new Func<Attendee, bool>(i => i.InstanceID == selectedInstanceID)
+                : new Func<Attendee, bool>(i =>
+                    i.InstanceID == selectedInstanceID &&
+                    (i.UserNumber.Contains(search) ||
+                    i.ExternalID.Contains(search)));
+
+            users = _context.Attendee
+                .Where(filterFunc)
+                .OrderByDescending(i => i.CreatedDate)
+                .Skip(skip)
+                .Take(take);
+
+            totalCount = _context.Attendee
+                .Where(filterFunc)
+                .Count();
 
             return View(users.ToPagedList(totalCount, page, pageSize, search));
         }
 
-        // GET: User/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
+            IActionResult actionResult = null;
+
             var viewModel = new UserDetailsViewModel();
 
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var attendee = await _context.Attendee
-                .SingleOrDefaultAsync(m => m.UserID == id);
+            var attendee = id.HasValue
+                ? await _context.Attendee
+                    .FirstOrDefaultAsync(m => m.UserID == id)
+                : null;
 
             if (attendee == null)
             {
-                return NotFound();
+                actionResult = NotFound();
+            }
+            else
+            {
+                viewModel.User = attendee;
+
+                viewModel.PointsBalance = PointsUtils.GetPointsForUser(
+                    attendee.UserID,
+                    _context);
+
+                actionResult = View(viewModel);
             }
 
-            viewModel.User = attendee;
-            viewModel.PointsBalance = PointsUtils.GetPointsForUser(attendee.UserID, _context);
-
-            return View(viewModel);
+            return actionResult;
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
             var viewModel = new CreateAttendeeViewModel();
@@ -95,64 +104,70 @@
         public async Task<IActionResult> Create(
             CreateAttendeeViewModel attendeeViewModel)
         {
+            IActionResult actionResult = null;
+
             var dataUtils = new DataUtils();
 
             if (ModelState.IsValid)
             {
-                var instanceID = 
-                    Request.Cookies.ContainsKey("InstanceID") &&
-                    int.TryParse(Request.Cookies["InstanceID"], out int tempInstanceID)
-                        ? tempInstanceID
-                        : -1;
+                var instanceSelector = new InstanceSelector(HttpContext);
 
-                var instance = await _context.Instance.FirstOrDefaultAsync(i => i.InstanceID == instanceID);
+                var selectedInstanceID = instanceSelector.GetInstanceID();
 
                 var attendee = new Attendee();
 
+                attendee.InstanceID = selectedInstanceID;
                 attendee.ModifiedDate = attendee.CreatedDate = DateTime.UtcNow;
                 attendee.Deleted = false;
                 attendee.UserNumber = dataUtils.GenerateNumber();
-
-                if (attendeeViewModel != null)
-                {
-                    attendee.ExternalID = attendeeViewModel.ExternalID;
-                }
+                attendee.ExternalID = attendeeViewModel == null
+                    ? string.Empty
+                    : attendeeViewModel.ExternalID;
 
                 _context.Add(attendee);
 
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                actionResult = RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                actionResult = View(attendeeViewModel);
             }
 
-            return View(attendeeViewModel);
+            return actionResult;
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            IActionResult actionResult = null;
 
-            var user = await _context.Attendee.SingleOrDefaultAsync(m => m.UserID == id);
+            var user = id.HasValue
+                ? await _context.Attendee.FirstOrDefaultAsync(m => m.UserID == id)
+                : null;
 
             if (user == null)
             {
-                return NotFound();
+                actionResult = NotFound();
+            }
+            else
+            {
+                var viewModel = new EditAttendeeViewModel();
+
+                viewModel.ExternalID = user.ExternalID;
+                viewModel.UserID = user.UserID;
+
+                actionResult = View(viewModel);
             }
 
-            var viewModel = new EditAttendeeViewModel();
-
-            viewModel.ExternalID = user.ExternalID;
-            viewModel.UserID = user.UserID;
-
-            return View(viewModel);
+            return actionResult;
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EditAttendeeViewModel attendeeViewModel)
+        public async Task<IActionResult> Edit(
+            int id,
+            EditAttendeeViewModel attendeeViewModel)
         {
             if (id != attendeeViewModel.UserID)
             {
@@ -194,23 +209,25 @@
             return View(attendeeViewModel);
         }
 
-        // GET: User/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            IActionResult actionResult = null;
 
-            var attendee = await _context.Attendee
-                .SingleOrDefaultAsync(m => m.UserID == id);
+            var attendee = id.HasValue
+                ? await _context.Attendee
+                    .FirstOrDefaultAsync(m => m.UserID == id)
+                : null;
 
             if (attendee == null)
             {
-                return NotFound();
+                actionResult = NotFound();
+            }
+            else
+            {
+                actionResult = View(attendee);
             }
 
-            return View(attendee);
+            return actionResult;
         }
 
         [HttpPost]
@@ -218,13 +235,25 @@
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var attendee = await _context.Attendee.SingleOrDefaultAsync(m => m.UserID == id);
+            var attendee = await _context.Attendee
+                .FirstOrDefaultAsync(m => m.UserID == id);
 
-            _context.Attendee.Remove(attendee);
+            IActionResult actionResult = null;
 
-            await _context.SaveChangesAsync();
+            if (attendee == null)
+            {
+                actionResult = NotFound();
+            }
+            else
+            {
+                _context.Attendee.Remove(attendee);
 
-            return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+
+                actionResult = RedirectToAction(nameof(Index));
+            }
+
+            return actionResult;
         }
 
         private bool AttendeeExists(int id)
@@ -297,13 +326,13 @@
                 }
 
 
-                for(var i = 0; i < amount; i++)
+                for (var i = 0; i < amount; i++)
                 {
                     var dataUtils = new DataUtils();
                     Attendee user = new Attendee();
                     user.UserNumber = dataUtils.GenerateNumber();
                     user.CreatedDate = DateTime.UtcNow;
-                    user.ModifiedDate = user.CreatedDate;   
+                    user.ModifiedDate = user.CreatedDate;
                     _context.Add(user);
                     await _context.SaveChangesAsync();
                     usersCreated++;
@@ -313,7 +342,8 @@
                 viewModel.Success = true;
 
                 return View("BulkCreateSuccess", viewModel);
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 viewModel.Success = false;
                 viewModel.AmountCreated = usersCreated;
@@ -332,7 +362,7 @@
 
                 var user = await _context.Attendee.FirstOrDefaultAsync(i => i.UserNumber == userNumber);
 
-                if(user == null)
+                if (user == null)
                 {
                     throw new ApplicationException("User not found");
                 }
@@ -345,7 +375,8 @@
 
                 viewModel.ResponseData.Success = true;
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 viewModel.ErrorMessage = ex.Message;
                 viewModel.ResponseData.Success = false;

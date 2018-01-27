@@ -11,9 +11,10 @@ using System;
 namespace Indspire.Soaring.Engagement.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180127194213_Attendee_InstanceID")]
+    partial class Attendee_InstanceID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,8 +134,6 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("InstanceID");
-
                     b.Property<DateTime>("ModifiedDate");
 
                     b.Property<string>("Name");
@@ -144,8 +143,6 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.Property<string>("RedemptionNumber");
 
                     b.HasKey("RedemptionID");
-
-                    b.HasIndex("InstanceID");
 
                     b.ToTable("Redemption");
                 });
@@ -357,14 +354,6 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.HasOne("Indspire.Soaring.Engagement.Database.Attendee", "User")
                         .WithMany("AwardLogs")
                         .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.Redemption", b =>
-                {
-                    b.HasOne("Indspire.Soaring.Engagement.Database.Instance", "Instance")
-                        .WithMany("Redemptions")
-                        .HasForeignKey("InstanceID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

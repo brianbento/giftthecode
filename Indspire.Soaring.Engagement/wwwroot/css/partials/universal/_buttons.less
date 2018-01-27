@@ -1,8 +1,8 @@
 ﻿@import (reference) "../_variables.less";
 @import (reference) "../_mixins.less";
 
-@theme-color-names: blue,red,green;
-@theme-color-hex: @theme-blue,@theme-red,@theme-green;
+@theme-color-names: blue,red,green,white,gray;
+@theme-color-hex: @theme-blue,@theme-red,@theme-green,@raw,@medium;
 @theme-color-names-length: length(@theme-color-names);
 
 
@@ -75,3 +75,7 @@
 }
 
 .generate-buttons(@theme-color-names, @theme-color-hex, @theme-color-names-length);
+
+.white-button, .gray-button {
+    color: @black;
+}

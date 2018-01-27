@@ -3,9 +3,21 @@
     ViewData["Title"] = "Error Creating Bulk Attendees";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+
+<div class="admin-backend__main-header">
+    <div class="admin-backend__main-header-title">
+        <a class="admin-backend__main-header-title-back fa fa-chevron-left" asp-action="Index"></a>
+        <span class="admin-backend__main-header-title-icon fa fa-users"></span>
+        <span class="admin-backend__main-header-title-text">@ViewData["Title"]</span>
+    </div>
+
+    <div class="admin-backend__main-header-actions">
+
+    </div>
+</div>
+
 <div>
-    <h1>@ViewData["Title"]</h1>
     <p>@Model.ErrorMessage</p>
     <p>@Model.AmountCreated/@Model.Amount attendees created.</p>
-    <a asp-action="BulkCreate">Try again?</a>
+    <a asp-action="BulkCreate" class="blue-button">Try again?</a>
 </div>
