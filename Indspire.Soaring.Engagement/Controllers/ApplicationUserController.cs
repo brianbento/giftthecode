@@ -5,7 +5,6 @@
     using Indspire.Soaring.Engagement.Extensions;
     using Indspire.Soaring.Engagement.Models;
     using Indspire.Soaring.Engagement.Services;
-    using Indspire.Soaring.Engagement.Utils;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -16,8 +15,11 @@
     public class ApplicationUserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+
         private readonly SignInManager<ApplicationUser> _signInManager;
+
         private readonly IEmailSender _emailSender;
+
         private readonly ILogger _logger;
 
         public ApplicationUserController(
@@ -33,7 +35,9 @@
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(
+            int page = 1,
+            int pageSize = 10)
         {
             var take = pageSize;
             var skip = pageSize * (page - 1);
@@ -48,6 +52,7 @@
             return View(users.ToPagedList(totalCount, page, pageSize));
         }
 
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -64,7 +69,7 @@
             string password,
             string confirmPassword)
         {
-            var dataUtils = new DataUtils();
+            IActionResult actionResult = null;
 
             if (ModelState.IsValid)
             {
@@ -80,30 +85,40 @@
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                actionResult = RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                // TODO: display specific error messages
+                actionResult = View(user);
             }
 
-            return View(user);
+            return actionResult;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            IActionResult actionResult = null;
 
-            var user = await _userManager.FindByIdAsync(id);
+            var user = string.IsNullOrWhiteSpace(id)
+                ? null
+                : await _userManager.FindByIdAsync(id);
 
             if (user == null)
             {
-                return NotFound();
+                actionResult = NotFound();
+            }
+            else
+            {
+                actionResult = View(user);
             }
 
-            return View(user);
+            return actionResult;
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
