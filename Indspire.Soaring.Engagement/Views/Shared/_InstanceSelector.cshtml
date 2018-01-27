@@ -1,7 +1,10 @@
 ﻿@using Indspire.Soaring.Engagement.Data
+@using Microsoft.AspNetCore.Http
+@using Microsoft.EntityFrameworkCore
 @using Microsoft.EntityFrameworkCore
 
 @inject ApplicationDbContext DbContext
+@inject IHttpContextAccessor HttpContextAccessor
 
 @if (DbContext != null)
 {
@@ -9,18 +12,35 @@
         .OrderBy(i => i.Name)
         .ToListAsync();
 
+    var selectedInstanceCookieIDAsString = HttpContextAccessor.HttpContext.Request.Cookies["InstanceID"];
+
+    var selectedInstanceID = 0;
+
+    int.TryParse(selectedInstanceCookieIDAsString, out selectedInstanceID);
+
     if (instances != null && instances.Count > 0)
     {
         <form asp-action="Select" asp-controller="Instance" method="post">
-            <label class="admin-backend__top-event-select-label" for="event-selector">Event:</label>
+            <label class="admin-backend__top-event-select-label" for="event-selector">Instance:</label>
             <select id="event-selector" name="InstanceID" class="admin-backend__top-event-select">
 
                 @foreach (var instance in instances)
                 {
-                    <option class="admin-backend__top-event-select-item"
-                            value="@instance.InstanceID">
-                        @instance.Name
-                    </option>
+                    if (selectedInstanceID == instance.InstanceID)
+                    {
+                        <option class="admin-backend__top-event-select-item"
+                                value="@instance.InstanceID"
+                                selected="selected">
+                            @instance.Name
+                        </option>
+                    }
+                    else
+                    {
+                        <option class="admin-backend__top-event-select-item"
+                                value="@instance.InstanceID">
+                            @instance.Name
+                        </option>
+                    }
                 }
             </select>
             <button type="submit">Select</button>

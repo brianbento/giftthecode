@@ -73,6 +73,68 @@
             return View(instanceViewModel);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var instance = await _context.Instance
+                .SingleOrDefaultAsync(m => m.InstanceID == id);
+
+            if (instance == null)
+            {
+                return NotFound();
+            }
+
+            return View(instance);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var instance = await _context.Instance
+                .FirstOrDefaultAsync(m => m.InstanceID == id);
+
+            if (instance != null)
+            {
+                _context.Instance.Remove(instance);
+
+                await _context.SaveChangesAsync();
+
+                // TODO: move this code to its own class
+                var selectedInstanceCookieIDAsString = HttpContext.Request.Cookies["InstanceID"];
+
+                var selectedInstanceID = 0;
+
+                int.TryParse(selectedInstanceCookieIDAsString, out selectedInstanceID);
+
+                // if the deleted instance was the selected one,
+                // defaults to the first instance, if any.
+                if (instance.InstanceID == selectedInstanceID)
+                {
+                    var firstInstance = await _context.Instance
+                        .FirstOrDefaultAsync(m => m.InstanceID == id);
+
+                    if (firstInstance != null)
+                    {
+                        HttpContext.Response.Cookies.Append(
+                            "InstanceID",
+                            firstInstance.InstanceID.ToString(),
+                            new CookieOptions()
+                            {
+                                Secure = true
+                            });
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Select(SelectInstanceViewModel instanceViewModel)
@@ -88,7 +150,7 @@
 
                     if (instance != null)
                     {
-                        Response.Cookies.Append(
+                        HttpContext.Response.Cookies.Append(
                             "InstanceID",
                             instance.InstanceID.ToString(),
                             new CookieOptions()
