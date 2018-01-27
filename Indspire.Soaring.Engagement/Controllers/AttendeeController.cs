@@ -385,5 +385,51 @@
             return Json(viewModel);
         }
 
+        public IActionResult PrintQRCode(string userNumber)
+        {
+            List<AttendeeLabel> labels = new List<AttendeeLabel>();
+
+            //Get the user
+            var attendee = _context.Attendee.FirstOrDefault(i => i.UserNumber == userNumber);
+
+            if (attendee == null)
+            {
+                throw new ApplicationException("Attendee not found.");
+            }
+            else
+            {
+                labels.Add(new AttendeeLabel(attendee));
+            }
+            
+            var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
+
+            return File(memoryStream, "application/pdf", $"attendee_{userNumber}_qr_code.pdf");
+        }
+
+        public IActionResult PrintAllQRCodes()
+        {
+            //assume we are printing ALL attendees
+            var labels = _context.Attendee.Select(i => new AttendeeLabel(i)).ToList();
+
+            var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
+
+            return File(memoryStream, "application/pdf", "all_qr_codes.pdf");
+        }
+
+        public IActionResult PrintTestQRCodes(int num = 12)
+        {
+            string testNumber = "123456";
+            List<AttendeeLabel> labels = new List<AttendeeLabel>();
+
+            for(var i = 0; i < num; i++)
+            {
+                labels.Add(new AttendeeLabel() { UserNumber = testNumber });
+            }
+            
+            var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
+
+            return File(memoryStream, "application/pdf", "test_qr_codes.pdf");
+        }
+
     }
 }
