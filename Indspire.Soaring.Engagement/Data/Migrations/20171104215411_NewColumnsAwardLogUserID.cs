@@ -9,6 +9,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+#if !DISABLE_UP_MIGRATIONS
             migrationBuilder.CreateTable(
                 name: "AwardLog",
                 columns: table => new
@@ -26,6 +27,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                 {
                     table.PrimaryKey("PK_AwardLog", x => x.AwardLogID);
                 });
+#endif
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

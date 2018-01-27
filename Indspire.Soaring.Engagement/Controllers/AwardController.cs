@@ -25,40 +25,35 @@
             _context = context;
         }
 
-        // GET: Award
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string search = null)
+        public IActionResult Index(int page = 1, int pageSize = 10, string search = null)
         {
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
-           
-            List<Award> awards = null;
+            IEnumerable<Award> awards = new List<Award>();
             int totalCount = 0;
 
-            if (string.IsNullOrEmpty(search))
-            {
-                awards = await _context.Award
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+            var instanceSelector = new InstanceSelector(HttpContext);
 
-                totalCount = await _context.Award.CountAsync();
-            }
-            else
-            {
-                awards = await _context.Award
-                    .Where(i => i.AwardNumber.Contains(search) || i.Name.Contains(search) || i.Description.Contains(search))
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+            var selectedInstanceID = instanceSelector.GetInstanceID();
 
-                totalCount = await _context.Award
-                    .Where(i => i.AwardNumber.Contains(search) || i.Name.Contains(search) || i.Description.Contains(search))
-                    .CountAsync();
-            }
+            var filterFunc = string.IsNullOrWhiteSpace(search)
+                ? new Func<Award, bool>(i => i.InstanceID == selectedInstanceID)
+                : new Func<Award, bool>(i =>
+                    i.InstanceID == selectedInstanceID &&
+                    (i.AwardNumber.Contains(search) ||
+                    i.Name.Contains(search) ||
+                    i.Description.Contains(search)));
 
+            awards = _context.Award
+                .Where(filterFunc)
+                .OrderByDescending(i => i.CreatedDate)
+                .Skip(skip)
+                .Take(take);
+
+            totalCount = _context.Award
+                .Where(filterFunc)
+                .Count();
 
             return View(awards.ToPagedList(totalCount, page, pageSize, search));
         }
@@ -142,6 +137,9 @@
             {
                 var award = new Award();
 
+                var instanceSelector = new InstanceSelector(HttpContext);
+
+                award.InstanceID = instanceSelector.GetInstanceID();
                 award.Name = awardViewModel.Name;
                 award.Description = awardViewModel.Description;
                 award.Points = awardViewModel.Points;
@@ -272,18 +270,18 @@
             var viewModel = new LogActionJsonViewModel();
             try
             {
-               
+
                 //validate 
                 var award = await _context.Award.FirstOrDefaultAsync(i => i.AwardNumber == AwardNumber);
 
-                if(award == null)
+                if (award == null)
                 {
                     throw new ApplicationException("Award not found.");
                 }
 
                 var user = await _context.Attendee.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
 
-                if(user == null)
+                if (user == null)
                 {
                     throw new ApplicationException("User not found.");
                 }
@@ -291,7 +289,7 @@
                 var existingAwardLogByThisUser = await _context.AwardLog.FirstOrDefaultAsync(i =>
                                                     i.UserID == user.UserID &&
                                                     i.AwardID == award.AwardID);
-                if(existingAwardLogByThisUser != null)
+                if (existingAwardLogByThisUser != null)
                 {
                     throw new ApplicationException($"User has already been Awarded points for this action. User has {PointsUtils.GetPointsForUser(user.UserID, _context)} points.");
                 }
@@ -314,7 +312,8 @@
                 viewModel.ResponseData.UserNumber = user.UserNumber;
                 viewModel.ResponseData.ExternalID = user.ExternalID;
 
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 viewModel.ErrorMessage = ex.Message;
                 viewModel.ResponseData = null;

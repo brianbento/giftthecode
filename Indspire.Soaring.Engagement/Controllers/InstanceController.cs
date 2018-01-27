@@ -73,6 +73,59 @@
             return View(instanceViewModel);
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var instance = await _context.Instance
+                .SingleOrDefaultAsync(m => m.InstanceID == id);
+
+            if (instance == null)
+            {
+                return NotFound();
+            }
+
+            return View(instance);
+        }
+
+        [HttpPost]
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var instance = await _context.Instance
+                .FirstOrDefaultAsync(m => m.InstanceID == id);
+
+            if (instance != null)
+            {
+                _context.Instance.Remove(instance);
+
+                await _context.SaveChangesAsync();
+
+                var instanceSelector = new InstanceSelector(HttpContext);
+
+                var selectedInstanceID = instanceSelector.GetInstanceID();
+
+                // if the deleted instance was the selected one,
+                // defaults to the first instance, if any.
+                if (instance.InstanceID == selectedInstanceID)
+                {
+                    var firstInstance = await _context.Instance
+                        .FirstOrDefaultAsync(m => m.InstanceID == id);
+
+                    if (firstInstance != null)
+                    {
+                        instanceSelector.SetInstanceID(firstInstance.InstanceID);
+                    }
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Select(SelectInstanceViewModel instanceViewModel)
@@ -81,6 +134,11 @@
 
             if (ModelState.IsValid)
             {
+                if (!string.IsNullOrWhiteSpace(instanceViewModel.ReturnUrl))
+                {
+                    returnUrl = instanceViewModel.ReturnUrl;
+                }
+
                 try
                 {
                     var instance = _context.Instance
@@ -88,13 +146,9 @@
 
                     if (instance != null)
                     {
-                        Response.Cookies.Append(
-                            "InstanceID",
-                            instance.InstanceID.ToString(),
-                            new CookieOptions()
-                            {
-                                Secure = true
-                            });
+                        var instanceSelector = new InstanceSelector(HttpContext);
+
+                        instanceSelector.SetInstanceID(instance.InstanceID);
                     }
                 }
                 catch (DbUpdateConcurrencyException)

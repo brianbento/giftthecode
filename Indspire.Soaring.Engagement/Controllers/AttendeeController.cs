@@ -25,41 +25,42 @@
             _context = context;
         }
 
-        // GET: User
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string search = null)
+        public IActionResult Index(
+            int page = 1,
+            int pageSize = 10,
+            string search = null)
         {
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
-            List<Attendee> users = null;
+            IEnumerable<Attendee> users = new List<Attendee>();
+
             int totalCount = 0;
 
-            if (string.IsNullOrEmpty(search))
-            {
-                users = await _context.Attendee
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+            var instanceSelector = new InstanceSelector(HttpContext);
 
-                totalCount = await _context.Attendee.CountAsync();
-            } else
-            {
-                users = await _context.Attendee
-                    .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search))
-                    .OrderByDescending(i => i.CreatedDate)
-                    .Skip(skip)
-                    .Take(take)
-                    .ToListAsync();
+            var selectedInstanceID = instanceSelector.GetInstanceID();
 
-                totalCount = await _context.Attendee
-                    .Where(i => i.UserNumber.Contains(search) || i.ExternalID.Contains(search)).CountAsync();
-            }
+            var filterFunc = string.IsNullOrWhiteSpace(search)
+                ? new Func<Attendee, bool>(i => i.InstanceID == selectedInstanceID)
+                : new Func<Attendee, bool>(i =>
+                    i.InstanceID == selectedInstanceID &&
+                    (i.UserNumber.Contains(search) ||
+                    i.ExternalID.Contains(search)));
+
+            users = _context.Attendee
+                .Where(filterFunc)
+                .OrderByDescending(i => i.CreatedDate)
+                .Skip(skip)
+                .Take(take);
+
+            totalCount = _context.Attendee
+                .Where(filterFunc)
+                .Count();
 
             return View(users.ToPagedList(totalCount, page, pageSize, search));
         }
 
-        // GET: User/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             var viewModel = new UserDetailsViewModel();
@@ -99,16 +100,13 @@
 
             if (ModelState.IsValid)
             {
-                var instanceID = 
-                    Request.Cookies.ContainsKey("InstanceID") &&
-                    int.TryParse(Request.Cookies["InstanceID"], out int tempInstanceID)
-                        ? tempInstanceID
-                        : -1;
+                var instanceSelector = new InstanceSelector(HttpContext);
 
-                var instance = await _context.Instance.FirstOrDefaultAsync(i => i.InstanceID == instanceID);
+                var selectedInstanceID = instanceSelector.GetInstanceID();
 
                 var attendee = new Attendee();
 
+                attendee.InstanceID = selectedInstanceID;
                 attendee.ModifiedDate = attendee.CreatedDate = DateTime.UtcNow;
                 attendee.Deleted = false;
                 attendee.UserNumber = dataUtils.GenerateNumber();
