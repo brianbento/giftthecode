@@ -141,8 +141,8 @@
 
                 try
                 {
-                    var instance = _context.Instance
-                        .FirstOrDefault(i => i.InstanceID == instanceViewModel.InstanceID);
+                    var instance = await _context.Instance
+                        .FirstOrDefaultAsync(i => i.InstanceID == instanceViewModel.InstanceID);
 
                     if (instance != null)
                     {

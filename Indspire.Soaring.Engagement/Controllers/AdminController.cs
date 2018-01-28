@@ -50,7 +50,7 @@
 
             //return View("~/Views/Admin/Admin.cshtml", topAwardPoints);
 
-            var topAwarded = _context.AwardLog
+            var topAwarded = await _context.AwardLog
                   .GroupBy(i => i.AwardID)
                   .Select(i => new AwardsRow()
                   {
@@ -61,9 +61,9 @@
                   })
                   .OrderByDescending(i => i.TimesAwards)
                   .Take(25)
-                  .ToList();
+                  .ToListAsync();
 
-            var topUsers = _context.AwardLog
+            var topUsers = await _context.AwardLog
                 .GroupBy(i => i.UserID)
                 .Select(i => new UserRow()
                 {
@@ -73,7 +73,7 @@
                 })
                 .OrderByDescending(i => i.Points)
                 .Take(25)
-                .ToList();
+                .ToListAsync();
 
             var dashboardReports = new DashboardReports();
 

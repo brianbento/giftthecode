@@ -300,7 +300,7 @@
             return new JsonResult(viewModel);
         }
 
-        public async Task<IActionResult> BulkCreate()
+        public IActionResult BulkCreate()
         {
             return View();
         }
