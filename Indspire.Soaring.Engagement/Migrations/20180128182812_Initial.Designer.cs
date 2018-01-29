@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace Indspire.Soaring.Engagement.Data.Migrations
+namespace Indspire.Soaring.Engagement.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20171104224217_AwardRelationship")]
-    partial class AwardRelationship
+    [Migration("20180128182812_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,10 +21,36 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                 .HasAnnotation("ProductVersion", "2.0.0-rtm-26452")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.Attendee", b =>
+                {
+                    b.Property<int>("UserID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<bool>("Deleted");
+
+                    b.Property<string>("ExternalID");
+
+                    b.Property<int>("InstanceID");
+
+                    b.Property<DateTime>("ModifiedDate");
+
+                    b.Property<string>("UserNumber");
+
+                    b.HasKey("UserID");
+
+                    b.HasIndex("InstanceID");
+
+                    b.ToTable("Attendee");
+                });
+
             modelBuilder.Entity("Indspire.Soaring.Engagement.Database.Award", b =>
                 {
                     b.Property<int>("AwardID")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AwardNumber");
 
                     b.Property<DateTime>("CreatedDate");
 
@@ -32,7 +58,7 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("EventNumber");
+                    b.Property<int>("InstanceID");
 
                     b.Property<DateTime>("ModifiedDate");
 
@@ -43,6 +69,8 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.Property<int>("VendorID");
 
                     b.HasKey("AwardID");
+
+                    b.HasIndex("InstanceID");
 
                     b.ToTable("Award");
                 });
@@ -68,7 +96,31 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
 
                     b.HasIndex("AwardID");
 
+                    b.HasIndex("UserID");
+
                     b.ToTable("AwardLog");
+                });
+
+            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.Instance", b =>
+                {
+                    b.Property<int>("InstanceID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<bool>("DefaultInstance");
+
+                    b.Property<bool>("Deleted");
+
+                    b.Property<string>("Description");
+
+                    b.Property<DateTime>("ModifiedDate");
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("InstanceID");
+
+                    b.ToTable("Instance");
                 });
 
             modelBuilder.Entity("Indspire.Soaring.Engagement.Database.Redemption", b =>
@@ -82,13 +134,19 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<int>("InstanceID");
+
                     b.Property<DateTime>("ModifiedDate");
 
                     b.Property<string>("Name");
 
+                    b.Property<int>("PointsRequired");
+
                     b.Property<string>("RedemptionNumber");
 
                     b.HasKey("RedemptionID");
+
+                    b.HasIndex("InstanceID");
 
                     b.ToTable("Redemption");
                 });
@@ -98,6 +156,10 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.Property<int>("RedemptionLogID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<DateTime>("ModifiedDate");
+
                     b.Property<int>("RedemptionID");
 
                     b.Property<int>("UserID");
@@ -106,27 +168,9 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
 
                     b.HasIndex("RedemptionID");
 
+                    b.HasIndex("UserID");
+
                     b.ToTable("RedemptionLog");
-                });
-
-            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.User", b =>
-                {
-                    b.Property<int>("UserID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedDate");
-
-                    b.Property<bool>("Deleted");
-
-                    b.Property<string>("ExternalID");
-
-                    b.Property<DateTime>("ModifiedDate");
-
-                    b.Property<string>("UserNumber");
-
-                    b.HasKey("UserID");
-
-                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Indspire.Soaring.Engagement.Models.ApplicationUser", b =>
@@ -288,11 +332,40 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.Attendee", b =>
+                {
+                    b.HasOne("Indspire.Soaring.Engagement.Database.Instance", "Instance")
+                        .WithMany("Attendees")
+                        .HasForeignKey("InstanceID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.Award", b =>
+                {
+                    b.HasOne("Indspire.Soaring.Engagement.Database.Instance", "Instance")
+                        .WithMany("Awards")
+                        .HasForeignKey("InstanceID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Indspire.Soaring.Engagement.Database.AwardLog", b =>
                 {
                     b.HasOne("Indspire.Soaring.Engagement.Database.Award", "Award")
                         .WithMany("AwardLogs")
                         .HasForeignKey("AwardID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Indspire.Soaring.Engagement.Database.Attendee", "User")
+                        .WithMany("AwardLogs")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Indspire.Soaring.Engagement.Database.Redemption", b =>
+                {
+                    b.HasOne("Indspire.Soaring.Engagement.Database.Instance", "Instance")
+                        .WithMany("Redemptions")
+                        .HasForeignKey("InstanceID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -301,6 +374,11 @@ namespace Indspire.Soaring.Engagement.Data.Migrations
                     b.HasOne("Indspire.Soaring.Engagement.Database.Redemption", "Redemption")
                         .WithMany("RedemptionLogs")
                         .HasForeignKey("RedemptionID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Indspire.Soaring.Engagement.Database.Attendee", "User")
+                        .WithMany("RedemptionLogs")
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
