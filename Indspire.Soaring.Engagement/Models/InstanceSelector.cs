@@ -47,7 +47,9 @@ namespace Indspire.Soaring.Engagement.Models
 
                 new CookieOptions()
                 {
-                    Secure = true
+                    HttpOnly = true,
+
+                    SameSite = SameSiteMode.Strict
                 });
         }
     }
