@@ -7,7 +7,7 @@
 @inject IHttpContextAccessor HttpContextAccessor
 
 @if (DbContext != null &&
-     HttpContextAccessor != null)
+HttpContextAccessor != null)
 {
     var instances = await DbContext.Instance
         .OrderBy(i => i.Name)
@@ -17,45 +17,52 @@
 
     var selectedInstanceID = instanceSelector.GetInstanceID();
 
+    if (selectedInstanceID == -1)
+    {
+        var firstInstance = instances.FirstOrDefault();
+
+        if (firstInstance != null)
+        {
+            instanceSelector.SetInstanceID(firstInstance.InstanceID);
+            selectedInstanceID = firstInstance.InstanceID;
+        }
+    }
+
     if (instances != null && instances.Count > 0)
     {
-<form asp-action="Select" asp-controller="Instance" method="post">
-    <div class="input input__select instance-selector__input">
-        <label class="admin-backend__top-event-select-label" for="event-selector">Event:</label>
+        <form asp-action="Select" asp-controller="Instance" method="post">
+            <div class="input input__select instance-selector__input">
+                <label class="admin-backend__top-event-select-label" for="event-selector">Event:</label>
 
 
-        <input type="hidden" name="ReturnUrl" value="@HttpContextAccessor.HttpContext.Request.Path" />
+                <input type="hidden" name="ReturnUrl" value="@HttpContextAccessor.HttpContext.Request.Path" />
 
-        <select id="event-selector"
-                name="InstanceID"
-                class="admin-backend__top-event-select"
-                data-bind="postBack">
+                <select id="event-selector"
+                        name="InstanceID"
+                        class="admin-backend__top-event-select"
+                        data-bind="postBack">
 
-            @foreach (var instance in instances)
-            {
-                if (selectedInstanceID == instance.InstanceID)
-                {
-                    <option class="admin-backend__top-event-select-item"
-                            value="@instance.InstanceID"
-                            selected="selected">
-                        @instance.Name
-                    </option>
-                }
-                else
-                {
-                    <option class="admin-backend__top-event-select-item"
-                            value="@instance.InstanceID">
-                        @instance.Name
-                    </option>
-                }
-            }
-        </select>
-        @*<button class="blue-button" type="submit">Select</button>*@
-    </div>
-</form>
-    }
-    else
-    {
-        <h1>No instances.</h1>
+                    @foreach (var instance in instances)
+                    {
+                        if (selectedInstanceID == instance.InstanceID)
+                        {
+                            <option class="admin-backend__top-event-select-item"
+                                    value="@instance.InstanceID"
+                                    selected="selected">
+                                @instance.Name
+                            </option>
+                        }
+                        else
+                        {
+                            <option class="admin-backend__top-event-select-item"
+                                    value="@instance.InstanceID">
+                                @instance.Name
+                            </option>
+                        }
+                    }
+                </select>
+                @*<button class="blue-button" type="submit">Select</button>*@
+            </div>
+        </form>
     }
 }
