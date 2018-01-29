@@ -309,6 +309,7 @@
         public async Task<IActionResult> BulkCreateConfirmation(int amount)
         {
             var viewModel = new BulkCreateViewModel();
+
             viewModel.Amount = amount;
             int usersCreated = 0;
             int maxUsers = 2000;
@@ -325,16 +326,24 @@
                     throw new ApplicationException($"Amount to create must be less than {maxUsers}");
                 }
 
+                var instanceSelector = new InstanceSelector(HttpContext);
+
+                var selectedInstanceID = instanceSelector.GetInstanceID();
 
                 for (var i = 0; i < amount; i++)
                 {
                     var dataUtils = new DataUtils();
                     Attendee user = new Attendee();
+
+                    user.InstanceID = selectedInstanceID;
                     user.UserNumber = dataUtils.GenerateNumber();
                     user.CreatedDate = DateTime.UtcNow;
                     user.ModifiedDate = user.CreatedDate;
+
                     _context.Add(user);
+
                     await _context.SaveChangesAsync();
+
                     usersCreated++;
                 }
 
