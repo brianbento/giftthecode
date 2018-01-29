@@ -41,9 +41,9 @@
                 ? new Func<Award, bool>(i => i.InstanceID == selectedInstanceID)
                 : new Func<Award, bool>(i =>
                     i.InstanceID == selectedInstanceID &&
-                    (i.AwardNumber.Contains(search) ||
-                    i.Name.Contains(search) ||
-                    i.Description.Contains(search)));
+                    ((!string.IsNullOrWhiteSpace(i.AwardNumber) && i.AwardNumber.Contains(search)) ||
+                     (!string.IsNullOrWhiteSpace(i.Name) && i.Name.Contains(search)) ||
+                     (!string.IsNullOrWhiteSpace(i.Description) && i.Description.Contains(search))));
 
             awards = _context.Award
                 .Where(filterFunc)

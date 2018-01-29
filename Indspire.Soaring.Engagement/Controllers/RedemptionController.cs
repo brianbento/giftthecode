@@ -45,9 +45,9 @@
                 ? new Func<Redemption, bool>(i => i.InstanceID == selectedInstanceID)
                 : new Func<Redemption, bool>(i =>
                     i.InstanceID == selectedInstanceID &&
-                    (i.Name.Contains(search) ||
-                    i.RedemptionNumber.Contains(search) ||
-                    i.Description.Contains(search)));
+                    ((!string.IsNullOrWhiteSpace(i.Name) && i.Name.Contains(search)) ||
+                     (!string.IsNullOrWhiteSpace(i.RedemptionNumber) && i.RedemptionNumber.Contains(search)) ||
+                     (!string.IsNullOrWhiteSpace(i.Description) && i.Description.Contains(search))));
 
             redemptions = _context.Redemption
                 .Where(filterFunc)

@@ -45,8 +45,8 @@
                 ? new Func<Attendee, bool>(i => i.InstanceID == selectedInstanceID)
                 : new Func<Attendee, bool>(i =>
                     i.InstanceID == selectedInstanceID &&
-                    (i.UserNumber.Contains(search) ||
-                    i.ExternalID.Contains(search)));
+                    ((!string.IsNullOrWhiteSpace(i.UserNumber) && i.UserNumber.Contains(search)) ||
+                     (!string.IsNullOrWhiteSpace(i.ExternalID) && i.ExternalID.Contains(search))));
 
             users = _context.Attendee
                 .Where(filterFunc)
