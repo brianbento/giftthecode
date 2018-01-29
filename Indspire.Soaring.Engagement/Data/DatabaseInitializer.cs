@@ -1,13 +1,13 @@
-﻿using Indspire.Soaring.Engagement.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Indspire.Soaring.Engagement.Data
+﻿namespace Indspire.Soaring.Engagement.Data
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Indspire.Soaring.Engagement.Models;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore.Infrastructure;
+    using Microsoft.EntityFrameworkCore.Storage;
+    using Microsoft.Extensions.Configuration;
+
     internal class DatabaseInitializer : IDatabaseInitializer
     {
         private readonly ApplicationDbContext _context;
@@ -27,59 +27,62 @@ namespace Indspire.Soaring.Engagement.Data
         //This example just creates an Administrator role and one Admin users
         public async Task Initialize(IConfiguration configuration)
         {
-            _context.Database.EnsureCreated();
+            var databaseExists = (_context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator).Exists();
 
-            if (!_context.Roles.Any(r => r.Name == RoleNames.Administrator))
+            if (databaseExists)
             {
-                await _roleManager.CreateAsync(new IdentityRole()
+                if (!_context.Roles.Any(r => r.Name == RoleNames.Administrator))
                 {
-                    Name = RoleNames.Administrator
-                });
-            }
-
-            if (!_context.Roles.Any(r => r.Name == RoleNames.Editor))
-            {
-                await _roleManager.CreateAsync(new IdentityRole()
-                {
-                    Name = RoleNames.Editor
-                });
-            }
-
-            var username = configuration["AdminUsername"];
-            var password = configuration["AdminPassword"];
-
-            if (!string.IsNullOrWhiteSpace(username) &&
-                !string.IsNullOrWhiteSpace(password))
-            {
-                var user = await _userManager.FindByNameAsync(username);
-
-                if (user == null)
-                {
-                    var result = await _userManager.CreateAsync(
-
-                        new ApplicationUser
-                        {
-                            UserName = username,
-                            Email = username,
-                            EmailConfirmed = true
-                        },
-
-                        password);
-
-                    var createdUser = await _userManager.FindByNameAsync(username);
-
-                    if (createdUser != null)
+                    await _roleManager.CreateAsync(new IdentityRole()
                     {
-                        var adminRole = _roleManager.FindByNameAsync(RoleNames.Administrator);
-
-                        await _userManager.AddToRoleAsync(createdUser, RoleNames.Administrator);
-                    }
+                        Name = RoleNames.Administrator
+                    });
                 }
-                else
+
+                if (!_context.Roles.Any(r => r.Name == RoleNames.Editor))
                 {
-                    if (!await _userManager.IsInRoleAsync(user, RoleNames.Administrator))
+                    await _roleManager.CreateAsync(new IdentityRole()
                     {
-                        await _userManager.AddToRoleAsync(user, RoleNames.Administrator);
+                        Name = RoleNames.Editor
+                    });
+                }
+
+                var username = configuration["AdminUsername"];
+                var password = configuration["AdminPassword"];
+
+                if (!string.IsNullOrWhiteSpace(username) &&
+                    !string.IsNullOrWhiteSpace(password))
+                {
+                    var user = await _userManager.FindByNameAsync(username);
+
+                    if (user == null)
+                    {
+                        var result = await _userManager.CreateAsync(
+
+                            new ApplicationUser
+                            {
+                                UserName = username,
+                                Email = username,
+                                EmailConfirmed = true
+                            },
+
+                            password);
+
+                        var createdUser = await _userManager.FindByNameAsync(username);
+
+                        if (createdUser != null)
+                        {
+                            var adminRole = _roleManager.FindByNameAsync(RoleNames.Administrator);
+
+                            await _userManager.AddToRoleAsync(createdUser, RoleNames.Administrator);
+                        }
+                    }
+                    else
+                    {
+                        if (!await _userManager.IsInRoleAsync(user, RoleNames.Administrator))
+                        {
+                            await _userManager.AddToRoleAsync(user, RoleNames.Administrator);
+                        }
                     }
                 }
             }
