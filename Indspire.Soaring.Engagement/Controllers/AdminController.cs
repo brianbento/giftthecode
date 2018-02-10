@@ -21,34 +21,6 @@
         [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Index()
         {
-            //var topAwardPoints = await _context.AwardLog
-            //    .GroupBy(i => i.AwardID)
-            //    .Select(i => new TopAward
-            //    {
-            //        AwardID = i.Key,
-            //        TotalPoints = i.Sum(b => b.Points)
-            //    })
-            //    .OrderBy(i => i.TotalPoints)
-            //    .Take(25)
-            //    .ToListAsync();
-
-            //foreach (var topAwardPoint in topAwardPoints)
-            //{
-            //    topAwardPoint.Award = await _context.Award.FirstOrDefaultAsync(
-            //        i => i.AwardID == topAwardPoint.AwardID);
-            //}
-
-            //var topAwardPoints = await _context.RedemptionLog
-            //    .GroupBy(i => i.UserID)
-            //    .Select(i => new
-            //    {
-            //        UserID = i.Key,
-            //        TotalPoints = i.Sum(b => )
-            //    })
-            //    .Take(25)
-            //    .ToListAsync();
-
-            //return View("~/Views/Admin/Admin.cshtml", topAwardPoints);
 
             var topAwarded = await _context.AwardLog
                   .GroupBy(i => i.AwardID)
@@ -65,7 +37,7 @@
 
             var topUsers = await _context.AwardLog
                 .GroupBy(i => i.UserID)
-                .Select(i => new UserRow()
+                .Select(i => new AttendeeRow()
                 {
                     UserNamber = i.FirstOrDefault().User.UserNumber,
                     ExternalId = i.FirstOrDefault().User.ExternalID,
@@ -75,11 +47,23 @@
                 .Take(25)
                 .ToListAsync();
 
+            var topRedemptions = await _context.RedemptionLog
+                .GroupBy(i => i.RedemptionID)
+                .Select(i => new RedemptionsRow()
+                {
+                    RedemptionNumber = i.FirstOrDefault().Redemption.RedemptionNumber,
+                    TimesRedeemed = i.Count(),
+                    Name = i.FirstOrDefault().Redemption.Name,
+                    Description = i.FirstOrDefault().Redemption.Description
+                })
+                .OrderByDescending(i => i.TimesRedeemed)
+                .Take(25)
+                .ToListAsync();
+
             var dashboardReports = new DashboardReports();
-
             dashboardReports.AwardsList = topAwarded;
-
-            dashboardReports.UserList = topUsers;
+            dashboardReports.AttendeeList = topUsers;
+            dashboardReports.RedemptionsList = topRedemptions;
 
             return View("~/Views/Admin/Admin.cshtml", dashboardReports);
         }

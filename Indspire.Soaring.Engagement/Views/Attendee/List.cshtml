@@ -1,0 +1,46 @@
+﻿@model List<Indspire.Soaring.Engagement.ViewModels.AttendeeRow>
+
+@{
+    ViewData["Title"] = "Top Attendees";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="admin-backend__main-header">
+    <div class="admin-backend__main-header-title">
+        <span class="admin-backend__main-header-title-icon fa fa-user"></span>
+        <span class="admin-backend__main-header-title-text">Top Attendees</span>
+    </div>
+
+    <div class="admin-backend__main-header-actions">
+        <a class="admin-backend__main-header-actions-link" asp-action="Create" title="Create New Attendee">
+            <span class="admin-backend__main-header-actions-link-icon fa fa-plus fa-2x" aria-hidden="true">
+            </span>
+        </a>
+        <a class="admin-backend__main-header-actions-link" href="javascript:;" download="attendees.xls" onclick="return ExcellentExport.excel(this, 'attendeesTable', 'attendeesTable')" title="Export to Excel">
+            <span class="admin-backend__main-header-actions-link-icon fa fa-file-excel-o fa-2x" aria-hidden="true"></span>
+        </a>
+    </div>
+
+
+</div>
+
+
+
+<table id="attendeesTable" class="table">
+    <tr>
+        <th>User Number</th>
+        <th>External ID</th>
+        <th>Points Awarded</th>
+    </tr>
+    @foreach (var row in Model)
+    {
+        <tr>
+            <td>@row.UserNamber</td>
+            <td>@row.ExternalId</td>
+            <td>@row.Points</td>
+        </tr>
+
+    }
+
+</table>
