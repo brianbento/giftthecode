@@ -1,8 +1,14 @@
 ﻿@model Indspire.Soaring.Engagement.ViewModels.AwardScanViewModel
 
+
+
 @if (Model != null)
 {
     var award = Model.Award;
+    if (Model.Award != null)
+    {
+        ViewData["Title"] = "Award Points for " + award.Name;
+    }
 
     <div class="scanner">
 
