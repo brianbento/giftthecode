@@ -74,6 +74,14 @@
                 <a asp-action="Scan">Check Point Balance</a>
             </td>
         </tr>
+        <tr>
+            <td>
+                Print QR Code
+            </td>
+            <td>
+                <a asp-action="PrintQRCode" asp-route-usernumber="@Model.User.UserNumber">Print</a>
+            </td>
+        </tr>
     </table>
 
     <div>
