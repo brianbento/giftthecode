@@ -90,19 +90,16 @@
                 </tbody>
             </table>
         }
-        else
+        else if(!string.IsNullOrEmpty(list.Search))
         {
-            if (!string.IsNullOrEmpty(list.Search))
-            {
-                <div>No results found.</div>
-            }
-            else
-            {
-                <div>
-                    No attendees created yet.
-                    <a asp-action="Create">Click here</a> to create a new attendee.
-                </div>
-            }
+            <div>No results found.</div>
+
+        } else
+        {
+            <div>
+                No attendees created yet.
+                <a asp-action="Create">Click here</a> to create a new attendee.
+            </div>
         }
 
         @if (list != null && list.TotalCount > 0)
