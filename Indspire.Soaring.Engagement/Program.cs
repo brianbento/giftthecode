@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement
 {
+    using Microsoft.AspNetCore;
+    using Microsoft.AspNetCore.Hosting;
+
     public class Program
     {
         public static void Main(string[] args)

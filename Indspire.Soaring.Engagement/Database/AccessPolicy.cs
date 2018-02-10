@@ -1,3 +1,5 @@
+// Copyright (c) Team Agility. All rights reserved.
+
 namespace Indspire.Soaring.Engagement.Database
 {
     using System;

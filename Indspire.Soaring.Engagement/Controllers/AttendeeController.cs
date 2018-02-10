@@ -15,22 +15,20 @@ namespace Indspire.Soaring.Engagement.Controllers
     using Indspire.Soaring.Engagement.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Filters;
     using Microsoft.EntityFrameworkCore;
 
     [Authorize(Roles = RoleNames.Administrator)]
     public class AttendeeController : BaseController
     {
-        private readonly ApplicationDbContext databaseContext;
-
         public AttendeeController(
             ApplicationDbContext context,
             IInstanceSelector instanceSelector)
         {
-            this.InstanceSelector = instanceSelector ??
-                throw new ArgumentNullException(nameof(instanceSelector));
+            this.DatabaseContext = context ??
+                throw new ArgumentNullException(nameof(context));
 
-            this.databaseContext = context;
+            this.InstanceSelector = instanceSelector ??
+            throw new ArgumentNullException(nameof(instanceSelector));
         }
 
         public IActionResult Index(
@@ -54,13 +52,13 @@ namespace Indspire.Soaring.Engagement.Controllers
                     ((!string.IsNullOrWhiteSpace(i.UserNumber) && i.UserNumber.Contains(search)) ||
                      (!string.IsNullOrWhiteSpace(i.ExternalID) && i.ExternalID.Contains(search))));
 
-            users = this.databaseContext.Attendee
+            users = this.DatabaseContext.Attendee
                 .Where(filterFunc)
                 .OrderByDescending(i => i.CreatedDate)
                 .Skip(skip)
                 .Take(take);
 
-            totalCount = this.databaseContext.Attendee
+            totalCount = this.DatabaseContext.Attendee
                 .Where(filterFunc)
                 .Count();
 
@@ -75,7 +73,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             var viewModel = new UserDetailsViewModel();
 
             var attendee = id.HasValue
-                ? await this.databaseContext.Attendee
+                ? await this.DatabaseContext.Attendee
                     .FirstOrDefaultAsync(m => m.UserID == id)
                 : null;
 
@@ -89,7 +87,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
                 viewModel.PointsBalance = PointsUtils.GetPointsForUser(
                     attendee.UserID,
-                    this.databaseContext);
+                    this.DatabaseContext);
 
                 actionResult = this.View(viewModel);
             }
@@ -128,9 +126,9 @@ namespace Indspire.Soaring.Engagement.Controllers
                     ? string.Empty
                     : attendeeViewModel.ExternalID;
 
-                this.databaseContext.Add(attendee);
+                this.DatabaseContext.Add(attendee);
 
-                await this.databaseContext.SaveChangesAsync();
+                await this.DatabaseContext.SaveChangesAsync();
 
                 actionResult = this.RedirectToAction(nameof(this.Index));
             }
@@ -147,7 +145,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             IActionResult actionResult = null;
 
             var user = id.HasValue
-                ? await this.databaseContext.Attendee.FirstOrDefaultAsync(m => m.UserID == id)
+                ? await this.DatabaseContext.Attendee.FirstOrDefaultAsync(m => m.UserID == id)
                 : null;
 
             if (user == null)
@@ -183,7 +181,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 try
                 {
-                    var attendee = this.databaseContext.Attendee
+                    var attendee = this.DatabaseContext.Attendee
                         .FirstOrDefault(i => i.UserID == attendeeViewModel.UserID);
 
                     if (attendee != null)
@@ -192,9 +190,9 @@ namespace Indspire.Soaring.Engagement.Controllers
                         attendee.ModifiedDate = DateTime.UtcNow;
                     }
 
-                    this.databaseContext.Update(attendee);
+                    this.DatabaseContext.Update(attendee);
 
-                    await this.databaseContext.SaveChangesAsync();
+                    await this.DatabaseContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -219,7 +217,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             IActionResult actionResult = null;
 
             var attendee = id.HasValue
-                ? await this.databaseContext.Attendee
+                ? await this.DatabaseContext.Attendee
                     .FirstOrDefaultAsync(m => m.UserID == id)
                 : null;
 
@@ -240,7 +238,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var attendee = await this.databaseContext.Attendee
+            var attendee = await this.DatabaseContext.Attendee
                 .FirstOrDefaultAsync(m => m.UserID == id);
 
             IActionResult actionResult = null;
@@ -251,9 +249,9 @@ namespace Indspire.Soaring.Engagement.Controllers
             }
             else
             {
-                this.databaseContext.Attendee.Remove(attendee);
+                this.DatabaseContext.Attendee.Remove(attendee);
 
-                await this.databaseContext.SaveChangesAsync();
+                await this.DatabaseContext.SaveChangesAsync();
 
                 actionResult = this.RedirectToAction(nameof(this.Index));
             }
@@ -263,9 +261,12 @@ namespace Indspire.Soaring.Engagement.Controllers
 
         public async Task<IActionResult> List()
         {
-            var topUsers = await this.databaseContext.AwardLog
+            var selectedInstanceID = this.InstanceSelector.InstanceID;
+
+            var topUsers = await this.DatabaseContext.AwardLog
+                .Where(i => i.Award.InstanceID == selectedInstanceID)
                 .GroupBy(i => i.UserID)
-                .Select(i => new AttendeeRow()
+                .Select(i => new AttendeeRow
                 {
                     UserNamber = i.FirstOrDefault().User.UserNumber,
                     ExternalId = i.FirstOrDefault().User.ExternalID,
@@ -274,7 +275,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                 .OrderByDescending(i => i.Points)
                 .ToListAsync();
 
-            return View(topUsers);
+            return this.View(topUsers);
         }
 
         [AllowAnonymous]
@@ -293,7 +294,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             try
             {
                 // validate
-                var user = await this.databaseContext.Attendee
+                var user = await this.DatabaseContext.Attendee
                     .FirstOrDefaultAsync(i => i.UserNumber == userNumber);
 
                 if (user == null)
@@ -302,7 +303,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                 }
 
                 viewModel.ResponseData.PointsBalance = PointsUtils
-                    .GetPointsForUser(user.UserID, this.databaseContext);
+                    .GetPointsForUser(user.UserID, this.DatabaseContext);
 
                 viewModel.ResponseData.UserNumber = user.UserNumber;
                 viewModel.ResponseData.ExternalID = user.ExternalID;
@@ -351,9 +352,9 @@ namespace Indspire.Soaring.Engagement.Controllers
 
                         user.ModifiedDate = user.CreatedDate;
 
-                        this.databaseContext.Add(user);
+                        this.DatabaseContext.Add(user);
 
-                        await this.databaseContext.SaveChangesAsync();
+                        await this.DatabaseContext.SaveChangesAsync();
 
                         usersCreated++;
                     }
@@ -405,7 +406,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             try
             {
-                var user = await this.databaseContext.Attendee.FirstOrDefaultAsync(
+                var user = await this.DatabaseContext.Attendee.FirstOrDefaultAsync(
                     i => i.UserNumber == userNumber);
 
                 if (user == null)
@@ -415,9 +416,9 @@ namespace Indspire.Soaring.Engagement.Controllers
 
                 user.ExternalID = externalID;
 
-                this.databaseContext.Update(user);
+                this.DatabaseContext.Update(user);
 
-                await this.databaseContext.SaveChangesAsync();
+                await this.DatabaseContext.SaveChangesAsync();
 
                 viewModel.ResponseData.Success = true;
             }
@@ -435,7 +436,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             IList<AttendeeLabel> labels = new List<AttendeeLabel>();
 
             // get the user
-            var attendee = this.databaseContext.Attendee.FirstOrDefault(
+            var attendee = this.DatabaseContext.Attendee.FirstOrDefault(
                 i => i.UserNumber == userNumber);
 
             if (attendee == null)
@@ -458,7 +459,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         public IActionResult PrintAllQRCodes()
         {
             // assume we are printing ALL attendees
-            var labels = this.databaseContext.Attendee
+            var labels = this.DatabaseContext.Attendee
                 .Select(i => new AttendeeLabel(i))
                 .ToList();
 
@@ -493,7 +494,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
         private bool AttendeeExists(int id)
         {
-            return this.databaseContext.Attendee.Any(e => e.UserID == id);
+            return this.DatabaseContext.Attendee.Any(e => e.UserID == id);
         }
     }
 }

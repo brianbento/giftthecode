@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Models
 {
+    using System.Collections;
+    using System.Collections.Generic;
+
     public class PagedList<TList> : IEnumerable<TList>
     {
-        public int TotalCount { get; set; }
-
-        public int Page { get; set; }
-
-        public int PageSize { get; set; }
-
-        public string Search { get; set; }
-
-        public IEnumerable<TList> List { get; set; }
-
         public PagedList(IEnumerable<TList> list)
         {
             if (list == null)
@@ -35,9 +24,19 @@ namespace Indspire.Soaring.Engagement.Models
             this.Search = null;
         }
 
+        public int TotalCount { get; set; }
+
+        public int Page { get; set; }
+
+        public int PageSize { get; set; }
+
+        public string Search { get; set; }
+
+        public IEnumerable<TList> List { get; set; }
+
         public IEnumerator<TList> GetEnumerator()
         {
-            return List.GetEnumerator();
+            return this.List.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

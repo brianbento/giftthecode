@@ -1,37 +1,38 @@
-﻿namespace Indspire.Soaring.Engagement.Controllers
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Indspire.Soaring.Engagement.Data;
     using Indspire.Soaring.Engagement.Database;
     using Indspire.Soaring.Engagement.Extensions;
     using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.Models.RedemptionViewModels;
     using Indspire.Soaring.Engagement.Utils;
     using Indspire.Soaring.Engagement.ViewModels;
-    using Indspire.Soaring.Engagement.Models.RedemptionViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-    using System.Collections.Generic;
 
     [Authorize(Roles = RoleNames.Administrator)]
     public class RedemptionController : BaseController
     {
-        private readonly ApplicationDbContext _context;
-
         public RedemptionController(
             ApplicationDbContext context,
             IInstanceSelector instanceSelector)
         {
+            this.DatabaseContext = context ??
+                throw new ArgumentNullException(nameof(context));
+
             this.InstanceSelector = instanceSelector ??
                 throw new ArgumentNullException(nameof(instanceSelector));
-
-            _context = context;
         }
 
         public IActionResult Index(
-            int page = 1, 
+            int page = 1,
             int pageSize = 20,
             string search = null)
         {
@@ -40,7 +41,7 @@
 
             IEnumerable<Redemption> redemptions = null;
 
-            int totalCount = 0;
+            var totalCount = 0;
 
             var selectedInstanceID = this.InstanceSelector.InstanceID;
 
@@ -52,34 +53,36 @@
                      (!string.IsNullOrWhiteSpace(i.RedemptionNumber) && i.RedemptionNumber.Contains(search)) ||
                      (!string.IsNullOrWhiteSpace(i.Description) && i.Description.Contains(search))));
 
-            redemptions = _context.Redemption
+            redemptions = this.DatabaseContext.Redemption
                 .Where(filterFunc)
                 .OrderByDescending(i => i.CreatedDate)
                 .Skip(skip)
                 .Take(take);
 
-            totalCount = _context.Redemption
+            totalCount = this.DatabaseContext.Redemption
                 .Where(filterFunc)
                 .Count();
 
-            return View(redemptions.ToPagedList(totalCount, page, pageSize, search));
+            return this.View(redemptions.ToPagedList(totalCount, page, pageSize, search));
         }
 
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            var redemption = await _context.Redemption
-                .SingleOrDefaultAsync(m => m.RedemptionID == id);
+            var redemption = await this.DatabaseContext.Redemption
+                .FirstOrDefaultAsync(m => m.RedemptionID == id);
+
             if (redemption == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            return View(redemption);
+            return this.View(redemption);
         }
 
         [HttpGet]
@@ -87,26 +90,29 @@
         {
             var viewModel = new CreateRedemptionViewModel();
 
-            return View(viewModel);
+            return this.View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateRedemptionViewModel redemptionViewModel)
+        public async Task<IActionResult> Create(
+            CreateRedemptionViewModel redemptionViewModel)
         {
             var dataUtils = new DataUtils();
 
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 var selectedInstanceID = this.InstanceSelector.InstanceID;
 
-                var redemption = new Redemption();
+                var redemption = new Redemption
+                {
+                    InstanceID = selectedInstanceID,
+                    RedemptionNumber = dataUtils.GenerateNumber(),
+                    CreatedDate = DateTime.UtcNow,
+                    PointsRequired = redemptionViewModel.PointsRequired
+                };
 
-                redemption.InstanceID = selectedInstanceID;
-                redemption.RedemptionNumber = dataUtils.GenerateNumber();
-                redemption.ModifiedDate = redemption.CreatedDate = DateTime.UtcNow;
-                redemption.PointsRequired = redemptionViewModel.PointsRequired;
-                redemption.Deleted = false;
+                redemption.ModifiedDate = redemption.CreatedDate;
 
                 if (redemptionViewModel != null)
                 {
@@ -115,57 +121,58 @@
                     redemption.Description = redemptionViewModel.Description;
                 }
 
-                _context.Add(redemption);
+                this.DatabaseContext.Add(redemption);
 
-                await _context.SaveChangesAsync();
+                await this.DatabaseContext.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(this.Index));
             }
 
-            return View(redemptionViewModel);
+            return this.View(redemptionViewModel);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            var redemption = await _context.Redemption
-                .SingleOrDefaultAsync(m => m.RedemptionID == id);
+            var redemption = await this.DatabaseContext.Redemption
+                .FirstOrDefaultAsync(m => m.RedemptionID == id);
 
             if (redemption == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            var viewModel = new EditRedemptionViewModel();
+            var viewModel = new EditRedemptionViewModel
+            {
+                RedemptionID = redemption.RedemptionID,
+                Description = redemption.Description,
+                Name = redemption.Name,
+                PointsRequired = redemption.PointsRequired
+            };
 
-            viewModel.RedemptionID = redemption.RedemptionID;
-            viewModel.Description = redemption.Description;
-            viewModel.Name = redemption.Name;
-            viewModel.PointsRequired = redemption.PointsRequired;
-
-            return View(viewModel);
+            return this.View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
-            int id, 
+            int id,
             EditRedemptionViewModel redemptionViewModel)
         {
             if (id != redemptionViewModel.RedemptionID)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 try
                 {
-                    var redemption = await _context.Redemption
+                    var redemption = await this.DatabaseContext.Redemption
                         .FirstOrDefaultAsync(i => i.RedemptionID == redemptionViewModel.RedemptionID);
 
                     if (redemption != null)
@@ -176,15 +183,15 @@
                         redemption.PointsRequired = redemptionViewModel.PointsRequired;
                     }
 
-                    _context.Update(redemption);
+                    this.DatabaseContext.Update(redemption);
 
-                    await _context.SaveChangesAsync();
+                    await this.DatabaseContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RedemptionExists(redemptionViewModel.RedemptionID))
+                    if (!this.RedemptionExists(redemptionViewModel.RedemptionID))
                     {
-                        return NotFound();
+                        return this.NotFound();
                     }
                     else
                     {
@@ -192,64 +199,56 @@
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(this.Index));
             }
 
-            return View(redemptionViewModel);
+            return this.View(redemptionViewModel);
         }
 
-        // GET: Redemptions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            var redemption = await _context.Redemption
-                .SingleOrDefaultAsync(m => m.RedemptionID == id);
+            var redemption = await this.DatabaseContext.Redemption
+                .FirstOrDefaultAsync(m => m.RedemptionID == id);
 
             if (redemption == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            return View(redemption);
+            return this.View(redemption);
         }
 
-        // POST: Redemptions/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var redemption = await _context.Redemption.SingleOrDefaultAsync(m => m.RedemptionID == id);
-            _context.Redemption.Remove(redemption);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            var redemption = await this.DatabaseContext.Redemption.SingleOrDefaultAsync(m => m.RedemptionID == id);
 
-        private bool RedemptionExists(int id)
-        {
-            return _context.Redemption.Any(e => e.RedemptionID == id);
+            this.DatabaseContext.Redemption.Remove(redemption);
+            await this.DatabaseContext.SaveChangesAsync();
+
+            return this.RedirectToAction(nameof(this.Index));
         }
 
         [AllowAnonymous]
         public IActionResult Scan(string redemptionNumber)
         {
-            var viewModel = new RedemptionScanViewModel();
-            viewModel.RedemptionNumber = redemptionNumber;
-            if (string.IsNullOrEmpty(viewModel.RedemptionNumber))
+            var viewModel = new RedemptionScanViewModel
             {
-                viewModel.HasRedemptionNumber = false;
-            }
-            else
-            {
-                viewModel.HasRedemptionNumber = true;
-            }
+                RedemptionNumber = redemptionNumber,
+                HasRedemptionNumber = !string.IsNullOrWhiteSpace(redemptionNumber)
+            };
 
             if (viewModel.HasRedemptionNumber)
             {
-                var redemption = _context.Redemption.FirstOrDefault(i => i.RedemptionNumber == viewModel.RedemptionNumber);
+                var redemption = this.DatabaseContext.Redemption
+                    .FirstOrDefault(i => i.RedemptionNumber == viewModel.RedemptionNumber);
 
                 if (redemption == null)
                 {
@@ -260,77 +259,85 @@
                     viewModel.Redemption = redemption;
                 }
             }
-            return View(viewModel);
+
+            return this.View(viewModel);
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> LogAction(string RedemptionNumber, string UserNumber)
+        public async Task<IActionResult> LogAction(
+            string redemptionNumber,
+            string userNumber)
         {
             var viewModel = new LogRedemptionJsonViewModel();
+
             try
             {
-
-                //validate 
-                var redemption = await _context.Redemption.FirstOrDefaultAsync(i => i.RedemptionNumber == RedemptionNumber);
+                // validate
+                var redemption = await this.DatabaseContext.Redemption
+                    .FirstOrDefaultAsync(i => i.RedemptionNumber == redemptionNumber);
 
                 if (redemption == null)
                 {
                     throw new ApplicationException("Redemption not found.");
                 }
 
-                var user = await _context.Attendee.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
+                var user = await this.DatabaseContext.Attendee
+                    .FirstOrDefaultAsync(i => i.UserNumber == userNumber);
 
                 if (user == null)
                 {
                     throw new ApplicationException("User not found.");
                 }
 
-                var existingRedemptionByUser = await _context.RedemptionLog.FirstOrDefaultAsync(i =>
-                                                    i.UserID == user.UserID &&
-                                                    i.RedemptionID == redemption.RedemptionID);
+                var existingRedemptionByUser = await this.DatabaseContext.RedemptionLog
+                    .FirstOrDefaultAsync(i =>
+                        i.UserID == user.UserID &&
+                        i.RedemptionID == redemption.RedemptionID);
+
                 if (existingRedemptionByUser != null)
                 {
-                    throw new ApplicationException($"User has already Redeemed this. User has {PointsUtils.GetPointsForUser(user.UserID, _context)} points.");
+                    throw new ApplicationException($"User has already Redeemed this. User has {PointsUtils.GetPointsForUser(user.UserID, DatabaseContext)} points.");
                 }
 
-                //check if we have enough points
-                int pointsShort = 0;
-                int userPoints = PointsUtils.GetPointsForUser(user.UserID, _context);
-                int pointsRequired = redemption.PointsRequired;
-                bool hasEnoughPoints = false;
+                // check if we have enough points
+                var pointsShort = 0;
+                var userPoints = PointsUtils.GetPointsForUser(user.UserID, this.DatabaseContext);
+                var pointsRequired = redemption.PointsRequired;
+                var hasEnoughPoints = false;
 
                 pointsShort = pointsRequired - userPoints;
 
-                if(pointsShort <= 0)
+                if (pointsShort <= 0)
                 {
                     hasEnoughPoints = true;
                     pointsShort = 0;
                 }
 
-
-
-
                 if (hasEnoughPoints)
                 {
-                    //good to go!
-                    var redemptionLog = new RedemptionLog();
-                    redemptionLog.RedemptionID = redemption.RedemptionID;
-                    redemptionLog.CreatedDate = DateTime.UtcNow;
+                    // good to go!
+                    var redemptionLog = new RedemptionLog
+                    {
+                        RedemptionID = redemption.RedemptionID,
+                        CreatedDate = DateTime.UtcNow,
+                        UserID = user.UserID
+                    };
                     redemptionLog.ModifiedDate = redemptionLog.CreatedDate;
-                    redemptionLog.UserID = user.UserID;
-                    _context.Add(redemptionLog);
-                    await _context.SaveChangesAsync();
-                }
 
-                
+                    this.DatabaseContext.Add(redemptionLog);
+
+                    await this.DatabaseContext.SaveChangesAsync();
+                }
 
                 viewModel.ResponseData.PointsShort = pointsShort;
                 viewModel.ResponseData.Success = hasEnoughPoints;
-                viewModel.ResponseData.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
+
+                viewModel.ResponseData.PointsBalance =
+                    PointsUtils.GetPointsForUser(user.UserID, this.DatabaseContext);
+
                 viewModel.ResponseData.UserNumber = user.UserNumber;
                 viewModel.ResponseData.ExternalID = user.ExternalID;
-
             }
             catch (Exception ex)
             {
@@ -339,14 +346,16 @@
             }
 
             return new JsonResult(viewModel);
-
         }
 
         public async Task<IActionResult> List()
         {
-            var topRedemptions = await _context.RedemptionLog
+            var selectedInstanceID = this.InstanceSelector.InstanceID;
+
+            var topRedemptions = await this.DatabaseContext.RedemptionLog
+                .Where(i => i.Redemption.InstanceID == selectedInstanceID)
                 .GroupBy(i => i.RedemptionID)
-                .Select(i => new RedemptionsRow()
+                .Select(i => new RedemptionsRow
                 {
                     RedemptionNumber = i.FirstOrDefault().Redemption.RedemptionNumber,
                     TimesRedeemed = i.Count(),
@@ -356,7 +365,12 @@
                 .OrderByDescending(i => i.TimesRedeemed)
                 .ToListAsync();
 
-            return View(topRedemptions);
+            return this.View(topRedemptions);
+        }
+
+        private bool RedemptionExists(int id)
+        {
+            return this.DatabaseContext.Redemption.Any(e => e.RedemptionID == id);
         }
     }
 }

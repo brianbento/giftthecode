@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Models
 {
     public class Pagination
     {
-        public int TotalCount { get; set; }
+        public int TotalCount { get; set; } = 0;
 
         public int PageSize { get; set; }
 

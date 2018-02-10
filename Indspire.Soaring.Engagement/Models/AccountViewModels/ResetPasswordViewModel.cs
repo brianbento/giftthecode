@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Models.AccountViewModels
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class ResetPasswordViewModel
     {
         [Required]
@@ -19,7 +17,7 @@ namespace Indspire.Soaring.Engagement.Models.AccountViewModels
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }

@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.ViewModels
 {
-    public class SetUserExternalIDJsonViewModel: JsonBaseViewModel
+    public class SetUserExternalIDJsonViewModel : JsonBaseViewModel
     {
         public SetUserExternalIDJsonViewModel()
         {
-            ResponseData = new SetUserExternalIDResponseData();
+            this.ResponseData = new SetUserExternalIDResponseData();
         }
 
-        public SetUserExternalIDResponseData ResponseData = new SetUserExternalIDResponseData();
+        public SetUserExternalIDResponseData ResponseData { get; set; }
     }
 }

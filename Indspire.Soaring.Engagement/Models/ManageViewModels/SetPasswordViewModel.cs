@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Models.ManageViewModels
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class SetPasswordViewModel
     {
         [Required]
@@ -16,7 +14,7 @@ namespace Indspire.Soaring.Engagement.Models.ManageViewModels
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm new password")]
-        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [Compare(nameof(NewPassword), ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
         public string StatusMessage { get; set; }

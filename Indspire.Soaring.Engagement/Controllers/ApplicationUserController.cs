@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Controllers
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Controllers
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -14,13 +16,13 @@
     [Authorize]
     public class ApplicationUserController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> signInManager;
 
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailSender emailSender;
 
-        private readonly ILogger _logger;
+        private readonly ILogger logger;
 
         public ApplicationUserController(
             UserManager<ApplicationUser> userManager,
@@ -28,10 +30,10 @@
             IEmailSender emailSender,
             ILogger<AccountController> logger)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _emailSender = emailSender;
-            _logger = logger;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            this.emailSender = emailSender;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -42,55 +44,53 @@
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
-            var users = await _userManager.Users
+            var users = await this.userManager.Users
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
 
-            var totalCount = _userManager.Users.Count();
+            var totalCount = this.userManager.Users.Count();
 
-            return View(users.ToPagedList(totalCount, page, pageSize));
+            return this.View(users.ToPagedList(totalCount, page, pageSize));
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-
-            [Bind(nameof(ApplicationUser.Email),
-                  nameof(ApplicationUser.UserName))]
+            [Bind(
+                nameof(ApplicationUser.Email),
+                nameof(ApplicationUser.UserName))]
             ApplicationUser user,
-
-            string password,
-            string confirmPassword)
+            string password)
         {
             IActionResult actionResult = null;
 
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
-                var identityResult = await _userManager.CreateAsync(user);
+                var identityResult = await this.userManager.CreateAsync(user);
 
                 if (identityResult.Succeeded)
                 {
-                    var passwordResult = await _userManager.AddPasswordAsync(user, password);
+                    var passwordResult = await this.userManager.AddPasswordAsync(user, password);
 
-                    if (!await _userManager.IsInRoleAsync(user, RoleNames.Editor))
+                    if (!await this.userManager.IsInRoleAsync(user, RoleNames.Editor))
                     {
-                        await _userManager.AddToRoleAsync(user, RoleNames.Editor);
+                        await this.userManager.AddToRoleAsync(user, RoleNames.Editor);
                     }
                 }
 
-                actionResult = RedirectToAction(nameof(Index));
+                actionResult = this.RedirectToAction(nameof(this.Index));
             }
             else
             {
                 // TODO: display specific error messages
-                actionResult = View(user);
+                actionResult = this.View(user);
             }
 
             return actionResult;
@@ -103,33 +103,33 @@
 
             var user = string.IsNullOrWhiteSpace(id)
                 ? null
-                : await _userManager.FindByIdAsync(id);
+                : await this.userManager.FindByIdAsync(id);
 
             if (user == null)
             {
-                actionResult = NotFound();
+                actionResult = this.NotFound();
             }
             else
             {
-                actionResult = View(user);
+                actionResult = this.View(user);
             }
 
             return actionResult;
         }
 
         [HttpPost]
-        [ActionName("Delete")]
+        [ActionName(nameof(Delete))]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await this.userManager.FindByIdAsync(id);
 
             if (user != null)
             {
-                var result = await _userManager.DeleteAsync(user);
+                var result = await this.userManager.DeleteAsync(user);
             }
 
-            return RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(this.Index));
         }
     }
 }

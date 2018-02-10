@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Extensions
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Extensions
 {
     using Indspire.Soaring.Engagement.Models;
 
@@ -10,7 +12,7 @@
 
             if (pagedList != null)
             {
-                pagination = new Pagination()
+                pagination = new Pagination
                 {
                     TotalCount = pagedList.TotalCount,
 

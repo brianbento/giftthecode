@@ -1,3 +1,5 @@
+// Copyright (c) Team Agility. All rights reserved.
+
 namespace Microsoft.AspNetCore.Mvc
 {
     using Indspire.Soaring.Engagement.Controllers;

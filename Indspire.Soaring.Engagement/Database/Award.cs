@@ -1,3 +1,5 @@
+// Copyright (c) Team Agility. All rights reserved.
+
 namespace Indspire.Soaring.Engagement.Database
 {
     using System;
@@ -31,7 +33,7 @@ namespace Indspire.Soaring.Engagement.Database
         public string Description { get; set; }
 
         [DisplayName("Deleted")]
-        public bool Deleted { get; set; }
+        public bool Deleted { get; set; } = false;
 
         [DisplayName("Created Date")]
         public DateTime CreatedDate { get; set; }

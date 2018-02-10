@@ -1,11 +1,9 @@
-﻿using Indspire.Soaring.Engagement.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Models
 {
+    using Indspire.Soaring.Engagement.Database;
+
     public class TopAward
     {
         public int AwardID { get; set; }

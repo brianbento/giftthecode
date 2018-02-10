@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Data
 {
+    using System.Threading.Tasks;
+    using Microsoft.Extensions.Configuration;
+
     public interface IDatabaseInitializer
     {
         Task Initialize(IConfiguration configuration);

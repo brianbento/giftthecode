@@ -1,20 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Indspire.Soaring.Engagement.Models;
-using Indspire.Soaring.Engagement.Database;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Data
 {
+    using Indspire.Soaring.Engagement.Database;
+    using Indspire.Soaring.Engagement.Models;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore;
+
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+
+        public DbSet<Redemption> Redemption { get; set; }
+
+        public DbSet<Attendee> Attendee { get; set; }
+
+        public DbSet<Award> Award { get; set; }
+
+        public DbSet<AwardLog> AwardLog { get; set; }
+
+        public DbSet<RedemptionLog> RedemptionLog { get; set; }
+
+        public DbSet<Instance> Instance { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -87,17 +97,5 @@ namespace Indspire.Soaring.Engagement.Data
                 .HasForeignKey(i => i.InstanceID)
                 .OnDelete(DeleteBehavior.Cascade);
         }
-
-        public DbSet<Indspire.Soaring.Engagement.Database.Redemption> Redemption { get; set; }
-
-        public DbSet<Indspire.Soaring.Engagement.Database.Attendee> Attendee { get; set; }
-
-        public DbSet<Indspire.Soaring.Engagement.Database.Award> Award { get; set; }
-
-        public DbSet<Indspire.Soaring.Engagement.Database.AwardLog> AwardLog { get; set; }
-
-        public DbSet<Indspire.Soaring.Engagement.Database.RedemptionLog> RedemptionLog { get; set; }
-
-        public DbSet<Indspire.Soaring.Engagement.Database.Instance> Instance { get; set; }
     }
 }

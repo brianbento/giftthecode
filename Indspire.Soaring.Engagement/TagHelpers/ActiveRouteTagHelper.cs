@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.TagHelpers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+    using Microsoft.AspNetCore.Mvc.ViewFeatures;
+    using Microsoft.AspNetCore.Razor.TagHelpers;
+
     [HtmlTargetElement(Attributes = "is-active-route")]
     public class ActiveRouteTagHelper : TagHelper
     {
-        private IDictionary<string, string> _routeValues;
+        private IDictionary<string, string> routeValues;
 
         /// <summary>The name of the action method.</summary>
         /// <remarks>Must be <c>null</c> if <see cref="P:Microsoft.AspNetCore.Mvc.TagHelpers.AnchorTagHelper.Route" /> is non-<c>null</c>.</remarks>
@@ -29,13 +30,18 @@ namespace Indspire.Soaring.Engagement.TagHelpers
         {
             get
             {
-                if (this._routeValues == null)
-                    this._routeValues = (IDictionary<string, string>)new Dictionary<string, string>((IEqualityComparer<string>)StringComparer.OrdinalIgnoreCase);
-                return this._routeValues;
+                if (this.routeValues == null)
+                {
+                    this.routeValues = new Dictionary<string, string>(
+                        StringComparer.OrdinalIgnoreCase);
+                }
+
+                return this.routeValues;
             }
+
             set
             {
-                this._routeValues = value;
+                this.routeValues = value;
             }
         }
 
@@ -50,7 +56,7 @@ namespace Indspire.Soaring.Engagement.TagHelpers
         {
             base.Process(context, output);
 
-            if (ShouldBeActive())
+            if (this.ShouldBeActive())
             {
                 MakeActive(output);
             }
@@ -60,23 +66,25 @@ namespace Indspire.Soaring.Engagement.TagHelpers
 
         private bool ShouldBeActive()
         {
-            string currentController = ViewContext.RouteData.Values["Controller"].ToString();
-            string currentAction = ViewContext.RouteData.Values["Action"].ToString();
+            var currentController = this.ViewContext.RouteData.Values["Controller"].ToString();
+            var currentAction = this.ViewContext.RouteData.Values["Action"].ToString();
 
-            if (!string.IsNullOrWhiteSpace(Controller) && Controller.ToLower() != currentController.ToLower())
+            if (!string.IsNullOrWhiteSpace(this.Controller) &&
+                this.Controller.ToLower() != currentController.ToLower())
             {
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(Action) && Action.ToLower() != currentAction.ToLower())
+            if (!string.IsNullOrWhiteSpace(this.Action) &&
+                this.Action.ToLower() != currentAction.ToLower())
             {
                 return false;
             }
 
-            foreach (KeyValuePair<string, string> routeValue in RouteValues)
+            foreach (KeyValuePair<string, string> routeValue in this.RouteValues)
             {
-                if (!ViewContext.RouteData.Values.ContainsKey(routeValue.Key) ||
-                    ViewContext.RouteData.Values[routeValue.Key].ToString() != routeValue.Value)
+                if (!this.ViewContext.RouteData.Values.ContainsKey(routeValue.Key) ||
+                    this.ViewContext.RouteData.Values[routeValue.Key].ToString() != routeValue.Value)
                 {
                     return false;
                 }
@@ -85,9 +93,10 @@ namespace Indspire.Soaring.Engagement.TagHelpers
             return true;
         }
 
-        private void MakeActive(TagHelperOutput output)
+        private static void MakeActive(TagHelperOutput output)
         {
             var classAttr = output.Attributes.FirstOrDefault(a => a.Name == "class");
+
             if (classAttr == null)
             {
                 classAttr = new TagHelperAttribute("class", "active");
@@ -95,9 +104,9 @@ namespace Indspire.Soaring.Engagement.TagHelpers
             }
             else if (classAttr.Value == null || classAttr.Value.ToString().IndexOf("active") < 0)
             {
-                output.Attributes.SetAttribute("class", classAttr.Value == null
-                    ? "active"
-                    : classAttr.Value.ToString() + " active");
+                output.Attributes.SetAttribute(
+                    "class",
+                    classAttr.Value == null ? "active" : classAttr.Value.ToString() + " active");
             }
         }
     }

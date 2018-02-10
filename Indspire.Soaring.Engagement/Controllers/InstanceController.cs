@@ -18,16 +18,15 @@ namespace Indspire.Soaring.Engagement.Controllers
     [Authorize(Roles = RoleNames.Administrator)]
     public class InstanceController : BaseController
     {
-        private readonly ApplicationDbContext _context;
-
         public InstanceController(
             ApplicationDbContext context,
             IInstanceSelector instanceSelector)
         {
+            this.DatabaseContext = context ??
+                throw new ArgumentNullException(nameof(context));
+
             this.InstanceSelector = instanceSelector ??
                 throw new ArgumentNullException(nameof(instanceSelector));
-
-            _context = context;
         }
 
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
@@ -35,21 +34,21 @@ namespace Indspire.Soaring.Engagement.Controllers
             var take = pageSize;
             var skip = pageSize * (page - 1);
 
-            var instance = await _context.Instance
+            var instance = await this.DatabaseContext.Instance
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
 
-            var totalCount = await _context.Instance.CountAsync();
+            var totalCount = await this.DatabaseContext.Instance.CountAsync();
 
-            return View(instance.ToPagedList(totalCount, page, pageSize));
+            return this.View(instance.ToPagedList(totalCount, page, pageSize));
         }
 
         public IActionResult Create()
         {
             var viewModel = new CreateInstanceViewModel();
 
-            return View(viewModel);
+            return this.View(viewModel);
         }
 
         [HttpPost]
@@ -58,7 +57,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         {
             var dataUtils = new DataUtils();
 
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 var instance = new Instance();
 
@@ -69,32 +68,32 @@ namespace Indspire.Soaring.Engagement.Controllers
                     instance.Name = instanceViewModel.Name;
                 }
 
-                _context.Add(instance);
+                this.DatabaseContext.Add(instance);
 
-                await _context.SaveChangesAsync();
+                await this.DatabaseContext.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(this.Index));
             }
 
-            return View(instanceViewModel);
+            return this.View(instanceViewModel);
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            var instance = await _context.Instance
+            var instance = await DatabaseContext.Instance
                 .SingleOrDefaultAsync(m => m.InstanceID == id);
 
             if (instance == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            return View(instance);
+            return this.View(instance);
         }
 
         [HttpPost]
@@ -102,14 +101,14 @@ namespace Indspire.Soaring.Engagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var instance = await _context.Instance
+            var instance = await DatabaseContext.Instance
                 .FirstOrDefaultAsync(m => m.InstanceID == id);
 
             if (instance != null)
             {
-                _context.Instance.Remove(instance);
+                this.DatabaseContext.Instance.Remove(instance);
 
-                await _context.SaveChangesAsync();
+                await this.DatabaseContext.SaveChangesAsync();
 
                 var selectedInstanceID = this.InstanceSelector.InstanceID;
 
@@ -117,7 +116,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                 // defaults to the first instance, if any.
                 if (instance.InstanceID == selectedInstanceID)
                 {
-                    var firstInstance = await _context.Instance
+                    var firstInstance = await this.DatabaseContext.Instance
                         .FirstOrDefaultAsync(m => m.InstanceID == id);
 
                     if (firstInstance != null)
@@ -127,7 +126,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                 }
             }
 
-            return RedirectToAction(nameof(Index));
+            return this.RedirectToAction(nameof(this.Index));
         }
 
         [HttpPost]
@@ -136,7 +135,7 @@ namespace Indspire.Soaring.Engagement.Controllers
         {
             var returnUrl = "/admin";
 
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 if (!string.IsNullOrWhiteSpace(instanceViewModel.ReturnUrl))
                 {
@@ -145,7 +144,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
                 try
                 {
-                    var instance = await _context.Instance
+                    var instance = await this.DatabaseContext.Instance
                         .FirstOrDefaultAsync(i => i.InstanceID == instanceViewModel.InstanceID);
 
                     if (instance != null)
@@ -155,9 +154,9 @@ namespace Indspire.Soaring.Engagement.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!InstanceExists(instanceViewModel.InstanceID))
+                    if (!this.InstanceExists(instanceViewModel.InstanceID))
                     {
-                        return NotFound();
+                        return this.NotFound();
                     }
                     else
                     {
@@ -166,31 +165,32 @@ namespace Indspire.Soaring.Engagement.Controllers
                 }
             }
 
-            return Redirect(returnUrl);
+            return this.Redirect(returnUrl);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            var user = await _context.Instance.SingleOrDefaultAsync(m => m.InstanceID == id);
+            var user = await this.DatabaseContext.Instance.SingleOrDefaultAsync(m => m.InstanceID == id);
 
             if (user == null)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            var viewModel = new EditInstanceViewModel();
+            var viewModel = new EditInstanceViewModel
+            {
+                DefaultInstance = user.DefaultInstance,
+                Description = user.Description,
+                Name = user.Name,
+                InstanceID = user.InstanceID
+            };
 
-            viewModel.DefaultInstance = user.DefaultInstance;
-            viewModel.Description = user.Description;
-            viewModel.Name = user.Name;
-            viewModel.InstanceID = user.InstanceID;
-
-            return View(viewModel);
+            return this.View(viewModel);
         }
 
         [HttpPost]
@@ -199,14 +199,14 @@ namespace Indspire.Soaring.Engagement.Controllers
         {
             if (id != instanceViewModel.InstanceID)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 try
                 {
-                    var instance = _context.Instance
+                    var instance = this.DatabaseContext.Instance
                         .FirstOrDefault(i => i.InstanceID == instanceViewModel.InstanceID);
 
                     if (instance != null)
@@ -217,15 +217,15 @@ namespace Indspire.Soaring.Engagement.Controllers
                         instance.ModifiedDate = DateTime.UtcNow;
                     }
 
-                    _context.Update(instance);
+                    this.DatabaseContext.Update(instance);
 
-                    await _context.SaveChangesAsync();
+                    await this.DatabaseContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!InstanceExists(instanceViewModel.InstanceID))
+                    if (!this.InstanceExists(instanceViewModel.InstanceID))
                     {
-                        return NotFound();
+                        return this.NotFound();
                     }
                     else
                     {
@@ -233,15 +233,15 @@ namespace Indspire.Soaring.Engagement.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(this.Index));
             }
 
-            return View(instanceViewModel);
+            return this.View(instanceViewModel);
         }
 
         private bool InstanceExists(int id)
         {
-            return _context.Instance.Any(e => e.InstanceID == id);
+            return this.DatabaseContext.Instance.Any(e => e.InstanceID == id);
         }
     }
 }

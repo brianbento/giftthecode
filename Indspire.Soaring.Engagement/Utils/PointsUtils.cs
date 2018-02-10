@@ -1,16 +1,17 @@
-﻿using Indspire.Soaring.Engagement.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Utils
 {
-    public class PointsUtils
+    using System.Linq;
+    using Indspire.Soaring.Engagement.Data;
+
+    public static class PointsUtils
     {
         public static int GetPointsForUser(int userID, ApplicationDbContext context)
         {
-            int points = context.AwardLog.Where(i => i.UserID == userID).Sum(i => i.Points);
+            var points = context.AwardLog
+                .Where(i => i.UserID == userID)
+                .Sum(i => i.Points);
 
             return points;
         }

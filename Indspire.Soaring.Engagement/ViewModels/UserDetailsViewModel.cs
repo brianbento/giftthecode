@@ -1,14 +1,13 @@
-﻿using Indspire.Soaring.Engagement.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.ViewModels
 {
+    using Indspire.Soaring.Engagement.Database;
+
     public class UserDetailsViewModel
     {
         public Attendee User { get; set; }
+
         public int PointsBalance { get; set; }
     }
 }
