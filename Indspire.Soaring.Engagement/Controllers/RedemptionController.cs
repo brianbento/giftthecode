@@ -297,7 +297,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
                 if (existingRedemptionByUser != null)
                 {
-                    throw new ApplicationException($"User has already Redeemed this. User has {PointsUtils.GetPointsForUser(user.UserID, DatabaseContext)} points.");
+                    throw new ApplicationException($"User has already Redeemed this. User has {PointsUtils.GetPointsForUser(user.UserID, this.DatabaseContext)} points.");
                 }
 
                 // check if we have enough points

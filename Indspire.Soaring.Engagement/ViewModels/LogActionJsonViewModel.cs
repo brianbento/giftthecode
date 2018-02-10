@@ -1,15 +1,27 @@
-﻿namespace Indspire.Soaring.Engagement.ViewModels
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.ViewModels
 {
-    public class LogActionJsonViewModel: JsonBaseViewModel
+    public class LogActionJsonViewModel : JsonBaseViewModel
     {
-        public LogActionJsonViewModel(int pointsAwarded, int pointsBalance, string userNumber)
+        public LogActionJsonViewModel()
+            : this(0, 0, string.Empty)
         {
-            ResponseData = new LogActionResponseData();
-            ResponseData.PointsAwarded = pointsAwarded;
-            ResponseData.PointsBalance = pointsBalance;
-            ResponseData.UserNumber = userNumber;
         }
-        public LogActionJsonViewModel() { }
-        public LogActionResponseData ResponseData = new LogActionResponseData();
-    }   
+
+        public LogActionJsonViewModel(
+            int pointsAwarded,
+            int pointsBalance,
+            string userNumber)
+        {
+            ResponseData = new LogActionResponseData
+            {
+                PointsAwarded = pointsAwarded,
+                PointsBalance = pointsBalance,
+                UserNumber = userNumber
+            };
+        }
+
+        public LogActionResponseData ResponseData { get; set; }
+    }
 }

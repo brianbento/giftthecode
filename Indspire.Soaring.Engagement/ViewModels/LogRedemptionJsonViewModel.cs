@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.ViewModels
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.ViewModels
 {
     public class LogRedemptionJsonViewModel : JsonBaseViewModel
     {
@@ -7,6 +9,6 @@
             ResponseData = new LogRedemptionResponseData();
         }
 
-        public LogRedemptionResponseData ResponseData = new LogRedemptionResponseData();
+        public LogRedemptionResponseData ResponseData { get; set; }
     }
 }

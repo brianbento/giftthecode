@@ -1,43 +1,46 @@
-﻿using Indspire.Soaring.Engagement.Database;
-using Indspire.Soaring.Engagement.Models;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using QRCoder;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Utils
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using Indspire.Soaring.Engagement.Models;
+    using iTextSharp.text;
+    using iTextSharp.text.pdf;
+    using QRCoder;
+
     public class QRCodeUtils
     {
         private static QRCodeData GenerateQRCode(string content)
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
+
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(content, QRCodeGenerator.ECCLevel.Q);
+
             return qrCodeData;
         }
 
         public static string GenerateQRCodeAsBase64(string content)
         {
             QRCodeData qrCodeData = GenerateQRCode(content);
+
             Base64QRCode qrCode = new Base64QRCode(qrCodeData);
             string qrCodeImageAsBase64 = qrCode.GetGraphic(20);
+
             return qrCodeImageAsBase64;
         }
 
         public static byte[] GenerateQRCodeAsBytes(string content, int pixelsPerModule = 4)
         {
             QRCodeData qrCodeData = GenerateQRCode(content);
+
             var qrCode = new PngByteQRCode(qrCodeData);
+
             return qrCode.GetGraphic(pixelsPerModule);
         }
 
         public static MemoryStream GenerateLabelsAsPDF(List<AttendeeLabel> labels)
         {
-
             // Open a new PDF document
             float topPageMargin = Utilities.InchesToPoints(0.335f);
             float bottomPageMargin = topPageMargin;
