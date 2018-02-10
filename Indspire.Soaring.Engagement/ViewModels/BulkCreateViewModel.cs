@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.ViewModels
 {
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+
     public class BulkCreateViewModel
     {
-        public bool Success { get; set; }
-        public string ErrorMessage { get; set; }
-        public int AmountCreated { get; set; }
-        public int Amount { get; set; }
+        [DisplayName("Attendees Created")]
+        public int AmountCreated { get; set; } = 0;
+
+        [Required]
+        [DisplayName("Attendees to Create")]
+        [Range(1, 2000, ErrorMessage = "Amount to create must be greater than 0 and less than 2000.")]
+        public int Amount { get; set; } = 0;
     }
 }

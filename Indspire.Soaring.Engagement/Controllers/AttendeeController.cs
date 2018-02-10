@@ -1,6 +1,9 @@
-﻿namespace Indspire.Soaring.Engagement.Controllers
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Indspire.Soaring.Engagement.Data;
@@ -9,20 +12,31 @@
     using Indspire.Soaring.Engagement.Models;
     using Indspire.Soaring.Engagement.Models.AttendeeViewModels;
     using Indspire.Soaring.Engagement.Utils;
+    using Indspire.Soaring.Engagement.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Filters;
     using Microsoft.EntityFrameworkCore;
-    using Indspire.Soaring.Engagement.ViewModels;
-    using System.Collections.Generic;
 
     [Authorize(Roles = RoleNames.Administrator)]
     public class AttendeeController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext databaseContext;
+
+        private InstanceSelector instanceSelector;
 
         public AttendeeController(ApplicationDbContext context)
         {
-            _context = context;
+            this.databaseContext = context;
+        }
+
+        public override Task OnActionExecutionAsync(
+            ActionExecutingContext context,
+            ActionExecutionDelegate next)
+        {
+            this.instanceSelector = new InstanceSelector(context.HttpContext);
+
+            return base.OnActionExecutionAsync(context, next);
         }
 
         public IActionResult Index(
@@ -35,11 +49,9 @@
 
             IEnumerable<Attendee> users = new List<Attendee>();
 
-            int totalCount = 0;
+            var totalCount = 0;
 
-            var instanceSelector = new InstanceSelector(HttpContext);
-
-            var selectedInstanceID = instanceSelector.GetInstanceID();
+            var selectedInstanceID = this.instanceSelector.GetInstanceID();
 
             var filterFunc = string.IsNullOrWhiteSpace(search)
                 ? new Func<Attendee, bool>(i => i.InstanceID == selectedInstanceID)
@@ -48,17 +60,17 @@
                     ((!string.IsNullOrWhiteSpace(i.UserNumber) && i.UserNumber.Contains(search)) ||
                      (!string.IsNullOrWhiteSpace(i.ExternalID) && i.ExternalID.Contains(search))));
 
-            users = _context.Attendee
+            users = this.databaseContext.Attendee
                 .Where(filterFunc)
                 .OrderByDescending(i => i.CreatedDate)
                 .Skip(skip)
                 .Take(take);
 
-            totalCount = _context.Attendee
+            totalCount = this.databaseContext.Attendee
                 .Where(filterFunc)
                 .Count();
 
-            return View(users.ToPagedList(totalCount, page, pageSize, search));
+            return this.View(users.ToPagedList(totalCount, page, pageSize, search));
         }
 
         [HttpGet]
@@ -69,13 +81,13 @@
             var viewModel = new UserDetailsViewModel();
 
             var attendee = id.HasValue
-                ? await _context.Attendee
+                ? await this.databaseContext.Attendee
                     .FirstOrDefaultAsync(m => m.UserID == id)
                 : null;
 
             if (attendee == null)
             {
-                actionResult = NotFound();
+                actionResult = this.NotFound();
             }
             else
             {
@@ -83,9 +95,9 @@
 
                 viewModel.PointsBalance = PointsUtils.GetPointsForUser(
                     attendee.UserID,
-                    _context);
+                    this.databaseContext);
 
-                actionResult = View(viewModel);
+                actionResult = this.View(viewModel);
             }
 
             return actionResult;
@@ -96,7 +108,7 @@
         {
             var viewModel = new CreateAttendeeViewModel();
 
-            return View(viewModel);
+            return this.View(viewModel);
         }
 
         [HttpPost]
@@ -108,11 +120,9 @@
 
             var dataUtils = new DataUtils();
 
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
-                var instanceSelector = new InstanceSelector(HttpContext);
-
-                var selectedInstanceID = instanceSelector.GetInstanceID();
+                var selectedInstanceID = this.instanceSelector.GetInstanceID();
 
                 var attendee = new Attendee();
 
@@ -124,15 +134,15 @@
                     ? string.Empty
                     : attendeeViewModel.ExternalID;
 
-                _context.Add(attendee);
+                this.databaseContext.Add(attendee);
 
-                await _context.SaveChangesAsync();
+                await this.databaseContext.SaveChangesAsync();
 
-                actionResult = RedirectToAction(nameof(Index));
+                actionResult = this.RedirectToAction(nameof(this.Index));
             }
             else
             {
-                actionResult = View(attendeeViewModel);
+                actionResult = this.View(attendeeViewModel);
             }
 
             return actionResult;
@@ -143,21 +153,22 @@
             IActionResult actionResult = null;
 
             var user = id.HasValue
-                ? await _context.Attendee.FirstOrDefaultAsync(m => m.UserID == id)
+                ? await this.databaseContext.Attendee.FirstOrDefaultAsync(m => m.UserID == id)
                 : null;
 
             if (user == null)
             {
-                actionResult = NotFound();
+                actionResult = this.NotFound();
             }
             else
             {
-                var viewModel = new EditAttendeeViewModel();
+                var viewModel = new EditAttendeeViewModel
+                {
+                    ExternalID = user.ExternalID,
+                    UserID = user.UserID
+                };
 
-                viewModel.ExternalID = user.ExternalID;
-                viewModel.UserID = user.UserID;
-
-                actionResult = View(viewModel);
+                actionResult = this.View(viewModel);
             }
 
             return actionResult;
@@ -171,14 +182,14 @@
         {
             if (id != attendeeViewModel.UserID)
             {
-                return NotFound();
+                return this.NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (this.ModelState.IsValid)
             {
                 try
                 {
-                    var attendee = _context.Attendee
+                    var attendee = this.databaseContext.Attendee
                         .FirstOrDefault(i => i.UserID == attendeeViewModel.UserID);
 
                     if (attendee != null)
@@ -187,15 +198,15 @@
                         attendee.ModifiedDate = DateTime.UtcNow;
                     }
 
-                    _context.Update(attendee);
+                    this.databaseContext.Update(attendee);
 
-                    await _context.SaveChangesAsync();
+                    await this.databaseContext.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AttendeeExists(attendeeViewModel.UserID))
+                    if (!this.AttendeeExists(attendeeViewModel.UserID))
                     {
-                        return NotFound();
+                        return this.NotFound();
                     }
                     else
                     {
@@ -203,10 +214,10 @@
                     }
                 }
 
-                return RedirectToAction(nameof(Index));
+                return this.RedirectToAction(nameof(this.Index));
             }
 
-            return View(attendeeViewModel);
+            return this.View(attendeeViewModel);
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -214,82 +225,77 @@
             IActionResult actionResult = null;
 
             var attendee = id.HasValue
-                ? await _context.Attendee
+                ? await this.databaseContext.Attendee
                     .FirstOrDefaultAsync(m => m.UserID == id)
                 : null;
 
             if (attendee == null)
             {
-                actionResult = NotFound();
+                actionResult = this.NotFound();
             }
             else
             {
-                actionResult = View(attendee);
+                actionResult = this.View(attendee);
             }
 
             return actionResult;
         }
 
         [HttpPost]
-        [ActionName("Delete")]
+        [ActionName(nameof(Delete))]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var attendee = await _context.Attendee
+            var attendee = await this.databaseContext.Attendee
                 .FirstOrDefaultAsync(m => m.UserID == id);
 
             IActionResult actionResult = null;
 
             if (attendee == null)
             {
-                actionResult = NotFound();
+                actionResult = this.NotFound();
             }
             else
             {
-                _context.Attendee.Remove(attendee);
+                this.databaseContext.Attendee.Remove(attendee);
 
-                await _context.SaveChangesAsync();
+                await this.databaseContext.SaveChangesAsync();
 
-                actionResult = RedirectToAction(nameof(Index));
+                actionResult = this.RedirectToAction(nameof(this.Index));
             }
 
             return actionResult;
-        }
-
-        private bool AttendeeExists(int id)
-        {
-            return _context.Attendee.Any(e => e.UserID == id);
         }
 
         [AllowAnonymous]
         [Route("[controller]/scan")]
         public IActionResult Scan()
         {
-            return View();
+            return this.View();
         }
 
         [HttpPost]
         [AllowAnonymous]
         [Route("[controller]/checkbalance")]
-        public async Task<IActionResult> CheckBalance(string UserNumber)
+        public async Task<IActionResult> CheckBalance(string userNumber)
         {
             var viewModel = new CheckBalanceJsonViewModel();
             try
             {
-
-                //validate 
-                var user = await _context.Attendee.FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
+                // validate
+                var user = await this.databaseContext.Attendee
+                    .FirstOrDefaultAsync(i => i.UserNumber == userNumber);
 
                 if (user == null)
                 {
                     throw new ApplicationException("User not found.");
                 }
 
+                viewModel.ResponseData.PointsBalance = PointsUtils
+                    .GetPointsForUser(user.UserID, this.databaseContext);
 
-                viewModel.ResponseData.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, _context);
                 viewModel.ResponseData.UserNumber = user.UserNumber;
                 viewModel.ResponseData.ExternalID = user.ExternalID;
-
             }
             catch (Exception ex)
             {
@@ -297,79 +303,100 @@
                 viewModel.ResponseData = null;
             }
 
-            return new JsonResult(viewModel);
+            return this.Json(viewModel);
         }
 
         public IActionResult BulkCreate()
         {
-            return View();
+            var viewModel = new BulkCreateViewModel();
+
+            return this.View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> BulkCreateConfirmation(int amount)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BulkCreate(
+            BulkCreateViewModel bulkCreateViewModel)
         {
-            var viewModel = new BulkCreateViewModel();
+            IActionResult actionResult = null;
 
-            viewModel.Amount = amount;
-            int usersCreated = 0;
-            int maxUsers = 2000;
-
-            try
+            if (this.ModelState.IsValid)
             {
-                if (amount < 1)
+                var usersCreated = 0;
+
+                var selectedInstanceID = this.instanceSelector.GetInstanceID();
+
+                try
                 {
-                    throw new ApplicationException("Amount to create must be greater than 0");
-                }
+                    for (var i = 0; i < bulkCreateViewModel.Amount; i++)
+                    {
+                        var dataUtils = new DataUtils();
 
-                if (amount > maxUsers)
+                        var user = new Attendee
+                        {
+                            InstanceID = selectedInstanceID,
+                            UserNumber = dataUtils.GenerateNumber(),
+                            CreatedDate = DateTime.UtcNow
+                        };
+
+                        user.ModifiedDate = user.CreatedDate;
+
+                        this.databaseContext.Add(user);
+
+                        await this.databaseContext.SaveChangesAsync();
+
+                        usersCreated++;
+                    }
+
+                    bulkCreateViewModel.AmountCreated = usersCreated;
+
+                    actionResult = this.RedirectToAction(
+                        nameof(this.BulkCreateSuccess),
+                        bulkCreateViewModel);
+                }
+                catch (Exception)
                 {
-                    throw new ApplicationException($"Amount to create must be less than {maxUsers}");
+                    bulkCreateViewModel.AmountCreated = usersCreated;
+
+                    actionResult = this.RedirectToAction(
+                        nameof(this.BulkCreateFailed),
+                        bulkCreateViewModel);
                 }
-
-                var instanceSelector = new InstanceSelector(HttpContext);
-
-                var selectedInstanceID = instanceSelector.GetInstanceID();
-
-                for (var i = 0; i < amount; i++)
-                {
-                    var dataUtils = new DataUtils();
-                    Attendee user = new Attendee();
-
-                    user.InstanceID = selectedInstanceID;
-                    user.UserNumber = dataUtils.GenerateNumber();
-                    user.CreatedDate = DateTime.UtcNow;
-                    user.ModifiedDate = user.CreatedDate;
-
-                    _context.Add(user);
-
-                    await _context.SaveChangesAsync();
-
-                    usersCreated++;
-                }
-
-                viewModel.AmountCreated = usersCreated;
-                viewModel.Success = true;
-
-                return View("BulkCreateSuccess", viewModel);
             }
-            catch (Exception ex)
+            else
             {
-                viewModel.Success = false;
-                viewModel.AmountCreated = usersCreated;
-                viewModel.ErrorMessage = $"An error occurred while trying to Bulk Create Users. Error: {ex.Message}.";
-                return View("BulkCreateFailed", viewModel);
+                actionResult = this.View(bulkCreateViewModel);
             }
+
+            return actionResult;
+        }
+
+        [HttpGet]
+        public IActionResult BulkCreateFailed(
+            BulkCreateViewModel bulkCreateViewModel)
+        {
+            return this.View(bulkCreateViewModel);
+        }
+
+        [HttpGet]
+        public IActionResult BulkCreateSuccess(
+            BulkCreateViewModel bulkCreateViewModel)
+        {
+            return this.View(bulkCreateViewModel);
         }
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> SetExternalID(string userNumber, string externalID)
+        public async Task<IActionResult> SetExternalID(
+            string userNumber,
+            string externalID)
         {
             var viewModel = new SetUserExternalIDJsonViewModel();
+
             try
             {
-
-                var user = await _context.Attendee.FirstOrDefaultAsync(i => i.UserNumber == userNumber);
+                var user = await this.databaseContext.Attendee.FirstOrDefaultAsync(
+                    i => i.UserNumber == userNumber);
 
                 if (user == null)
                 {
@@ -378,12 +405,11 @@
 
                 user.ExternalID = externalID;
 
-                _context.Update(user);
+                this.databaseContext.Update(user);
 
-                await _context.SaveChangesAsync();
+                await this.databaseContext.SaveChangesAsync();
 
                 viewModel.ResponseData.Success = true;
-
             }
             catch (Exception ex)
             {
@@ -391,15 +417,16 @@
                 viewModel.ResponseData.Success = false;
             }
 
-            return Json(viewModel);
+            return this.Json(viewModel);
         }
 
         public IActionResult PrintQRCode(string userNumber)
         {
-            List<AttendeeLabel> labels = new List<AttendeeLabel>();
+            IList<AttendeeLabel> labels = new List<AttendeeLabel>();
 
-            //Get the user
-            var attendee = _context.Attendee.FirstOrDefault(i => i.UserNumber == userNumber);
+            // get the user
+            var attendee = this.databaseContext.Attendee.FirstOrDefault(
+                i => i.UserNumber == userNumber);
 
             if (attendee == null)
             {
@@ -409,36 +436,54 @@
             {
                 labels.Add(new AttendeeLabel(attendee));
             }
-            
-            var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
 
-            return File(memoryStream, "application/pdf", $"attendee_{userNumber}_qr_code.pdf");
+            var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels.ToList());
+
+            return this.File(
+                memoryStream,
+                "application/pdf",
+                $"attendee_{userNumber}_qr_code.pdf");
         }
 
         public IActionResult PrintAllQRCodes()
         {
-            //assume we are printing ALL attendees
-            var labels = _context.Attendee.Select(i => new AttendeeLabel(i)).ToList();
+            // assume we are printing ALL attendees
+            var labels = this.databaseContext.Attendee
+                .Select(i => new AttendeeLabel(i))
+                .ToList();
 
             var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
 
-            return File(memoryStream, "application/pdf", "all_qr_codes.pdf");
+            return this.File(
+                memoryStream,
+                "application/pdf",
+                "all_qr_codes.pdf");
         }
 
         public IActionResult PrintTestQRCodes(int num = 12)
         {
-            string testNumber = "123456";
-            List<AttendeeLabel> labels = new List<AttendeeLabel>();
+            var testNumber = "123456";
+            var labels = new List<AttendeeLabel>();
 
-            for(var i = 0; i < num; i++)
+            for (var i = 0; i < num; i++)
             {
-                labels.Add(new AttendeeLabel() { UserNumber = testNumber });
+                labels.Add(new AttendeeLabel
+                {
+                    UserNumber = testNumber
+                });
             }
-            
-            var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
 
-            return File(memoryStream, "application/pdf", "test_qr_codes.pdf");
+            var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels.ToList());
+
+            return this.File(
+                memoryStream,
+                "application/pdf",
+                "test_qr_codes.pdf");
         }
 
+        private bool AttendeeExists(int id)
+        {
+            return this.databaseContext.Attendee.Any(e => e.UserID == id);
+        }
     }
 }

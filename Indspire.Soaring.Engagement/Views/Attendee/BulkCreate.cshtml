@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Indspire.Soaring.Engagement.ViewModels.BulkCreateViewModel
+@{
     ViewData["Title"] = "Create Bulk Attendees";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
@@ -16,13 +17,16 @@
 </div>
 
 <div class="admin-backend__main-content">
-    <form class="admin-form" method="post" asp-action="BulkCreateConfirmation">
+    <form asp-action="BulkCreate" class="admin-form">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <p>Enter a number below to automatically create unique attendees.</p>
         <div class="input input__text">
-            <label>Attendees to Create</label>
-            <input type="number" name="amount" />
+            <div class="input input__text">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" type="number" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
         </div>
         <button type="submit" class="blue-button">Create Attendees</button>
-
     </form>
 </div>

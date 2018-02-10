@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Models.AttendeeViewModels
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Models.AttendeeViewModels
 {
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
@@ -7,6 +9,7 @@
     {
         [Required]
         [DisplayName("External ID")]
-        public string ExternalID { get; set; }
+        public string ExternalID { get; set; } =
+            string.Empty;
     }
 }

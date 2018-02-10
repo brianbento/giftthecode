@@ -1,7 +1,8 @@
+// Copyright (c) Team Agility. All rights reserved.
+
 namespace Indspire.Soaring.Engagement.Database
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
 
     public class Vendor
