@@ -261,6 +261,22 @@ namespace Indspire.Soaring.Engagement.Controllers
             return actionResult;
         }
 
+        public async Task<IActionResult> List()
+        {
+            var topUsers = await _context.AwardLog
+                .GroupBy(i => i.UserID)
+                .Select(i => new AttendeeRow()
+                {
+                    UserNamber = i.FirstOrDefault().User.UserNumber,
+                    ExternalId = i.FirstOrDefault().User.ExternalID,
+                    Points = i.Sum(p => p.Points)
+                })
+                .OrderByDescending(i => i.Points)
+                .ToListAsync();
+
+            return View(topUsers);
+        }
+
         [AllowAnonymous]
         [Route("[controller]/scan")]
         public IActionResult Scan()

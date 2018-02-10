@@ -341,5 +341,22 @@
             return new JsonResult(viewModel);
 
         }
+
+        public async Task<IActionResult> List()
+        {
+            var topRedemptions = await _context.RedemptionLog
+                .GroupBy(i => i.RedemptionID)
+                .Select(i => new RedemptionsRow()
+                {
+                    RedemptionNumber = i.FirstOrDefault().Redemption.RedemptionNumber,
+                    TimesRedeemed = i.Count(),
+                    Name = i.FirstOrDefault().Redemption.Name,
+                    Description = i.FirstOrDefault().Redemption.Description
+                })
+                .OrderByDescending(i => i.TimesRedeemed)
+                .ToListAsync();
+
+            return View(topRedemptions);
+        }
     }
 }

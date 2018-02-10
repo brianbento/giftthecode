@@ -6,13 +6,13 @@
 {
     var list = Model as PagedList<Indspire.Soaring.Engagement.Database.Redemption>;
 
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Redemptions";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
 <div class="admin-backend__main-header">
     <div class="admin-backend__main-header-title">
         <span class="admin-backend__main-header-title-icon fa fa-gift"></span>
-        <span class="admin-backend__main-header-title-text">Redemptions</span>
+        <span class="admin-backend__main-header-title-text">Redemptions (@list.TotalCount)</span>
     </div>
 
     <form class="admin-backend__main-header-search" method="get" asp-action="Index">
@@ -27,6 +27,10 @@
         <a class="admin-backend__main-header-actions-link" title="Create New Redemption" asp-action="Create">
             <span class="admin-backend__main-header-actions-link-icon fa fa-plus fa-2x" aria-hidden="true">
 
+            </span>
+        </a>
+        <a class="admin-backend__main-header-actions-link" asp-action="List" title="List Top Redemptions">
+            <span class="admin-backend__main-header-actions-link-icon fa fa-table fa-2x" aria-hidden="true">
             </span>
         </a>
     </div>

@@ -2,8 +2,8 @@
 
 @{
     Layout = "~/Views/Shared/_ScannerLayout.cshtml";
-
     var redeemTitle = Model.Redemption != null ? Model.Redemption.Name : "";
+    ViewData["Title"] = "Redeem " + redeemTitle;
 }
 
 <div class="scanner">

@@ -2,7 +2,7 @@
 @model Indspire.Soaring.Engagement.ViewModels.UserDetailsViewModel
 
 @{
-    ViewData["Title"] = "User Details";
+    ViewData["Title"] = "Attendee Details";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -72,6 +72,14 @@
             </td>
             <td>
                 <a asp-action="Scan">Check Point Balance</a>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Print QR Code
+            </td>
+            <td>
+                <a asp-action="PrintQRCode" asp-route-usernumber="@Model.User.UserNumber">Print</a>
             </td>
         </tr>
     </table>

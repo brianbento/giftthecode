@@ -29,10 +29,10 @@
 
     @if (Model != null)
     {
-
+        <h3>Top 25 Awards</h3>
         @if (Model.AwardsList.Any())
         {
-            <h3>Top 25 Awards</h3>
+
             <table class="table">
                 <thead>
                     <tr>
@@ -55,22 +55,27 @@
 
                 </tbody>
             </table>
-            <a href="/award/export">Export</a>
+            <a href="/award/list">View All</a>
+        }
+        else
+        {
+            <p>None of your Attendees have been awarded points yet.</p>
         }
 
-        @if (Model.UserList.Any())
+        <h3>Top 25 Attendees</h3>
+        @if (Model.AttendeeList.Any())
         {
-            <h3>Top 25 Attendees</h3>
+
             <table class="table">
                 <thead>
                     <tr>
-                        <th>User Number</th>
+                        <th>Attendee Number</th>
                         <th>External ID</th>
                         <th>Points Awarded</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.UserList)
+                    @foreach (var item in Model.AttendeeList)
                     {
                         <tr>
                             <td>@item.UserNamber</td>
@@ -80,14 +85,44 @@
                     }
                 </tbody>
             </table>
-            <a href="/attendee/export">Export</a>
+            <a href="/attendee/list">View All</a>
+        }
+        else
+        {
+            <p>None of your Attendees have been awarded points yet.</p>
+        }
+
+
+        <h3>Top 25 Redemptions</h3>
+        @if (Model.RedemptionsList.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Redemption Number</th>
+                        <th>Times Redeemed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.RedemptionsList)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>@item.RedemptionNumber</td>
+                            <td>@item.TimesRedeemed</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <a href="/redemption/list">View All</a>
+        }
+        else
+        {
+            <p>None of your Attendees have redeemed anything yet.</p>
         }
 
     }
 </div>
-
-@*<label>todo</label>
-    <ul>
-        <li>Listing of Users with Most Points (max 25 to show) w/ link to full leaderboard</li>
-        <li>Listing of top Actions performed (max 25 to show) w/ link to full leaderboard</li>
-    </ul>*@

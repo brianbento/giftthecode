@@ -4,7 +4,7 @@
 
 @if (Model != null)
 {
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Awards";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     var list = Model as PagedList<Indspire.Soaring.Engagement.Database.Award>;
@@ -12,7 +12,7 @@
 <div class="admin-backend__main-header">
     <div class="admin-backend__main-header-title">
         <span class="admin-backend__main-header-title-icon fa fa-trophy"></span>
-        <span class="admin-backend__main-header-title-text">Awards</span>
+        <span class="admin-backend__main-header-title-text">Awards (@list.TotalCount)</span>
     </div>
 
     <form class="admin-backend__main-header-search" method="get" asp-action="Index">
@@ -26,6 +26,10 @@
     <div class="admin-backend__main-header-actions">
         <a class="admin-backend__main-header-actions-link" asp-action="Create" title="Create New Award">
             <span class="admin-backend__main-header-actions-link-icon fa fa-plus fa-2x" aria-hidden="true">
+            </span>
+        </a>
+        <a class="admin-backend__main-header-actions-link" asp-action="List" title="List Top Awards">
+            <span class="admin-backend__main-header-actions-link-icon fa fa-table fa-2x" aria-hidden="true">
             </span>
         </a>
     </div>

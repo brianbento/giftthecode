@@ -14,7 +14,16 @@ namespace Indspire.Soaring.Engagement.ViewModels
 
     }
 
-    public class UserRow
+    public class RedemptionsRow
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string RedemptionNumber { get; set; }
+        public int TimesRedeemed { get; set; }
+
+    }
+
+    public class AttendeeRow
     {
         public string UserNamber { get; set; }
         public string ExternalId { get; set; }
@@ -23,6 +32,8 @@ namespace Indspire.Soaring.Engagement.ViewModels
     public class DashboardReports
     {
         public List<AwardsRow> AwardsList { get; set; } = new List<AwardsRow>();
-        public List<UserRow> UserList { get; set; } = new List<UserRow>();
+        public List<AttendeeRow> AttendeeList { get; set; } = new List<AttendeeRow>();
+        public List<RedemptionsRow> RedemptionsList { get; set; } = new List<RedemptionsRow>();
+
     }
 }

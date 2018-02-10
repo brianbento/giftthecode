@@ -36,8 +36,4 @@
     <Folder Include="wwwroot\js\viewmodels\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="Views\Admin\Index.cshtml" />
-  </ItemGroup>
-
 </Project>
