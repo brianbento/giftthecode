@@ -84,7 +84,6 @@ namespace Indspire.Soaring.Engagement.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [Route("[controller]/[action]/{awardnumber}")]
         public async Task<IActionResult> Scan(string awardNumber)
         {
             var viewModel = new AwardScanViewModel();

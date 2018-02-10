@@ -71,7 +71,13 @@ namespace Indspire.Soaring.Engagement.Controllers
         {
             IActionResult actionResult = null;
 
-            if (this.ModelState.IsValid)
+            bool passwordMatches = password == confirmPassword;
+            if (!passwordMatches)
+            {
+                ModelState.AddModelError(string.Empty, "Your Password and Confirm Password did not match");
+            }
+
+            if (ModelState.IsValid && passwordMatches)
             {
                 var identityResult = await this.userManager.CreateAsync(user);
 
@@ -79,13 +85,27 @@ namespace Indspire.Soaring.Engagement.Controllers
                 {
                     var passwordResult = await this.userManager.AddPasswordAsync(user, password);
 
-                    if (!await this.userManager.IsInRoleAsync(user, RoleNames.Editor))
+                    if (passwordResult.Succeeded)
                     {
-                        await this.userManager.AddToRoleAsync(user, RoleNames.Editor);
-                    }
-                }
 
-                actionResult = this.RedirectToAction(nameof(this.Index));
+                        if (!await _userManager.IsInRoleAsync(user, RoleNames.Administrator))
+                        {
+                            await _userManager.AddToRoleAsync(user, RoleNames.Administrator);
+                        }
+
+                        actionResult = RedirectToAction(nameof(Index));
+                    } else
+                    {
+                        await _userManager.DeleteAsync(user);
+                        ModelState.AddModelError(string.Empty, "Password must be at least 6 characters, requires at least one non-alphanumeric character, at least one digit, at least one lowercase character, and at least one uppercase character.");
+                        actionResult = View(user);
+                    }
+                } else
+                {
+                    ModelState.AddModelError(string.Empty, identityResult.ToString());
+                    actionResult = View(user);
+                }
+                
             }
             else
             {
