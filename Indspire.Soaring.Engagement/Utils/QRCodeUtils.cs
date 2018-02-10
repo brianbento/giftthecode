@@ -39,10 +39,10 @@ namespace Indspire.Soaring.Engagement.Utils
         {
 
             // Open a new PDF document
-            float topPageMargin = Utilities.InchesToPoints(0.3175f);
-            float bottomPageMargin = 0;
+            float topPageMargin = Utilities.InchesToPoints(0.335f);
+            float bottomPageMargin = topPageMargin;
 
-            float leftPageMargin = Utilities.InchesToPoints(0.24f);
+            float leftPageMargin = Utilities.InchesToPoints(0.32f);
             float rightPageMarign = leftPageMargin;
 
             float pageMargin = topPageMargin;
@@ -79,17 +79,17 @@ namespace Indspire.Soaring.Engagement.Utils
                 cell.BackgroundColor = BaseColor.BLACK;
 
                 cell.BorderColor = BaseColor.WHITE;
-                cell.BorderWidthTop = Utilities.InchesToPoints(0.3125f);
+                cell.BorderWidthTop = Utilities.InchesToPoints(0.28f);
                 cell.BorderWidthBottom = cell.BorderWidthTop;
 
-                cell.BorderWidthLeft = Utilities.InchesToPoints(0.34f);
+                cell.BorderWidthLeft = Utilities.InchesToPoints(0.3f);
                 cell.BorderWidthRight = cell.BorderWidthLeft;
 
-                cell.FixedHeight = Utilities.InchesToPoints(2 + (0.3125f * 2));
+                cell.FixedHeight = Utilities.InchesToPoints(2 + (0.29f * 2));
 
                 var imgContents = new Paragraph();
                 var img = Image.GetInstance(QRCodeUtils.GenerateQRCodeAsBytes(attendee.UserNumber));
-                imgContents.Add(new Chunk(img, Utilities.InchesToPoints(0.5f), Utilities.InchesToPoints(-1.9f)));
+                imgContents.Add(new Chunk(img, Utilities.InchesToPoints(0.475f), Utilities.InchesToPoints(-1.9f)));
                 imgContents.Alignment = Element.ALIGN_BOTTOM;
                 cell.AddElement(imgContents);
 

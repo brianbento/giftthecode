@@ -428,7 +428,12 @@
             
             var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
 
-            return File(memoryStream, "application/pdf", $"attendee_{userNumber}_qr_code.pdf");
+            return File(memoryStream, "application/pdf", $"attendee_{userNumber}_qr_code_use_avery-22806-labels.pdf");
+        }
+
+        public IActionResult Print()
+        {
+            return View();
         }
 
         public IActionResult PrintAllQRCodes()
@@ -438,7 +443,7 @@
 
             var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
 
-            return File(memoryStream, "application/pdf", "all_qr_codes.pdf");
+            return File(memoryStream, "application/pdf", "qr-codes_use_avery-22806-labels.pdf");
         }
 
         public IActionResult PrintTestQRCodes(int num = 12)
