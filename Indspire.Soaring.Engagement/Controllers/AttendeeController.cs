@@ -19,24 +19,18 @@ namespace Indspire.Soaring.Engagement.Controllers
     using Microsoft.EntityFrameworkCore;
 
     [Authorize(Roles = RoleNames.Administrator)]
-    public class AttendeeController : Controller
+    public class AttendeeController : BaseController
     {
         private readonly ApplicationDbContext databaseContext;
 
-        private InstanceSelector instanceSelector;
-
-        public AttendeeController(ApplicationDbContext context)
+        public AttendeeController(
+            ApplicationDbContext context,
+            IInstanceSelector instanceSelector)
         {
+            this.InstanceSelector = instanceSelector ??
+                throw new ArgumentNullException(nameof(instanceSelector));
+
             this.databaseContext = context;
-        }
-
-        public override Task OnActionExecutionAsync(
-            ActionExecutingContext context,
-            ActionExecutionDelegate next)
-        {
-            this.instanceSelector = new InstanceSelector(context.HttpContext);
-
-            return base.OnActionExecutionAsync(context, next);
         }
 
         public IActionResult Index(
@@ -51,7 +45,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             var totalCount = 0;
 
-            var selectedInstanceID = this.instanceSelector.GetInstanceID();
+            var selectedInstanceID = this.InstanceSelector.InstanceID;
 
             var filterFunc = string.IsNullOrWhiteSpace(search)
                 ? new Func<Attendee, bool>(i => i.InstanceID == selectedInstanceID)
@@ -122,7 +116,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             if (this.ModelState.IsValid)
             {
-                var selectedInstanceID = this.instanceSelector.GetInstanceID();
+                var selectedInstanceID = this.InstanceSelector.InstanceID;
 
                 var attendee = new Attendee();
 
@@ -324,7 +318,7 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 var usersCreated = 0;
 
-                var selectedInstanceID = this.instanceSelector.GetInstanceID();
+                var selectedInstanceID = this.InstanceSelector.InstanceID;
 
                 try
                 {

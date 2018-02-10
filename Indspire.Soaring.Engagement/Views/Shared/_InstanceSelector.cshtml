@@ -5,17 +5,17 @@
 
 @inject ApplicationDbContext DbContext
 @inject IHttpContextAccessor HttpContextAccessor
+@inject IInstanceSelector InstanceSelector
 
 @if (DbContext != null &&
-HttpContextAccessor != null)
+     HttpContextAccessor != null &&
+     InstanceSelector != null)
 {
     var instances = await DbContext.Instance
         .OrderBy(i => i.Name)
         .ToListAsync();
 
-    var instanceSelector = new InstanceSelector(HttpContextAccessor.HttpContext);
-
-    var selectedInstanceID = instanceSelector.GetInstanceID();
+    var selectedInstanceID = InstanceSelector.InstanceID;
 
     if (selectedInstanceID == -1)
     {
@@ -23,7 +23,7 @@ HttpContextAccessor != null)
 
         if (firstInstance != null)
         {
-            instanceSelector.SetInstanceID(firstInstance.InstanceID);
+            InstanceSelector.InstanceID = firstInstance.InstanceID;
             selectedInstanceID = firstInstance.InstanceID;
         }
     }

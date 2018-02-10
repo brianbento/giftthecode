@@ -16,12 +16,17 @@
     using System.Collections.Generic;
 
     [Authorize(Roles = RoleNames.Administrator)]
-    public class RedemptionController : Controller
+    public class RedemptionController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
-        public RedemptionController(ApplicationDbContext context)
+        public RedemptionController(
+            ApplicationDbContext context,
+            IInstanceSelector instanceSelector)
         {
+            this.InstanceSelector = instanceSelector ??
+                throw new ArgumentNullException(nameof(instanceSelector));
+
             _context = context;
         }
 
@@ -37,9 +42,7 @@
 
             int totalCount = 0;
 
-            var instanceSelector = new InstanceSelector(HttpContext);
-
-            var selectedInstanceID = instanceSelector.GetInstanceID();
+            var selectedInstanceID = this.InstanceSelector.InstanceID;
 
             var filterFunc = string.IsNullOrWhiteSpace(search)
                 ? new Func<Redemption, bool>(i => i.InstanceID == selectedInstanceID)
@@ -95,9 +98,7 @@
 
             if (ModelState.IsValid)
             {
-                var instanceSelector = new InstanceSelector(HttpContext);
-
-                var selectedInstanceID = instanceSelector.GetInstanceID();
+                var selectedInstanceID = this.InstanceSelector.InstanceID;
 
                 var redemption = new Redemption();
 

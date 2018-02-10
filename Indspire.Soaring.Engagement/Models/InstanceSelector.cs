@@ -1,56 +1,54 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Indspire.Soaring.Engagement.Models
+﻿namespace Indspire.Soaring.Engagement.Models
 {
-    public class InstanceSelector
-    {
-        public static string cookieName = "InstanceID";
+    using System;
+    using Microsoft.AspNetCore.Http;
 
-        public HttpContext HttpContext { get; private set; }
+    public class InstanceSelector : IInstanceSelector
+    {
+#pragma warning disable CC0021 // Use nameof
+        private static string cookieName = "InstanceID";
+#pragma warning restore CC0021 // Use nameof
+
+        public InstanceSelector(IHttpContextAccessor httpContextAccessor)
+        {
+            this.HttpContext = httpContextAccessor == null
+                ? throw new ArgumentNullException(nameof(httpContextAccessor))
+                : httpContextAccessor.HttpContext;
+        }
 
         public InstanceSelector(HttpContext httpContext)
         {
-            if (httpContext == null)
-            {
+            this.HttpContext = httpContext ??
                 throw new ArgumentNullException(nameof(httpContext));
+        }
+
+        public HttpContext HttpContext { get; private set; }
+
+        public int InstanceID
+        {
+            get
+            {
+                var selectedInstanceCookieIDAsString =
+                    this.HttpContext.Request.Cookies.ContainsKey(cookieName)
+                        ? this.HttpContext.Request.Cookies[cookieName]
+                        : string.Empty;
+
+                var selectedInstanceID =
+                    !string.IsNullOrWhiteSpace(selectedInstanceCookieIDAsString) &&
+                    int.TryParse(selectedInstanceCookieIDAsString, out int tempInstanceID)
+                            ? tempInstanceID
+                            : -1;
+
+                return selectedInstanceID;
             }
 
-            this.HttpContext = httpContext;
-        }
-
-        public int GetInstanceID()
-        {
-            var selectedInstanceCookieIDAsString =
-                this.HttpContext.Request.Cookies.ContainsKey(cookieName)
-                    ? this.HttpContext.Request.Cookies[cookieName]
-                    : string.Empty;
-
-            var selectedInstanceID =
-                !string.IsNullOrWhiteSpace(selectedInstanceCookieIDAsString) &&
-                int.TryParse(selectedInstanceCookieIDAsString, out int tempInstanceID)
-                        ? tempInstanceID
-                        : -1;
-
-            return selectedInstanceID;
-        }
-
-        public void SetInstanceID(int instanceID)
-        {
-            HttpContext.Response.Cookies.Append(
-                cookieName,
-
-                instanceID.ToString(),
-
-                new CookieOptions()
-                {
-                    HttpOnly = true,
-
-                    SameSite = SameSiteMode.Strict
-                });
+            set
+            {
+                this.HttpContext.Response.Cookies.Append(
+                  cookieName,
+                  value.ToString(),
+                  new CookieOptions { HttpOnly = true, SameSite = SameSiteMode.Strict });
+            }
         }
     }
 }

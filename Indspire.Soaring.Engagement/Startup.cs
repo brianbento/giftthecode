@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Indspire.Soaring.Engagement.Models;
-using Indspire.Soaring.Engagement.Services;
-using Indspire.Soaring.Engagement.Data;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement
 {
+    using Indspire.Soaring.Engagement.Data;
+    using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.Services;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -27,7 +25,7 @@ namespace Indspire.Soaring.Engagement
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -35,6 +33,8 @@ namespace Indspire.Soaring.Engagement
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
+
+            services.AddTransient<IInstanceSelector, InstanceSelector>();
 
             services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
 
@@ -61,7 +61,7 @@ namespace Indspire.Soaring.Engagement
 
             app.UseAuthentication();
 
-            databaseInitializer.Initialize(Configuration).Wait();
+            databaseInitializer.Initialize(this.Configuration).Wait();
 
             app.UseMvc(routes =>
             {

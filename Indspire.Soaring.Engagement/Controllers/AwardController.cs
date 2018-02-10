@@ -1,6 +1,9 @@
-﻿namespace Indspire.Soaring.Engagement.Controllers
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Indspire.Soaring.Engagement.Data;
@@ -12,16 +15,21 @@
     using Indspire.Soaring.Engagement.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Filters;
     using Microsoft.EntityFrameworkCore;
-    using System.Collections.Generic;
 
     [Authorize(Roles = RoleNames.Administrator)]
-    public class AwardController : Controller
+    public class AwardController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
-        public AwardController(ApplicationDbContext context)
+        public AwardController(
+            ApplicationDbContext context,
+            IInstanceSelector instanceSelector)
         {
+            this.InstanceSelector = instanceSelector ??
+                throw new ArgumentNullException(nameof(instanceSelector));
+
             _context = context;
         }
 
@@ -33,9 +41,7 @@
             IEnumerable<Award> awards = new List<Award>();
             int totalCount = 0;
 
-            var instanceSelector = new InstanceSelector(HttpContext);
-
-            var selectedInstanceID = instanceSelector.GetInstanceID();
+            var selectedInstanceID = this.InstanceSelector.InstanceID;
 
             var filterFunc = string.IsNullOrWhiteSpace(search)
                 ? new Func<Award, bool>(i => i.InstanceID == selectedInstanceID)
@@ -149,9 +155,7 @@
             {
                 var award = new Award();
 
-                var instanceSelector = new InstanceSelector(HttpContext);
-
-                award.InstanceID = instanceSelector.GetInstanceID();
+                award.InstanceID = this.InstanceSelector.InstanceID;
                 award.Name = awardViewModel.Name;
                 award.Description = awardViewModel.Description;
                 award.Points = awardViewModel.Points;

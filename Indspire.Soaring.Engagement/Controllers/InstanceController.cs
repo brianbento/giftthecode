@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Controllers
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Controllers
 {
     using System;
     using System.Linq;
@@ -10,17 +12,21 @@
     using Indspire.Soaring.Engagement.Models.InstanceViewModels;
     using Indspire.Soaring.Engagement.Utils;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
     [Authorize(Roles = RoleNames.Administrator)]
-    public class InstanceController : Controller
+    public class InstanceController : BaseController
     {
         private readonly ApplicationDbContext _context;
 
-        public InstanceController(ApplicationDbContext context)
+        public InstanceController(
+            ApplicationDbContext context,
+            IInstanceSelector instanceSelector)
         {
+            this.InstanceSelector = instanceSelector ??
+                throw new ArgumentNullException(nameof(instanceSelector));
+
             _context = context;
         }
 
@@ -105,9 +111,7 @@
 
                 await _context.SaveChangesAsync();
 
-                var instanceSelector = new InstanceSelector(HttpContext);
-
-                var selectedInstanceID = instanceSelector.GetInstanceID();
+                var selectedInstanceID = this.InstanceSelector.InstanceID;
 
                 // if the deleted instance was the selected one,
                 // defaults to the first instance, if any.
@@ -118,7 +122,7 @@
 
                     if (firstInstance != null)
                     {
-                        instanceSelector.SetInstanceID(firstInstance.InstanceID);
+                        this.InstanceSelector.InstanceID = firstInstance.InstanceID;
                     }
                 }
             }
@@ -146,9 +150,7 @@
 
                     if (instance != null)
                     {
-                        var instanceSelector = new InstanceSelector(HttpContext);
-
-                        instanceSelector.SetInstanceID(instance.InstanceID);
+                        this.InstanceSelector.InstanceID = instance.InstanceID;
                     }
                 }
                 catch (DbUpdateConcurrencyException)
