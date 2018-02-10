@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <UserSecretsId>aspnet-Indspire.Soaring.Engagement-F7271D48-4EA1-4121-9943-2A50038EDA15</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/4edee29b-c194-4388-a531-a9c342bc4e52/resourcegroups/indspire-soaring/providers/microsoft.insights/components/indspire-soaring-engagment</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/4edee29b-c194-4388-a531-a9c342bc4e52/resourcegroups/indspire-soaring/providers/microsoft.insights/components/indspire-soaring-engagment</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +21,7 @@
     <PackageReference Include="codecracker.CSharp" Version="1.0.3" />
     <PackageReference Include="EPPlus.Core" Version="1.5.4" />
     <PackageReference Include="iTextSharp" Version="5.5.12" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
@@ -34,6 +37,10 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\js\viewmodels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
