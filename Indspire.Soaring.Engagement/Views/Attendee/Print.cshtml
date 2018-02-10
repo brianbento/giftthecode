@@ -1,0 +1,19 @@
+﻿@{ 
+    ViewData["Title"] = "Print QR Codes";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="admin-backend__main-header">
+    <div class="admin-backend__main-header-title">
+        <a class="admin-backend__main-header-title-back fa fa-chevron-left" asp-action="Index"></a>
+        <span class="admin-backend__main-header-title-icon fa fa-print"></span>
+        <span class="admin-backend__main-header-title-text">Print Attendees</span>
+    </div>
+</div>
+
+<div class="admin-backend__main-content">
+    <p>Click "Print" below to download a PDF containing ALL QR codes for your attendees of this Event. The printable PDF is formatted specifically for the Avery 22806 labels template (12 per sheet).</p>
+    <p>For more details, please see the <a href="https://www.avery.com/templates/22806" title="Avery 22806 labels">Avery Website</a>.</p>
+    <a class="blue-button" asp-action="PrintAllQRCodes">Print</a>
+    <a class="blue-button" asp-action="Index">Cancel</a>
+</div>

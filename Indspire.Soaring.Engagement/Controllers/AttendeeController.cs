@@ -450,10 +450,15 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels.ToList());
 
-            return this.File(
+            return File(
                 memoryStream,
                 "application/pdf",
-                $"attendee_{userNumber}_qr_code.pdf");
+                $"attendee_{userNumber}_qr_code_use_avery-22806-labels.pdf");
+        }
+
+        public IActionResult Print()
+        {
+            return View();
         }
 
         public IActionResult PrintAllQRCodes()
@@ -465,10 +470,10 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
 
-            return this.File(
+            return File(
                 memoryStream,
                 "application/pdf",
-                "all_qr_codes.pdf");
+                "qr-codes_use_avery-22806-labels.pdf");
         }
 
         public IActionResult PrintTestQRCodes(int num = 12)
