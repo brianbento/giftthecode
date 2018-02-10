@@ -90,7 +90,11 @@
                 </tbody>
             </table>
         }
-        else
+        else if(!string.IsNullOrEmpty(list.Search))
+        {
+            <div>No results found.</div>
+
+        }
         {
             <div>
                 No attendees created yet.
