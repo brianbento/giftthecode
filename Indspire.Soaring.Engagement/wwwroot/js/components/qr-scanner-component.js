@@ -13,7 +13,7 @@
             },
             Balance: {
                 Name: 'Balance',
-                Endpoint: '/user/checkbalance'
+                Endpoint: '/attendee/checkbalance'
             }
         }
 

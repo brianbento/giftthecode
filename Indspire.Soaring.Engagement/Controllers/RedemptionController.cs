@@ -233,10 +233,10 @@
         }
 
         [AllowAnonymous]
-        public IActionResult Scan()
+        public IActionResult Scan(string redemptionNumber)
         {
             var viewModel = new RedemptionScanViewModel();
-            viewModel.RedemptionNumber = $"{Request.Query["RedemptionNumber"]}";
+            viewModel.RedemptionNumber = redemptionNumber;
             if (string.IsNullOrEmpty(viewModel.RedemptionNumber))
             {
                 viewModel.HasRedemptionNumber = false;

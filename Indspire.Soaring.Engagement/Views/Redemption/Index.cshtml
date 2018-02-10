@@ -24,7 +24,7 @@
     </form>
 
     <div class="admin-backend__main-header-actions">
-        <a class="admin-backend__main-header-actions-link" asp-action="Create">
+        <a class="admin-backend__main-header-actions-link" title="Create New Redemption" asp-action="Create">
             <span class="admin-backend__main-header-actions-link-icon fa fa-plus fa-2x" aria-hidden="true">
 
             </span>
@@ -74,13 +74,16 @@
                             </td>
                             <td class="table__icons-row">
                                 <div class="table__icons-row-wrapper">
-                                    <a asp-action="Edit" asp-route-id="@item.RedemptionID" class="table__icons-row-icon">
+                                    <a asp-action="Scan" asp-route-redemptionnumber="@item.RedemptionNumber" title="Scan Redemption" class="table__icons-row-icon">
+                                        <span class="fa fa-qrcode"></span>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.RedemptionID" title="Edit Redemption" class="table__icons-row-icon">
                                         <span class="fa fa-pencil"></span>
                                     </a>
-                                    <a asp-action="Details" asp-route-id="@item.RedemptionID" class="table__icons-row-icon">
+                                    <a asp-action="Details" asp-route-id="@item.RedemptionID" title="View Redemption Details" class="table__icons-row-icon">
                                         <span class="fa fa-info-circle"></span>
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@item.RedemptionID" class="table__icons-row-icon">
+                                    <a asp-action="Delete" asp-route-id="@item.RedemptionID" title="Delete Redemption" class="table__icons-row-icon">
                                         <span class="fa fa-trash"></span>
                                     </a>
                                 </div>

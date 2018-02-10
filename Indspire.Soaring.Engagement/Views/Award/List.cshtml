@@ -1,0 +1,21 @@
+﻿@model List<Indspire.Soaring.Engagement.ViewModels.AwardsRow>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Award Number</th>
+        <th>Times Awarded</th>
+    </tr>
+    @foreach (var row in Model)
+    {
+    <tr>
+        <td>@row.Name</td>
+        <td>@row.Description</td>
+        <td>@row.AwardNumber</td>
+        <td>@row.TimesAwards</td>
+    </tr>
+
+    }
+
+</table>

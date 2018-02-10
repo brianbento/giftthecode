@@ -24,7 +24,7 @@
     </form>
 
     <div class="admin-backend__main-header-actions">
-        <a class="admin-backend__main-header-actions-link" asp-action="Create">
+        <a class="admin-backend__main-header-actions-link" asp-action="Create" title="Create New Award">
             <span class="admin-backend__main-header-actions-link-icon fa fa-plus fa-2x" aria-hidden="true">
             </span>
         </a>
@@ -75,15 +75,17 @@
                             </td>
                             <td class="table__icons-row">
                                 <div class="table__icons-row-wrapper">
-                                    <a asp-action="Scan" asp-route-awardnumber="@item.AwardNumber">Scan</a>
+                                    <a asp-action="Scan" asp-route-awardnumber="@item.AwardNumber" title="Scan Award" class="table__icons-row-icon">
+                                        <span class="fa fa-qrcode"></span>
+                                    </a>
 
-                                    <a asp-action="Edit" asp-route-id="@item.AwardID" class="table__icons-row-icon">
+                                    <a asp-action="Edit" asp-route-id="@item.AwardID" title="Edit Award" class="table__icons-row-icon">
                                         <span class="fa fa-pencil"></span>
                                     </a>
-                                    <a asp-action="Details" asp-route-id="@item.AwardID" class="table__icons-row-icon">
+                                    <a asp-action="Details" asp-route-id="@item.AwardID" title="View Award Details" class="table__icons-row-icon">
                                         <span class="fa fa-info-circle"></span>
                                     </a>
-                                    <a asp-action="Delete" asp-route-id="@item.AwardID" class="table__icons-row-icon">
+                                    <a asp-action="Delete" asp-route-id="@item.AwardID" title="Delete Award" class="table__icons-row-icon">
                                         <span class="fa fa-trash"></span>
                                     </a>
                                 </div>

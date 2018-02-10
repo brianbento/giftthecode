@@ -40,7 +40,7 @@
 
                 self.state.loading(true);
 
-                $.post('/user/setexternalid', postData)
+                $.post('/attendee/setexternalid', postData)
                     .done(function (response) {
 
                         if (response.errorMessage) {

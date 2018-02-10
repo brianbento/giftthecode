@@ -60,7 +60,19 @@
 
         public async Task<IActionResult> List()
         {
-            return View(await _context.Award.ToListAsync());
+            var topAwarded = await _context.AwardLog
+                  .GroupBy(i => i.AwardID)
+                  .Select(i => new AwardsRow()
+                  {
+                      AwardNumber = i.FirstOrDefault().Award.AwardNumber,
+                      TimesAwards = i.Count(),
+                      Name = i.FirstOrDefault().Award.Name,
+                      Description = i.FirstOrDefault().Award.Description
+                  })
+                  .OrderByDescending(i => i.TimesAwards)
+                  .ToListAsync();
+
+            return View(topAwarded);
         }
 
         [AllowAnonymous]

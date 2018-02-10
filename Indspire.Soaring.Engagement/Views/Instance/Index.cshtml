@@ -16,7 +16,7 @@
             </div>
 
             <div class="admin-backend__main-header-actions">
-                <a class="admin-backend__main-header-actions-link" asp-action="Create">
+                <a class="admin-backend__main-header-actions-link" asp-action="Create" title="Create New Event">
                     <span class="admin-backend__main-header-actions-link-icon fa fa-plus fa-2x" aria-hidden="true"></span>
                 </a>
             </div>
@@ -52,13 +52,13 @@
                                 </td>
                                 <td class="table__icons-row">
                                     <div class="table__icons-row-wrapper">
-                                        <a asp-action="Edit" asp-route-id="@item.InstanceID" class="table__icons-row-icon">
+                                        <a asp-action="Edit" asp-route-id="@item.InstanceID" class="table__icons-row-icon" title="Edit Event">
                                             <span class="fa fa-pencil"></span>
                                         </a>
-                                        <a asp-action="Details" asp-route-id="@item.InstanceID" class="table__icons-row-icon">
+                                        <a asp-action="Details" asp-route-id="@item.InstanceID" class="table__icons-row-icon" title="View event Details">
                                             <span class="fa fa-info-circle"></span>
                                         </a>
-                                        <a asp-action="Delete" asp-route-id="@item.InstanceID" class="table__icons-row-icon">
+                                        <a asp-action="Delete" asp-route-id="@item.InstanceID" class="table__icons-row-icon" title="Delete Event">
                                             <span class="fa fa-trash"></span>
                                         </a>
                                     </div>

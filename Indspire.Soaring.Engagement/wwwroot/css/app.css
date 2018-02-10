@@ -199,6 +199,9 @@ h1 {
 .input {
   margin-bottom: 1rem;
 }
+.input input {
+  color: #000;
+}
 .input.input__text label,
 .input.input__textarea label {
   display: block;
