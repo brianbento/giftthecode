@@ -1,30 +1,42 @@
-﻿namespace Indspire.Soaring.Engagement.Controllers
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Controllers
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
     using Indspire.Soaring.Engagement.Data;
     using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
-    using Indspire.Soaring.Engagement.ViewModels;
 
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
-        private readonly ApplicationDbContext _context;
+        private int maxNumberOfResults = 25;
 
-        public AdminController(ApplicationDbContext context)
+        public AdminController(
+            ApplicationDbContext context,
+            IInstanceSelector instanceSelector)
         {
-            _context = context;
+            this.DatabaseContext = context ??
+                throw new ArgumentNullException(nameof(context));
+
+            this.InstanceSelector = instanceSelector ??
+                throw new ArgumentNullException(nameof(instanceSelector));
         }
 
+        [HttpGet]
         [Authorize(Roles = RoleNames.Administrator)]
         public async Task<IActionResult> Index()
         {
+            var selectedInstanceID = this.InstanceSelector.InstanceID;
 
-            var topAwarded = await _context.AwardLog
+            var topAwarded = await this.DatabaseContext.AwardLog
+                  .Where(i => i.Award.InstanceID == selectedInstanceID)
                   .GroupBy(i => i.AwardID)
-                  .Select(i => new AwardsRow()
+                  .Select(i => new AwardsRow
                   {
                       AwardNumber = i.FirstOrDefault().Award.AwardNumber,
                       TimesAwards = i.Count(),
@@ -32,24 +44,26 @@
                       Description = i.FirstOrDefault().Award.Description
                   })
                   .OrderByDescending(i => i.TimesAwards)
-                  .Take(25)
+                  .Take(this.maxNumberOfResults)
                   .ToListAsync();
 
-            var topUsers = await _context.AwardLog
+            var topUsers = await this.DatabaseContext.AwardLog
+                .Where(i => i.Award.InstanceID == selectedInstanceID)
                 .GroupBy(i => i.UserID)
-                .Select(i => new AttendeeRow()
+                .Select(i => new AttendeeRow
                 {
                     UserNamber = i.FirstOrDefault().User.UserNumber,
                     ExternalId = i.FirstOrDefault().User.ExternalID,
                     Points = i.Sum(p => p.Points)
                 })
                 .OrderByDescending(i => i.Points)
-                .Take(25)
+                .Take(this.maxNumberOfResults)
                 .ToListAsync();
 
-            var topRedemptions = await _context.RedemptionLog
+            var topRedemptions = await this.DatabaseContext.RedemptionLog
+                .Where(i => i.Redemption.InstanceID == selectedInstanceID)
                 .GroupBy(i => i.RedemptionID)
-                .Select(i => new RedemptionsRow()
+                .Select(i => new RedemptionsRow
                 {
                     RedemptionNumber = i.FirstOrDefault().Redemption.RedemptionNumber,
                     TimesRedeemed = i.Count(),
@@ -57,15 +71,17 @@
                     Description = i.FirstOrDefault().Redemption.Description
                 })
                 .OrderByDescending(i => i.TimesRedeemed)
-                .Take(25)
+                .Take(this.maxNumberOfResults)
                 .ToListAsync();
 
-            var dashboardReports = new DashboardReports();
-            dashboardReports.AwardsList = topAwarded;
-            dashboardReports.AttendeeList = topUsers;
-            dashboardReports.RedemptionsList = topRedemptions;
+            var dashboardReports = new DashboardReports
+            {
+                AwardsList = topAwarded,
+                AttendeeList = topUsers,
+                RedemptionsList = topRedemptions
+            };
 
-            return View("~/Views/Admin/Admin.cshtml", dashboardReports);
+            return this.View("~/Views/Admin/Admin.cshtml", dashboardReports);
         }
     }
 }
