@@ -67,7 +67,8 @@ namespace Indspire.Soaring.Engagement.Controllers
                 nameof(ApplicationUser.Email),
                 nameof(ApplicationUser.UserName))]
             ApplicationUser user,
-            string password)
+            string password,
+            string confirmPassword)
         {
             IActionResult actionResult = null;
 
@@ -88,15 +89,15 @@ namespace Indspire.Soaring.Engagement.Controllers
                     if (passwordResult.Succeeded)
                     {
 
-                        if (!await _userManager.IsInRoleAsync(user, RoleNames.Administrator))
+                        if (!await userManager.IsInRoleAsync(user, RoleNames.Administrator))
                         {
-                            await _userManager.AddToRoleAsync(user, RoleNames.Administrator);
+                            await userManager.AddToRoleAsync(user, RoleNames.Administrator);
                         }
 
                         actionResult = RedirectToAction(nameof(Index));
                     } else
                     {
-                        await _userManager.DeleteAsync(user);
+                        await userManager.DeleteAsync(user);
                         ModelState.AddModelError(string.Empty, "Password must be at least 6 characters, requires at least one non-alphanumeric character, at least one digit, at least one lowercase character, and at least one uppercase character.");
                         actionResult = View(user);
                     }
