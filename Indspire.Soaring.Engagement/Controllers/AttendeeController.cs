@@ -263,7 +263,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
         public async Task<IActionResult> List()
         {
-            var topUsers = await _context.AwardLog
+            var topUsers = await this.databaseContext.AwardLog
                 .GroupBy(i => i.UserID)
                 .Select(i => new AttendeeRow()
                 {
