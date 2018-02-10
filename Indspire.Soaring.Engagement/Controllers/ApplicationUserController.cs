@@ -71,7 +71,13 @@
         {
             IActionResult actionResult = null;
 
-            if (ModelState.IsValid)
+            bool passwordMatches = password == confirmPassword;
+            if (!passwordMatches)
+            {
+                ModelState.AddModelError(string.Empty, "Your Password and Confirm Password did not match");
+            }
+
+            if (ModelState.IsValid && passwordMatches)
             {
                 var identityResult = await _userManager.CreateAsync(user);
 
@@ -79,13 +85,27 @@
                 {
                     var passwordResult = await _userManager.AddPasswordAsync(user, password);
 
-                    if (!await _userManager.IsInRoleAsync(user, RoleNames.Editor))
+                    if (passwordResult.Succeeded)
                     {
-                        await _userManager.AddToRoleAsync(user, RoleNames.Editor);
-                    }
-                }
 
-                actionResult = RedirectToAction(nameof(Index));
+                        if (!await _userManager.IsInRoleAsync(user, RoleNames.Administrator))
+                        {
+                            await _userManager.AddToRoleAsync(user, RoleNames.Administrator);
+                        }
+
+                        actionResult = RedirectToAction(nameof(Index));
+                    } else
+                    {
+                        await _userManager.DeleteAsync(user);
+                        ModelState.AddModelError(string.Empty, "Password must be at least 6 characters, requires at least one non-alphanumeric character, at least one digit, at least one lowercase character, and at least one uppercase character.");
+                        actionResult = View(user);
+                    }
+                } else
+                {
+                    ModelState.AddModelError(string.Empty, identityResult.ToString());
+                    actionResult = View(user);
+                }
+                
             }
             else
             {
