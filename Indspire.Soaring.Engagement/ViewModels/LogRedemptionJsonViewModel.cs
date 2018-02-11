@@ -6,7 +6,7 @@ namespace Indspire.Soaring.Engagement.ViewModels
     {
         public LogRedemptionJsonViewModel()
         {
-            ResponseData = new LogRedemptionResponseData();
+            this.ResponseData = new LogRedemptionResponseData();
         }
 
         public LogRedemptionResponseData ResponseData { get; set; }

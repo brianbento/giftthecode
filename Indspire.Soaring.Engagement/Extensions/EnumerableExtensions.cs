@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Extensions
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Extensions
 {
     using System.Collections.Generic;
     using Indspire.Soaring.Engagement.Models;
@@ -15,11 +17,8 @@
             return new PagedList<TList>(list)
             {
                 TotalCount = totalCount,
-
                 Page = page,
-
                 PageSize = pageSize,
-                
                 Search = search
             };
         }

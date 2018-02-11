@@ -191,12 +191,12 @@ namespace Indspire.Soaring.Engagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeViewModel model, string returnUrl = null)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return View(model);
+                return this.View(model);
             }
 
-            var user = await signInManager.GetTwoFactorAuthenticationUserAsync();
+            var user = await this.signInManager.GetTwoFactorAuthenticationUserAsync();
             if (user == null)
             {
                 throw new ApplicationException($"Unable to load two-factor authentication user.");
@@ -204,23 +204,28 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty);
 
-            var result = await signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
+            var result = await this.signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
 
             if (result.Succeeded)
             {
-                logger.LogInformation("User with ID {UserId} logged in with a recovery code.", user.Id);
-                return RedirectToLocal(returnUrl);
+                this.logger.LogInformation("User with ID {UserId} logged in with a recovery code.", user.Id);
+
+                return this.RedirectToLocal(returnUrl);
             }
+
             if (result.IsLockedOut)
             {
-                logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
-                return RedirectToAction(nameof(Lockout));
+                this.logger.LogWarning("User with ID {UserId} account locked out.", user.Id);
+
+                return this.RedirectToAction(nameof(this.Lockout));
             }
             else
             {
-                logger.LogWarning("Invalid recovery code entered for user with ID {UserId}", user.Id);
-                ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
-                return View();
+                this.logger.LogWarning("Invalid recovery code entered for user with ID {UserId}", user.Id);
+
+                this.ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
+
+                return this.View();
             }
         }
 
@@ -370,7 +375,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
                         this.logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
-                        return RedirectToLocal(returnUrl);
+                        return this.RedirectToLocal(returnUrl);
                     }
                 }
 
@@ -422,7 +427,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                 if (user == null || !(await this.userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToAction(nameof(ForgotPasswordConfirmation));
+                    return this.RedirectToAction(nameof(this.ForgotPasswordConfirmation));
                 }
 
                 // For more information on how to enable account confirmation and password reset please
@@ -439,14 +444,14 @@ namespace Indspire.Soaring.Engagement.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return this.View(model);
         }
 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ForgotPasswordConfirmation()
         {
-            return View();
+            return this.View();
         }
 
         [HttpGet]
@@ -457,8 +462,10 @@ namespace Indspire.Soaring.Engagement.Controllers
             {
                 throw new ApplicationException("A code must be supplied for password reset.");
             }
+
             var model = new ResetPasswordViewModel { Code = code };
-            return View(model);
+
+            return this.View(model);
         }
 
         [HttpPost]
@@ -466,61 +473,65 @@ namespace Indspire.Soaring.Engagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
-                return View(model);
+                return this.View(model);
             }
-            var user = await userManager.FindByEmailAsync(model.Email);
+
+            var user = await this.userManager.FindByEmailAsync(model.Email);
+
             if (user == null)
             {
                 // Don't reveal that the user does not exist
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
+                return this.RedirectToAction(nameof(this.ResetPasswordConfirmation));
             }
-            var result = await userManager.ResetPasswordAsync(user, model.Code, model.Password);
+
+            var result = await this.userManager.ResetPasswordAsync(
+                user,
+                model.Code,
+                model.Password);
+
             if (result.Succeeded)
             {
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
+                return this.RedirectToAction(nameof(this.ResetPasswordConfirmation));
             }
-            AddErrors(result);
-            return View();
+
+            this.AddErrors(result);
+
+            return this.View();
         }
 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult ResetPasswordConfirmation()
         {
-            return View();
+            return this.View();
         }
-
 
         [HttpGet]
         public IActionResult AccessDenied()
         {
-            return View();
+            return this.View();
         }
-
-        #region Helpers
 
         private void AddErrors(IdentityResult result)
         {
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                this.ModelState.AddModelError(string.Empty, error.Description);
             }
         }
 
         private IActionResult RedirectToLocal(string returnUrl)
         {
-            if (Url.IsLocalUrl(returnUrl))
+            if (this.Url.IsLocalUrl(returnUrl))
             {
-                return Redirect(returnUrl);
+                return this.Redirect(returnUrl);
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return this.RedirectToAction(nameof(HomeController.Index), "Home");
             }
         }
-
-        #endregion
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Models.RedemptionViewModels
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Models.RedemptionViewModels
 {
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;

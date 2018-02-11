@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Controllers
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Controllers
 {
     using System.Diagnostics;
     using Indspire.Soaring.Engagement.Models;
@@ -8,14 +10,16 @@
     {
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "Admin");
+            return this.RedirectToAction(
+                nameof(AdminController.Index),
+                "Admin");
         }
 
         public IActionResult Error()
         {
-            return View(new ErrorViewModel
+            return this.View(new ErrorViewModel
             {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+                RequestId = Activity.Current?.Id ?? this.HttpContext.TraceIdentifier
             });
         }
     }

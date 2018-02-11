@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.ViewModels
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.ViewModels
 {
     using Indspire.Soaring.Engagement.Database;
 

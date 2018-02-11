@@ -14,7 +14,7 @@ namespace Indspire.Soaring.Engagement.ViewModels
             int pointsBalance,
             string userNumber)
         {
-            ResponseData = new LogActionResponseData
+            this.ResponseData = new LogActionResponseData
             {
                 PointsAwarded = pointsAwarded,
                 PointsBalance = pointsBalance,

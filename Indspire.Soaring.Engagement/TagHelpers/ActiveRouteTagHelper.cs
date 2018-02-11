@@ -64,6 +64,23 @@ namespace Indspire.Soaring.Engagement.TagHelpers
             output.Attributes.RemoveAll("is-active-route");
         }
 
+        private static void MakeActive(TagHelperOutput output)
+        {
+            var classAttr = output.Attributes.FirstOrDefault(a => a.Name == "class");
+
+            if (classAttr == null)
+            {
+                classAttr = new TagHelperAttribute("class", "active");
+                output.Attributes.Add(classAttr);
+            }
+            else if (classAttr.Value == null || classAttr.Value.ToString().IndexOf("active") < 0)
+            {
+                output.Attributes.SetAttribute(
+                    "class",
+                    classAttr.Value == null ? "active" : classAttr.Value.ToString() + " active");
+            }
+        }
+
         private bool ShouldBeActive()
         {
             var currentController = this.ViewContext.RouteData.Values["Controller"].ToString();
@@ -91,23 +108,6 @@ namespace Indspire.Soaring.Engagement.TagHelpers
             }
 
             return true;
-        }
-
-        private static void MakeActive(TagHelperOutput output)
-        {
-            var classAttr = output.Attributes.FirstOrDefault(a => a.Name == "class");
-
-            if (classAttr == null)
-            {
-                classAttr = new TagHelperAttribute("class", "active");
-                output.Attributes.Add(classAttr);
-            }
-            else if (classAttr.Value == null || classAttr.Value.ToString().IndexOf("active") < 0)
-            {
-                output.Attributes.SetAttribute(
-                    "class",
-                    classAttr.Value == null ? "active" : classAttr.Value.ToString() + " active");
-            }
         }
     }
 }

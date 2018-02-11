@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.ViewModels
 {
-    public class CheckBalanceJsonViewModel: JsonBaseViewModel
+    public class CheckBalanceJsonViewModel : JsonBaseViewModel
     {
-        
-
-        public CheckBalanceJsonViewModel(int pointsAwarded, int pointsBalance, string userNumber)
+        public CheckBalanceJsonViewModel()
+            : this(0, string.Empty)
         {
-            ResponseData = new CheckBalanceResponseData();
-            ResponseData.PointsBalance = pointsBalance;
-            ResponseData.UserNumber = userNumber;
         }
-        public CheckBalanceJsonViewModel() { }
-        public CheckBalanceResponseData ResponseData = new CheckBalanceResponseData();
+
+        public CheckBalanceJsonViewModel(int pointsBalance, string userNumber)
+        {
+            this.ResponseData = new CheckBalanceResponseData
+            {
+                PointsBalance = pointsBalance,
+                UserNumber = userNumber
+            };
+        }
+
+        public CheckBalanceResponseData ResponseData { get; set; }
     }
 }

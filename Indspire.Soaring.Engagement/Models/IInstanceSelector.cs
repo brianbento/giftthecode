@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Models
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Models
 {
     public interface IInstanceSelector
     {

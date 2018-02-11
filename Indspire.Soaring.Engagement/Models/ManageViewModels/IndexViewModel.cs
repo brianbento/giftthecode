@@ -1,4 +1,5 @@
-﻿
+﻿// Copyright (c) Team Agility. All rights reserved.
+
 namespace Indspire.Soaring.Engagement.Models.ManageViewModels
 {
     using System.ComponentModel.DataAnnotations;

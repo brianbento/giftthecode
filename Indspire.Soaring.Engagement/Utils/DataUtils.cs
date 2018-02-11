@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Utils
 {
-    public class DataUtils
-    {
-  
-        public string GenerateNumber()
-        {
-            Random random = new Random();
-            string r = "";
-            int i;
+    using System;
+    using System.Text;
 
-            for (i = 1; i < 6; i++)
+    public static class DataUtils
+    {
+        public static string GenerateNumber()
+        {
+            var random = new Random();
+            var sb = new StringBuilder();
+
+            for (var i = 1; i < 6; i++)
             {
-                r += random.Next(0, 9).ToString();
+                sb.Append(random.Next(0, 9));
             }
 
-            return r;
+            return sb.ToString();
         }
     }
 }

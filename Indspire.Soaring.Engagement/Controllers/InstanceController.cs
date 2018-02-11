@@ -55,8 +55,6 @@ namespace Indspire.Soaring.Engagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateInstanceViewModel instanceViewModel)
         {
-            var dataUtils = new DataUtils();
-
             if (this.ModelState.IsValid)
             {
                 var instance = new Instance();
@@ -85,8 +83,8 @@ namespace Indspire.Soaring.Engagement.Controllers
                 return this.NotFound();
             }
 
-            var instance = await DatabaseContext.Instance
-                .SingleOrDefaultAsync(m => m.InstanceID == id);
+            var instance = await this.DatabaseContext.Instance
+                .FirstOrDefaultAsync(m => m.InstanceID == id);
 
             if (instance == null)
             {
@@ -97,11 +95,11 @@ namespace Indspire.Soaring.Engagement.Controllers
         }
 
         [HttpPost]
-        [ActionName("Delete")]
+        [ActionName(nameof(Delete))]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var instance = await DatabaseContext.Instance
+            var instance = await this.DatabaseContext.Instance
                 .FirstOrDefaultAsync(m => m.InstanceID == id);
 
             if (instance != null)

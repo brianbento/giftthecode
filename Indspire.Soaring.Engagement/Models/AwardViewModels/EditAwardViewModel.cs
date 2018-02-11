@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Models.AwardViewModels
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Models.AwardViewModels
 {
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;

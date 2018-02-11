@@ -1,4 +1,6 @@
-﻿namespace Indspire.Soaring.Engagement.Models.InstanceViewModels
+﻿// Copyright (c) Team Agility. All rights reserved.
+
+namespace Indspire.Soaring.Engagement.Models.InstanceViewModels
 {
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;

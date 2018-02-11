@@ -160,8 +160,6 @@ namespace Indspire.Soaring.Engagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateAwardViewModel awardViewModel)
         {
-            var dataUtils = new DataUtils();
-
             if (this.ModelState.IsValid)
             {
                 var award = new Award
@@ -170,7 +168,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                     Name = awardViewModel.Name,
                     Description = awardViewModel.Description,
                     Points = awardViewModel.Points,
-                    AwardNumber = dataUtils.GenerateNumber(),
+                    AwardNumber = DataUtils.GenerateNumber(),
                     CreatedDate = DateTime.UtcNow
                 };
 
@@ -297,24 +295,19 @@ namespace Indspire.Soaring.Engagement.Controllers
             return this.RedirectToAction(nameof(this.Index));
         }
 
-        private bool AwardExists(int id)
-        {
-            return this.DatabaseContext.Award.Any(e => e.AwardID == id);
-        }
-
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> LogAction(
-            string AwardNumber,
-            string UserNumber)
+            string awardNumber,
+            string userNumber)
         {
             var viewModel = new LogActionJsonViewModel();
 
             try
             {
-                // validate 
+                // validate
                 var award = await this.DatabaseContext.Award
-                    .FirstOrDefaultAsync(i => i.AwardNumber == AwardNumber);
+                    .FirstOrDefaultAsync(i => i.AwardNumber == awardNumber);
 
                 if (award == null)
                 {
@@ -322,7 +315,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                 }
 
                 var user = await this.DatabaseContext.Attendee
-                    .FirstOrDefaultAsync(i => i.UserNumber == UserNumber);
+                    .FirstOrDefaultAsync(i => i.UserNumber == userNumber);
 
                 if (user == null)
                 {
@@ -340,20 +333,25 @@ namespace Indspire.Soaring.Engagement.Controllers
                 }
 
                 // good to go!
+                var awardLog = new AwardLog
+                {
+                    AwardID = award.AwardID,
+                    CreatedDate = DateTime.UtcNow,
+                    Points = award.Points,
+                    UserID = user.UserID
+                };
 
-                var awardLog = new AwardLog();
-                awardLog.AwardID = award.AwardID;
-                awardLog.CreatedDate = DateTime.UtcNow;
                 awardLog.ModifiedDate = awardLog.CreatedDate;
-                awardLog.Points = award.Points;
-                awardLog.UserID = user.UserID;
 
                 this.DatabaseContext.Add(awardLog);
 
                 await this.DatabaseContext.SaveChangesAsync();
 
                 viewModel.ResponseData.PointsAwarded = awardLog.Points;
-                viewModel.ResponseData.PointsBalance = PointsUtils.GetPointsForUser(user.UserID, this.DatabaseContext);
+
+                viewModel.ResponseData.PointsBalance =
+                    PointsUtils.GetPointsForUser(user.UserID, this.DatabaseContext);
+
                 viewModel.ResponseData.UserNumber = user.UserNumber;
                 viewModel.ResponseData.ExternalID = user.ExternalID;
             }
@@ -364,6 +362,11 @@ namespace Indspire.Soaring.Engagement.Controllers
             }
 
             return new JsonResult(viewModel);
+        }
+
+        private bool AwardExists(int id)
+        {
+            return this.DatabaseContext.Award.Any(e => e.AwardID == id);
         }
     }
 }

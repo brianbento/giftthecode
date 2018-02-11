@@ -1,20 +1,21 @@
-﻿using Indspire.Soaring.Engagement.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// Copyright (c) Team Agility. All rights reserved.
 
 namespace Indspire.Soaring.Engagement.Models
 {
+    using Indspire.Soaring.Engagement.Database;
+
     public class AttendeeLabel
     {
-        public string UserNumber { get; set; }
-
-        public AttendeeLabel() { }
-
-        public AttendeeLabel(Attendee attendee) 
+        public AttendeeLabel()
+            : this(null)
         {
-            UserNumber = attendee.UserNumber;
         }
+
+        public AttendeeLabel(Attendee attendee)
+        {
+            this.UserNumber = attendee?.UserNumber;
+        }
+
+        public string UserNumber { get; set; }
     }
 }

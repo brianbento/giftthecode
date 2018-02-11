@@ -98,8 +98,6 @@ namespace Indspire.Soaring.Engagement.Controllers
         public async Task<IActionResult> Create(
             CreateRedemptionViewModel redemptionViewModel)
         {
-            var dataUtils = new DataUtils();
-
             if (this.ModelState.IsValid)
             {
                 var selectedInstanceID = this.InstanceSelector.InstanceID;
@@ -107,7 +105,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                 var redemption = new Redemption
                 {
                     InstanceID = selectedInstanceID,
-                    RedemptionNumber = dataUtils.GenerateNumber(),
+                    RedemptionNumber = DataUtils.GenerateNumber(),
                     CreatedDate = DateTime.UtcNow,
                     PointsRequired = redemptionViewModel.PointsRequired
                 };

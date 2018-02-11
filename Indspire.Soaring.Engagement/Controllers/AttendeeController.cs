@@ -110,8 +110,6 @@ namespace Indspire.Soaring.Engagement.Controllers
         {
             IActionResult actionResult = null;
 
-            var dataUtils = new DataUtils();
-
             if (this.ModelState.IsValid)
             {
                 var selectedInstanceID = this.InstanceSelector.InstanceID;
@@ -121,7 +119,7 @@ namespace Indspire.Soaring.Engagement.Controllers
                 attendee.InstanceID = selectedInstanceID;
                 attendee.ModifiedDate = attendee.CreatedDate = DateTime.UtcNow;
                 attendee.Deleted = false;
-                attendee.UserNumber = dataUtils.GenerateNumber();
+                attendee.UserNumber = DataUtils.GenerateNumber();
                 attendee.ExternalID = attendeeViewModel == null
                     ? string.Empty
                     : attendeeViewModel.ExternalID;
@@ -341,12 +339,10 @@ namespace Indspire.Soaring.Engagement.Controllers
                 {
                     for (var i = 0; i < bulkCreateViewModel.Amount; i++)
                     {
-                        var dataUtils = new DataUtils();
-
                         var user = new Attendee
                         {
                             InstanceID = selectedInstanceID,
-                            UserNumber = dataUtils.GenerateNumber(),
+                            UserNumber = DataUtils.GenerateNumber(),
                             CreatedDate = DateTime.UtcNow
                         };
 
@@ -450,7 +446,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels.ToList());
 
-            return File(
+            return this.File(
                 memoryStream,
                 "application/pdf",
                 $"attendee_{userNumber}_qr_code_use_avery-22806-labels.pdf");
@@ -458,7 +454,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
         public IActionResult Print()
         {
-            return View();
+            return this.View();
         }
 
         public IActionResult PrintAllQRCodes()
@@ -470,7 +466,7 @@ namespace Indspire.Soaring.Engagement.Controllers
 
             var memoryStream = QRCodeUtils.GenerateLabelsAsPDF(labels);
 
-            return File(
+            return this.File(
                 memoryStream,
                 "application/pdf",
                 "qr-codes_use_avery-22806-labels.pdf");
