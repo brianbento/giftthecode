@@ -53,7 +53,7 @@ namespace Indspire.Soaring.Engagement.Utils
             int pageCols = 3;
 
             var doc = new Document();
-            doc.SetPageSize(PageSize.LETTER);
+            doc.SetPageSize(PageSize.Letter);
 
             doc.SetMargins(leftPageMargin, rightPageMarign, topPageMargin, bottomPageMargin);
             var memoryStream = new MemoryStream();
@@ -79,9 +79,9 @@ namespace Indspire.Soaring.Engagement.Utils
 
                 //cell.VerticalAlignment = Element.ALIGN_BOTTOM;
                 cell.HorizontalAlignment = Element.ALIGN_CENTER;
-                cell.BackgroundColor = BaseColor.BLACK;
+                cell.BackgroundColor = BaseColor.Black;
 
-                cell.BorderColor = BaseColor.WHITE;
+                cell.BorderColor = BaseColor.White;
                 cell.BorderWidthTop = Utilities.InchesToPoints(0.28f);
                 cell.BorderWidthBottom = cell.BorderWidthTop;
 
@@ -98,7 +98,7 @@ namespace Indspire.Soaring.Engagement.Utils
 
 
                 var txtContents = new Paragraph();
-                txtContents.Add(new Chunk(string.Format("{0}", attendee.UserNumber), new Font(baseFont, 11f, Font.BOLD, BaseColor.WHITE)));
+                txtContents.Add(new Chunk(string.Format("{0}", attendee.UserNumber), new Font(baseFont, 11f, Font.BOLD, BaseColor.White)));
                 txtContents.Alignment = Element.ALIGN_CENTER;
                 cell.AddElement(txtContents);
 
