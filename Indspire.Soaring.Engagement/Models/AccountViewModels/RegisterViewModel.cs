@@ -17,9 +17,20 @@ namespace Indspire.Soaring.Engagement.Models.AccountViewModels
         [Display(Name = "Password")]
         public string Password { get; set; }
 
+        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
         [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "User name")]
+        public string UserName { get; set; }
+
+        public void ClearPassword()
+        {
+            this.Password = string.Empty;
+            this.ConfirmPassword = string.Empty;
+        }
     }
 }

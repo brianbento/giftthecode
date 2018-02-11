@@ -6,6 +6,7 @@ namespace Indspire.Soaring.Engagement.Controllers
     using System.Threading.Tasks;
     using Indspire.Soaring.Engagement.Extensions;
     using Indspire.Soaring.Engagement.Models;
+    using Indspire.Soaring.Engagement.Models.AccountViewModels;
     using Indspire.Soaring.Engagement.Services;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -57,61 +58,72 @@ namespace Indspire.Soaring.Engagement.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return this.View();
+            var viewModel = new RegisterViewModel();
+
+            return this.View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            [Bind(
-                nameof(ApplicationUser.Email),
-                nameof(ApplicationUser.UserName))]
-            ApplicationUser user,
-            string password,
-            string confirmPassword)
+        public async Task<IActionResult> Create(RegisterViewModel registerViewModel)
         {
             IActionResult actionResult = null;
 
-            bool passwordMatches = password == confirmPassword;
-            if (!passwordMatches)
+            if (this.ModelState.IsValid)
             {
-                ModelState.AddModelError(string.Empty, "Your Password and Confirm Password did not match");
-            }
-
-            if (ModelState.IsValid && passwordMatches)
-            {
-                var identityResult = await this.userManager.CreateAsync(user);
-
-                if (identityResult.Succeeded)
+                var user = new ApplicationUser
                 {
-                    var passwordResult = await this.userManager.AddPasswordAsync(user, password);
+                    UserName = registerViewModel.UserName,
+                    Email = registerViewModel.Email
+                };
 
-                    if (passwordResult.Succeeded)
+                var existentUser = await this.userManager
+                    .FindByNameAsync(registerViewModel.UserName);
+
+                if (existentUser == null)
+                {
+                    var identityResult = await this.userManager.CreateAsync(
+                        user,
+                        registerViewModel.Password);
+
+                    if (identityResult.Succeeded)
                     {
-
-                        if (!await userManager.IsInRoleAsync(user, RoleNames.Administrator))
-                        {
-                            await userManager.AddToRoleAsync(user, RoleNames.Administrator);
-                        }
-
-                        actionResult = RedirectToAction(nameof(Index));
-                    } else
-                    {
-                        await userManager.DeleteAsync(user);
-                        ModelState.AddModelError(string.Empty, "Password must be at least 6 characters, requires at least one non-alphanumeric character, at least one digit, at least one lowercase character, and at least one uppercase character.");
-                        actionResult = View(user);
+                        actionResult = this.RedirectToAction(nameof(this.Index));
                     }
-                } else
-                {
-                    ModelState.AddModelError(string.Empty, identityResult.ToString());
-                    actionResult = View(user);
+                    else
+                    {
+                        const string message =
+                            "Password must be at least 6 characters, " +
+                            "requires at least one non-alphanumeric character," +
+                            "at least one digit, " +
+                            "at least one lowercase character," +
+                            "and at least one uppercase character.";
+
+                        this.ModelState.AddModelError(
+                            nameof(registerViewModel.Password),
+                            message);
+
+                        registerViewModel.ClearPassword();
+
+                        actionResult = this.View(registerViewModel);
+                    }
                 }
-                
+                else
+                {
+                    this.ModelState.AddModelError(
+                        nameof(registerViewModel.UserName),
+                        "The user name already exists");
+
+                    registerViewModel.ClearPassword();
+
+                    actionResult = this.View(registerViewModel);
+                }
             }
             else
             {
-                // TODO: display specific error messages
-                actionResult = this.View(user);
+                registerViewModel.ClearPassword();
+
+                actionResult = this.View(registerViewModel);
             }
 
             return actionResult;
